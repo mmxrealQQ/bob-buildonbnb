@@ -583,12 +583,12 @@ async function exec(id, p) {
     }
     case "agent-search": {
       if(!p){o("Enter search query","err");break}
-      const d=await proxy("https://api.8004scan.io/api/v1/agents?search="+encodeURIComponent(p)+"&limit=10");
+      const d=await proxy("https://api.8004scan.io/api/v1/agents?chain_id=56&is_testnet=false&search="+encodeURIComponent(p)+"&limit=10");
       o(`Agent Search: "${p}"\n\n${J(d)}`);
       break;
     }
     case "agent-list": {
-      const d=await proxy("https://api.8004scan.io/api/v1/agents?limit=10&sort=newest");
+      const d=await proxy("https://api.8004scan.io/api/v1/agents?chain_id=56&is_testnet=false&limit=10&sort_by=created_at&sort_order=desc");
       o(`Recent Agents\n\n${J(d)}`);
       break;
     }
@@ -640,24 +640,37 @@ async function loadA2AAgents() {
     const r = await fetch("/api/proxy", {
       method:"POST",
       headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({url:"https://api.8004scan.io/api/v1/agents?limit=20&sort=newest"})
+      body:JSON.stringify({url:"https://api.8004scan.io/api/v1/agents?chain_id=56&is_testnet=false&has_a2a=true&limit=15&sort_by=total_score&sort_order=desc"})
     });
     const d = await r.json();
-    const agents = (d.data || d.agents || d || []);
-    if(!Array.isArray(agents)) return;
+    const agents = d.items || d.data || [];
+    if(!Array.isArray(agents) || !agents.length) return;
     const btns = document.getElementById("agent-btns");
-    agents.forEach(a => {
-      if(!a.services) return;
-      const a2a = a.services.find(s => s.name === "A2A" || s.type === "a2a");
-      if(!a2a || !a2a.endpoint) return;
-      const btn = document.createElement("button");
-      btn.className = "tag";
-      btn.style.cursor = "pointer";
-      btn.textContent = (a.name || "Agent #"+a.agentId).slice(0, 20);
-      btn.onclick = () => pickAgent(a2a.endpoint, a.name || "Agent");
-      btns.appendChild(btn);
-    });
-  } catch {}
+    // Add BOB first
+    const bobBtn = document.createElement("button");
+    bobBtn.className = "tag";
+    bobBtn.style.cursor = "pointer";
+    bobBtn.textContent = "BOB Build On BNB";
+    bobBtn.onclick = () => pickAgent("/api/a2a", "BOB Build On BNB");
+    btns.appendChild(bobBtn);
+    // Fetch details for each agent to get a2a_endpoint
+    for(const a of agents.slice(0, 12)) {
+      try {
+        const dr = await fetch("/api/agent/" + a.token_id);
+        const detail = await dr.json();
+        if(!detail.a2a_endpoint) continue;
+        // Convert agent-card URL to actual A2A endpoint
+        let ep = detail.a2a_endpoint;
+        if(ep.includes("/.well-known/")) ep = ep.split("/.well-known/")[0];
+        const btn = document.createElement("button");
+        btn.className = "tag";
+        btn.style.cursor = "pointer";
+        btn.textContent = (a.name || "Agent #"+a.token_id).slice(0, 22);
+        btn.onclick = () => pickAgent(ep, a.name || "Agent");
+        btns.appendChild(btn);
+      } catch {}
+    }
+  } catch(e) { console.log("loadA2AAgents error:", e); }
 }
 
 document.getElementById("par").addEventListener("keydown",e=>{if(e.key==="Enter")run()});

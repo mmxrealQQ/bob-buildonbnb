@@ -179,11 +179,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
   }
 
-  // Tool: 8004scan agent lookup
+  // Tool: 8004scan agent lookup (BSC chain_id=56)
   if (path.startsWith("/api/agent/") && req.method === "GET") {
     const agentId = path.split("/api/agent/")[1];
     try {
-      const r = await fetch(`https://api.8004scan.io/api/v1/agents/${agentId}`, {
+      const r = await fetch(`https://api.8004scan.io/api/v1/agents/56/${agentId}`, {
+        signal: AbortSignal.timeout(10000),
+      });
+      const data = await r.json();
+      return json(res, data);
+    } catch (e: any) {
+      return json(res, { error: e.message }, 500);
+    }
+  }
+
+  // Tool: 8004scan agent list/search
+  if (path === "/api/agents" && req.method === "GET") {
+    const qs = req.url?.split("?")[1] || "";
+    try {
+      const r = await fetch(`https://api.8004scan.io/api/v1/agents?chain_id=56&is_testnet=false&has_a2a=true&limit=20&${qs}`, {
         signal: AbortSignal.timeout(10000),
       });
       const data = await r.json();
