@@ -3,680 +3,368 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BOB Build On BNB — The BNB Chain AI Dashboard</title>
-  <meta name="description" content="If you can't build you won't be rich. Test 80+ MCP tools, explore AI agents, learn everything about AI on BNB Chain.">
+  <title>BOB Build On BNB — 116+ BNB Chain AI Tools</title>
+  <meta name="description" content="Test 116+ MCP tools for BNB Chain. On-chain data, Binance markets, DeFi, security, AI agents. No setup needed.">
   <link rel="icon" href="https://raw.githubusercontent.com/mmxrealQQ/bob-assets/main/bob.jpg" type="image/jpeg">
   <style>
     *{margin:0;padding:0;box-sizing:border-box}
-    :root{--bg:#0a0a0a;--s:#111;--s2:#1a1a1a;--b:#222;--y:#F0B90B;--yd:rgba(240,185,11,.15);--g:#0ECB81;--r:#F6465D;--t:#eee;--t2:#888;--rd:12px}
-    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--t);line-height:1.6;overflow-x:hidden}
-    a{color:var(--y);text-decoration:none}a:hover{text-decoration:underline}
-    .hd{border-bottom:1px solid var(--b);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:rgba(10,10,10,.95);backdrop-filter:blur(10px);z-index:100}
-    .logo{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:700}
-    .logo img{width:28px;height:28px;border-radius:50%}
-    .nav{display:flex;gap:16px;font-size:13px}.nav a{color:var(--t2)}.nav a:hover{color:var(--y);text-decoration:none}
-    .hero{text-align:center;padding:40px 20px 30px;max-width:700px;margin:0 auto}
-    .hero img{width:64px;height:64px;border-radius:50%;margin-bottom:12px}
-    .hero h1{font-size:36px;font-weight:800;line-height:1.1;margin-bottom:8px}.hero h1 span{color:var(--y)}
-    .hero p{font-size:16px;color:var(--t2);margin-bottom:16px}
-    .motto{display:inline-block;background:var(--yd);color:var(--y);padding:4px 14px;border-radius:100px;font-size:12px;font-weight:600;border:1px solid rgba(240,185,11,.3);margin-bottom:12px}
-    .tabs{display:flex;justify-content:center;gap:2px;border-bottom:1px solid var(--b);max-width:1000px;margin:0 auto}
-    .tab{padding:10px 18px;font-size:13px;font-weight:600;color:var(--t2);cursor:pointer;border:none;border-bottom:2px solid transparent;background:none;transition:.2s}
-    .tab:hover{color:var(--t)}.tab.active{color:var(--y);border-bottom-color:var(--y)}
-    .tc{display:none}.tc.active{display:block}
-    .sec{max-width:1000px;margin:0 auto;padding:30px 20px}
-    .sec h2{font-size:20px;font-weight:700;margin-bottom:4px}
-    .sec .sub{color:var(--t2);margin-bottom:20px;font-size:13px}
-    /* Tester */
-    .tester{background:var(--s);border:1px solid var(--b);border-radius:var(--rd);overflow:hidden}
-    .th{padding:12px 16px;border-bottom:1px solid var(--b);display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700}
-    .th img{width:20px;height:20px;border-radius:50%}
-    .tb{display:flex;min-height:420px}
-    .ts{width:220px;border-right:1px solid var(--b);overflow-y:auto;max-height:500px}
-    .tg{padding:8px 12px 4px;font-size:10px;color:var(--t2);text-transform:uppercase;letter-spacing:.5px;font-weight:700}
-    .ti{padding:6px 12px;font-size:12px;cursor:pointer;color:var(--t2);border:none;background:none;width:100%;text-align:left;transition:.15s}
-    .ti:hover{background:var(--s2);color:var(--t)}.ti.active{background:var(--yd);color:var(--y)}
-    .tm{flex:1;display:flex;flex-direction:column}
-    .tinp{padding:12px 16px;border-bottom:1px solid var(--b)}
-    .tinp label{display:block;font-size:11px;color:var(--t2);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
-    .ir{display:flex;gap:6px}
-    .tinp input,.tinp select{flex:1;background:var(--s2);border:1px solid var(--b);border-radius:6px;padding:8px 10px;color:var(--t);font-size:13px;font-family:'SF Mono',Monaco,monospace;outline:none}
-    .tinp input:focus{border-color:var(--y)}
-    .btn{padding:8px 16px;border-radius:6px;border:none;font-size:13px;font-weight:600;cursor:pointer;background:var(--y);color:#000;transition:.15s}
-    .btn:hover{opacity:.9}.btn:disabled{opacity:.5;cursor:not-allowed}
-    .tout{flex:1;padding:12px 16px;overflow-y:auto;max-height:380px}
-    .tout pre{font-family:'SF Mono',Monaco,monospace;font-size:11px;line-height:1.5;color:var(--g);white-space:pre-wrap;word-break:break-all}
-    .tout .err{color:var(--r)}.tout .inf{color:var(--t2)}
-    /* Cards */
-    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-top:16px}
-    .card{background:var(--s);border:1px solid var(--b);border-radius:var(--rd);padding:16px;transition:.2s;display:block;text-decoration:none;color:inherit}
-    .card:hover{border-color:var(--y);text-decoration:none}
-    .card h3{font-size:14px;font-weight:700;margin-bottom:4px}
-    .card p{font-size:11px;color:var(--t2);margin-bottom:8px}
-    .tc2{background:var(--yd);color:var(--y);padding:2px 6px;border-radius:100px;font-size:10px;font-weight:700;margin-left:6px}
-    .tags{display:flex;flex-wrap:wrap;gap:3px}
-    .tag{background:var(--s2);padding:2px 6px;border-radius:4px;font-size:9px;color:var(--t2);border:1px solid var(--b)}
-    .yl{font-size:10px;color:var(--y);margin-top:8px;display:block}
-    /* Agent */
-    .ai{background:var(--s);border:1px solid var(--b);border-radius:var(--rd);padding:20px}
-    .ah{display:flex;align-items:center;gap:12px;margin-bottom:16px}
-    .ah img{width:44px;height:44px;border-radius:50%}
-    .an{font-size:18px;font-weight:700}.ac{font-size:11px;color:var(--t2)}
-    .ad{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
-    .det{background:var(--s2);border-radius:6px;padding:12px}
-    .dl{font-size:9px;color:var(--t2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
-    .dv{font-size:12px;font-weight:600;word-break:break-all}
-    .dv.m{font-family:'SF Mono',Monaco,monospace;font-size:10px}
-    .ft{border-top:1px solid var(--b);padding:24px 20px;text-align:center;color:var(--t2);font-size:11px}
-    .fl{display:flex;justify-content:center;gap:16px;margin-top:8px}
-    @media(max-width:768px){.hero h1{font-size:24px}.nav{display:none}.tb{flex-direction:column}.ts{width:100%;max-height:160px;border-right:none;border-bottom:1px solid var(--b)}}
+    :root{--bg:#0a0a0a;--s:#111;--s2:#1a1a1a;--b:#222;--y:#F0B90B;--yd:rgba(240,185,11,.12);--g:#0ECB81;--r:#F6465D;--t:#eee;--t2:#888;--t3:#555;--rd:10px}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--t);line-height:1.5}
+    a{color:var(--y);text-decoration:none}
+    ::selection{background:var(--y);color:#000}
+    ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--s)}::-webkit-scrollbar-thumb{background:var(--b);border-radius:3px}
+
+    .hd{border-bottom:1px solid var(--b);padding:8px 16px;display:flex;align-items:center;gap:10px;position:sticky;top:0;background:rgba(10,10,10,.95);backdrop-filter:blur(10px);z-index:100}
+    .logo{display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;white-space:nowrap}
+    .logo img{width:24px;height:24px;border-radius:50%}
+    .badge{background:var(--yd);color:var(--y);padding:2px 8px;border-radius:100px;font-size:10px;font-weight:700;border:1px solid rgba(240,185,11,.2)}
+    .search{flex:1;max-width:300px;margin-left:auto}
+    .search input{width:100%;background:var(--s2);border:1px solid var(--b);border-radius:6px;padding:6px 10px;color:var(--t);font-size:12px;outline:none}
+    .search input:focus{border-color:var(--y)}
+    .search input::placeholder{color:var(--t3)}
+
+    .tabs{display:flex;border-bottom:1px solid var(--b);overflow-x:auto;position:sticky;top:41px;background:var(--bg);z-index:99}
+    .tab{padding:8px 14px;font-size:11px;font-weight:600;color:var(--t2);cursor:pointer;border:none;border-bottom:2px solid transparent;background:none;white-space:nowrap;transition:.15s}
+    .tab:hover{color:var(--t)}.tab.on{color:var(--y);border-bottom-color:var(--y)}
+    .tab .cnt{background:var(--s2);padding:1px 5px;border-radius:8px;font-size:9px;margin-left:4px}
+
+    .main{display:flex;height:calc(100vh - 82px)}
+    .side{width:220px;border-right:1px solid var(--b);overflow-y:auto;flex-shrink:0}
+    .cat{padding:8px 12px 4px;font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:.8px;font-weight:700}
+    .item{display:flex;align-items:center;gap:6px;padding:5px 12px;font-size:11px;cursor:pointer;color:var(--t2);border:none;background:none;width:100%;text-align:left;transition:.1s}
+    .item:hover{background:var(--s2);color:var(--t)}.item.on{background:var(--yd);color:var(--y)}
+    .dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+    .dot.live{background:var(--g)}.dot.sim{background:var(--t3)}
+
+    .panel{flex:1;display:flex;flex-direction:column;overflow:hidden}
+    .phead{padding:14px 16px;border-bottom:1px solid var(--b)}
+    .pname{font-size:15px;font-weight:700;margin-bottom:2px}
+    .pdesc{font-size:11px;color:var(--t2)}
+    .psrc{font-size:9px;color:var(--t3);margin-top:4px}
+    .psrc a{color:var(--t3)}
+    .pform{padding:12px 16px;border-bottom:1px solid var(--b);display:flex;flex-wrap:wrap;gap:8px;align-items:end}
+    .prow{display:flex;flex-direction:column;gap:3px}
+    .prow label{font-size:10px;color:var(--t2);text-transform:uppercase;letter-spacing:.5px}
+    .prow input{background:var(--s2);border:1px solid var(--b);border-radius:6px;padding:7px 10px;color:var(--t);font-size:12px;font-family:'SF Mono',Monaco,'Cascadia Code',monospace;outline:none;min-width:180px}
+    .prow input:focus{border-color:var(--y)}
+    .run{padding:7px 18px;border-radius:6px;border:none;font-size:12px;font-weight:700;cursor:pointer;background:var(--y);color:#000;transition:.15s;white-space:nowrap;align-self:end}
+    .run:hover{opacity:.9}
+    .sim-badge{display:inline-block;background:rgba(136,136,136,.15);color:var(--t2);padding:2px 8px;border-radius:4px;font-size:10px;margin-left:8px}
+    .live-badge{display:inline-block;background:rgba(14,203,129,.15);color:var(--g);padding:2px 8px;border-radius:4px;font-size:10px;margin-left:8px}
+
+    .out{flex:1;overflow-y:auto;padding:12px 16px}
+    .out pre{font-family:'SF Mono',Monaco,'Cascadia Code',monospace;font-size:11px;line-height:1.6;white-space:pre-wrap;word-break:break-all}
+    .out .ok{color:var(--g)}.out .err{color:var(--r)}.out .inf{color:var(--t2)}.out .sim{color:var(--y)}
+
+    @media(max-width:768px){
+      .main{flex-direction:column;height:auto}
+      .side{width:100%;max-height:200px;border-right:none;border-bottom:1px solid var(--b)}
+      .search{max-width:160px}
+      .badge{display:none}
+      .prow input{min-width:120px}
+    }
   </style>
 </head>
 <body>
-  <div class="hd">
-    <div class="logo"><img src="https://raw.githubusercontent.com/mmxrealQQ/bob-assets/main/bob.jpg" alt="BOB">BOB Build On BNB</div>
-    <div class="nav">
-      <a href="#" onclick="sw('test')">Tools</a>
-      <a href="#" onclick="sw('a2a')">A2A</a>
-      <a href="#" onclick="sw('eco')">Ecosystem</a>
-      <a href="#" onclick="sw('agent')">Agent</a>
-      <a href="https://www.8004scan.io/" target="_blank">8004scan</a>
+
+<div class="hd">
+  <div class="logo"><img src="https://raw.githubusercontent.com/mmxrealQQ/bob-assets/main/bob.jpg" alt="BOB">BOB Build On BNB</div>
+  <span class="badge">116+ Tools</span>
+  <div class="search"><input type="text" id="q" placeholder="Search tools..." oninput="filter()"></div>
+</div>
+<div class="tabs" id="tabs"></div>
+<div class="main">
+  <div class="side" id="side"></div>
+  <div class="panel">
+    <div class="phead">
+      <div class="pname" id="pname">Select a tool</div>
+      <div class="pdesc" id="pdesc">Pick a tool from the sidebar to get started.</div>
+      <div class="psrc" id="psrc"></div>
     </div>
+    <div class="pform" id="pform" style="display:none"></div>
+    <div class="out" id="out"><pre class="inf">Pick any tool from the left sidebar and click Run.</pre></div>
   </div>
-
-  <div class="hero">
-    <img src="https://raw.githubusercontent.com/mmxrealQQ/bob-assets/main/bob.jpg" alt="BOB">
-    <div class="motto">If you can't build, you won't be rich</div>
-    <h1>The <span>BNB Chain</span> AI Dashboard</h1>
-    <p>Test on-chain tools, explore AI agents, and learn everything about AI on BNB Chain.</p>
-  </div>
-
-  <div class="tabs">
-    <button class="tab active" onclick="sw('test')">On-Chain Tools</button>
-    <button class="tab" onclick="sw('a2a')">A2A Agents</button>
-    <button class="tab" onclick="sw('eco')">Ecosystem</button>
-    <button class="tab" onclick="sw('agent')">Agent Info</button>
-  </div>
-
-  <!-- TOOLS -->
-  <div class="tc active" id="tab-test">
-    <div class="sec">
-      <h2>Interactive Tool Tester</h2>
-      <p class="sub">Test BNB Chain tools directly. All calls go through public APIs — no keys needed.</p>
-      <div class="tester">
-        <div class="th"><img src="https://raw.githubusercontent.com/mmxrealQQ/bob-assets/main/bob.jpg" alt="">BOB Tool Tester <span style="margin-left:auto;width:6px;height:6px;border-radius:50%;background:var(--g)"></span></div>
-        <div class="tb">
-          <div class="ts" id="sidebar"></div>
-          <div class="tm">
-            <div class="tinp">
-              <label id="lbl">Select a tool</label>
-              <div class="ir">
-                <input type="text" id="par" placeholder="Select a tool from the sidebar">
-                <button class="btn" id="rbtn" onclick="run()">Run</button>
-              </div>
-            </div>
-            <div class="tout" id="out"><pre class="inf">Select a tool and click Run.</pre></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="grid">
-        <a class="card" href="https://github.com/bnb-chain/bnbchain-mcp" target="_blank">
-          <h3>BNB Chain MCP<span class="tc2">44+</span></h3>
-          <p>Official multi-chain EVM. Blocks, tokens, NFTs, contracts, ERC-8004, Greenfield.</p>
-          <span class="yl">GitHub &rarr;</span>
-        </a>
-        <a class="card" href="https://github.com/heurist-network/heurist-mesh-mcp-server" target="_blank">
-          <h3>Heurist Mesh<span class="tc2">20+</span></h3>
-          <p>Crypto analytics. Trending tokens, Twitter intel, funding rates, wallets.</p>
-          <span class="yl">GitHub &rarr;</span>
-        </a>
-        <a class="card" href="https://github.com/TermiX-official/bsc-mcp" target="_blank">
-          <h3>BSC DeFi MCP<span class="tc2">11+</span></h3>
-          <p>PancakeSwap, GoPlus security, Four.Meme, liquidity management.</p>
-          <span class="yl">GitHub &rarr;</span>
-        </a>
-        <a class="card" href="https://github.com/TermiX-official/binance-mcp" target="_blank">
-          <h3>Binance MCP<span class="tc2">5</span></h3>
-          <p>Binance CEX. Portfolio, order books, market orders, TWAP.</p>
-          <span class="yl">GitHub &rarr;</span>
-        </a>
-      </div>
-    </div>
-  </div>
-
-  <!-- A2A -->
-  <div class="tc" id="tab-a2a">
-    <div class="sec">
-      <h2>A2A Agent Tester</h2>
-      <p class="sub">Send messages to AI agents on BNB Chain. Enter an A2A endpoint or pick from the list.</p>
-      <div class="tester">
-        <div class="th"><img src="https://raw.githubusercontent.com/mmxrealQQ/bob-assets/main/bob.jpg" alt="">A2A Communication</div>
-        <div style="padding:16px;border-bottom:1px solid var(--b)">
-          <label style="font-size:11px;color:var(--t2);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Agent A2A Endpoint</label>
-          <div class="ir">
-            <input type="text" id="a2a-ep" placeholder="https://agent-endpoint.com" value="/api/a2a" style="flex:1;background:var(--s2);border:1px solid var(--b);border-radius:6px;padding:8px 10px;color:var(--t);font-size:13px;font-family:monospace;outline:none">
-          </div>
-          <div style="margin-top:8px;display:flex;gap:4px;flex-wrap:wrap" id="agent-btns">
-            <button class="tag" style="cursor:pointer" onclick="pickAgent('/api/a2a','BOB Build On BNB')">BOB (self)</button>
-          </div>
-        </div>
-        <div style="padding:16px;border-bottom:1px solid var(--b)">
-          <label style="font-size:11px;color:var(--t2);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px">Message</label>
-          <div class="ir">
-            <input type="text" id="a2a-msg" placeholder="Hello! What can you do?" style="flex:1;background:var(--s2);border:1px solid var(--b);border-radius:6px;padding:8px 10px;color:var(--t);font-size:13px;outline:none">
-            <button class="btn" onclick="sendA2A()">Send</button>
-          </div>
-        </div>
-        <div class="tout" id="a2a-out" style="min-height:200px"><pre class="inf">Pick an agent and send a message.</pre></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ECOSYSTEM -->
-  <div class="tc" id="tab-eco">
-    <div class="sec">
-      <h2>BNB Chain AI Ecosystem</h2>
-      <p class="sub">Everything happening with AI agents on BNB Chain.</p>
-      <div class="grid">
-        <a class="card" href="https://www.bnbchain.org/en/dev-tools?chain=bsc" target="_blank"><h3>BNB Chain Dev Tools</h3><p>Official developer toolkit. SDKs, APIs, faucets, explorers.</p><span class="yl">Explore &rarr;</span></a>
-        <a class="card" href="https://www.bnbchain.org/en/solutions/ai-agent" target="_blank"><h3>BNB Chain AI Agents</h3><p>Official AI agent initiative on BSC.</p><span class="yl">Learn More &rarr;</span></a>
-        <a class="card" href="https://www.8004scan.io/" target="_blank"><h3>ERC-8004 / 8004scan</h3><p>Trustless Agents standard. On-chain identity and reputation.</p><span class="yl">Browse Agents &rarr;</span></a>
-        <a class="card" href="https://google.github.io/A2A/" target="_blank"><h3>A2A Protocol</h3><p>Agent-to-Agent communication (Google). JSON-RPC based.</p><span class="yl">A2A Spec &rarr;</span></a>
-        <a class="card" href="https://modelcontextprotocol.io/" target="_blank"><h3>MCP Protocol</h3><p>Model Context Protocol (Anthropic). AI tool integration standard.</p><span class="yl">MCP Spec &rarr;</span></a>
-        <a class="card" href="https://github.com/bnb-chain/bnbchain-mcp" target="_blank"><h3>BNB Chain MCP</h3><p>Official MCP server. 44+ tools for BSC, opBNB, Greenfield.</p><span class="yl">GitHub &rarr;</span></a>
-        <a class="card" href="https://github.com/TermiX-official/bsc-mcp" target="_blank"><h3>BSC MCP (TermiX)</h3><p>DeFi MCP. PancakeSwap, GoPlus, Four.Meme.</p><span class="yl">GitHub &rarr;</span></a>
-        <a class="card" href="https://github.com/heurist-network/heurist-mesh-mcp-server" target="_blank"><h3>Heurist Mesh MCP</h3><p>30+ crypto analytics agents behind one API.</p><span class="yl">GitHub &rarr;</span></a>
-        <a class="card" href="https://github.com/TermiX-official/binance-mcp" target="_blank"><h3>Binance MCP</h3><p>Binance CEX API. Portfolio, order books, TWAP.</p><span class="yl">GitHub &rarr;</span></a>
-        <a class="card" href="https://replit.com/" target="_blank"><h3>Replit</h3><p>Build and deploy AI agents. Quick prototyping.</p><span class="yl">Start Building &rarr;</span></a>
-      </div>
-    </div>
-  </div>
-
-  <!-- AGENT -->
-  <div class="tc" id="tab-agent">
-    <div class="sec">
-      <h2>The Agent</h2>
-      <p class="sub">One agent, all of BNB Chain AI.</p>
-      <div class="ai">
-        <div class="ah">
-          <img src="https://raw.githubusercontent.com/mmxrealQQ/bob-assets/main/bob.jpg" alt="BOB">
-          <div><div class="an">BOB Build On BNB</div><div class="ac">BNB Smart Chain &middot; ERC-8004 &middot; A2A + MCP</div></div>
-        </div>
-        <div class="ad">
-          <div class="det"><div class="dl">Token</div><div class="dv m">0x51363F073b1E4920fdA7AA9E9d84BA97EdE1560e</div></div>
-          <div class="det"><div class="dl">Wallet</div><div class="dv m">0x8b18575c29F842BdA93EEb1Db9F2198D5CC0Ba2f</div></div>
-          <div class="det"><div class="dl">Agent IDs</div><div class="dv">#36035 #36336 #37092 #37093 #37103 #40908</div></div>
-          <div class="det"><div class="dl">Protocols</div><div class="dv">A2A + MCP + ERC-8004</div></div>
-          <div class="det"><div class="dl">Status</div><div class="dv" style="color:var(--g)">Active</div></div>
-          <div class="det"><div class="dl">Chain</div><div class="dv">BNB Smart Chain (BSC)</div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="ft">
-    <img src="https://raw.githubusercontent.com/mmxrealQQ/bob-assets/main/bob.jpg" alt="BOB" style="width:24px;height:24px;border-radius:50%;margin-bottom:6px">
-    <p><strong>BOB Build On BNB</strong> &mdash; If you can't build, you won't be rich.</p>
-    <div class="fl">
-      <a href="https://www.8004scan.io/" target="_blank">8004scan</a>
-      <a href="https://www.bnbchain.org" target="_blank">BNB Chain</a>
-      <a href="/.well-known/agent.json">Agent Card</a>
-    </div>
-  </div>
+</div>
 
 <script>
-const TOOLS = [
-  // --- BNB Chain MCP (on-chain via BSC RPC) ---
-  {id:"latest-block",cat:"BNB Chain MCP",name:"Get Latest Block",label:"Latest BSC Block",ph:"No input needed",need:false},
-  {id:"block-by-num",cat:"BNB Chain MCP",name:"Get Block by Number",label:"Block Number",ph:"e.g. 87000000",need:true},
-  {id:"tx-lookup",cat:"BNB Chain MCP",name:"Get Transaction",label:"Transaction Hash",ph:"0x...",need:true},
-  {id:"tx-receipt",cat:"BNB Chain MCP",name:"Get Transaction Receipt",label:"Transaction Hash",ph:"0x...",need:true},
-  {id:"balance",cat:"BNB Chain MCP",name:"Get BNB Balance",label:"Wallet Address",ph:"0x...",need:true},
-  {id:"token-info",cat:"BNB Chain MCP",name:"Get ERC-20 Token Info",label:"Token Contract",ph:"0x...",need:true},
-  {id:"token-balance",cat:"BNB Chain MCP",name:"Get ERC-20 Balance",label:"Token,Wallet (comma-sep)",ph:"0xToken,0xWallet",need:true},
-  {id:"nft-balance",cat:"BNB Chain MCP",name:"Get NFT Balance (ERC-721)",label:"NFT Contract,Wallet",ph:"0xNFT,0xWallet",need:true},
-  {id:"is-contract",cat:"BNB Chain MCP",name:"Is Contract?",label:"Address",ph:"0x...",need:true},
-  {id:"gas-price",cat:"BNB Chain MCP",name:"Get Gas Price",label:"Current BSC Gas",ph:"No input needed",need:false},
-  {id:"chain-id",cat:"BNB Chain MCP",name:"Get Chain Info",label:"Chain ID",ph:"No input needed",need:false},
-  {id:"code",cat:"BNB Chain MCP",name:"Get Contract Code",label:"Contract Address",ph:"0x...",need:true},
-  {id:"nonce",cat:"BNB Chain MCP",name:"Get Nonce",label:"Wallet Address",ph:"0x...",need:true},
-  {id:"estimate-gas",cat:"BNB Chain MCP",name:"Estimate Gas",label:"To Address",ph:"0x...",need:true},
-  {id:"8004-agent",cat:"BNB Chain MCP",name:"Lookup ERC-8004 Agent",label:"Agent ID",ph:"e.g. 37093",need:true},
-  // --- Market Data (DexScreener, CoinGecko, GeckoTerminal) ---
-  {id:"bnb-price",cat:"Market Data",name:"BNB Price",label:"BNB/USD",ph:"No input needed",need:false},
-  {id:"trending-bsc",cat:"Market Data",name:"Trending BSC Tokens",label:"DexScreener Boosts",ph:"No input needed",need:false},
-  {id:"dex-search",cat:"Market Data",name:"DEX Token Search",label:"Token Address or Symbol",ph:"CAKE or 0x...",need:true},
-  {id:"dex-pair",cat:"Market Data",name:"DEX Pair Info",label:"Pair Address",ph:"0x...",need:true},
-  {id:"new-pairs",cat:"Market Data",name:"New BSC Pairs",label:"Latest Pairs",ph:"No input needed",need:false},
-  {id:"top-bsc",cat:"Market Data",name:"Top BSC Pools",label:"GeckoTerminal",ph:"No input needed",need:false},
-  {id:"ohlcv",cat:"Market Data",name:"OHLCV Chart Data",label:"Pool Address",ph:"0x... (BSC pool)",need:true},
-  // --- Security (GoPlus) ---
-  {id:"security",cat:"Security",name:"Token Security Check",label:"Token Contract",ph:"0x... (GoPlus scan)",need:true},
-  {id:"approval",cat:"Security",name:"Token Approval Check",label:"Token,Owner",ph:"0xToken,0xOwner",need:true},
-  {id:"nft-security",cat:"Security",name:"NFT Security Check",label:"NFT Contract",ph:"0x...",need:true},
-  {id:"malicious",cat:"Security",name:"Malicious Address Check",label:"Address",ph:"0x...",need:true},
-  {id:"phishing",cat:"Security",name:"Phishing Site Check",label:"URL",ph:"https://...",need:true},
-  // --- 8004scan Agents ---
-  {id:"agent-info",cat:"8004scan",name:"Agent Details",label:"Agent ID",ph:"e.g. 37093",need:true},
-  {id:"agent-search",cat:"8004scan",name:"Search Agents",label:"Search Query",ph:"e.g. trading, DeFi",need:true},
-  {id:"agent-list",cat:"8004scan",name:"List Recent Agents",label:"Recent Registrations",ph:"No input needed",need:false},
+const T=[
+// ── BNB CHAIN MCP (47) ──
+{id:"latest-block",tab:"bnb",cat:"Blocks",name:"Get Latest Block",desc:"Get the most recent block on BSC",src:"bnbchain-mcp",mode:"live",params:[]},
+{id:"block-by-num",tab:"bnb",cat:"Blocks",name:"Get Block by Number",desc:"Get a specific block by its number",src:"bnbchain-mcp",mode:"live",params:[{k:"num",l:"Block Number",ph:"e.g. 87000000"}]},
+{id:"block-by-hash",tab:"bnb",cat:"Blocks",name:"Get Block by Hash",desc:"Get a specific block by its hash",src:"bnbchain-mcp",mode:"live",params:[{k:"hash",l:"Block Hash",ph:"0x..."}]},
+{id:"get-tx",tab:"bnb",cat:"Transactions",name:"Get Transaction",desc:"Get transaction details by hash",src:"bnbchain-mcp",mode:"live",params:[{k:"hash",l:"TX Hash",ph:"0x..."}]},
+{id:"tx-receipt",tab:"bnb",cat:"Transactions",name:"Get TX Receipt",desc:"Get transaction receipt with logs and status",src:"bnbchain-mcp",mode:"live",params:[{k:"hash",l:"TX Hash",ph:"0x..."}]},
+{id:"estimate-gas",tab:"bnb",cat:"Transactions",name:"Estimate Gas",desc:"Estimate gas for a transaction",src:"bnbchain-mcp",mode:"live",params:[{k:"to",l:"To Address",ph:"0x..."}]},
+{id:"erc20-info",tab:"bnb",cat:"Tokens",name:"Get Token Info",desc:"Get ERC-20 token name, symbol, decimals, total supply",src:"bnbchain-mcp",mode:"live",params:[{k:"addr",l:"Token Contract",ph:"0x..."}]},
+{id:"erc20-balance",tab:"bnb",cat:"Tokens",name:"Get Token Balance",desc:"Get ERC-20 token balance for a wallet",src:"bnbchain-mcp",mode:"live",params:[{k:"token",l:"Token Contract",ph:"0x..."},{k:"wallet",l:"Wallet Address",ph:"0x..."}]},
+{id:"native-balance",tab:"bnb",cat:"Tokens",name:"Get BNB Balance",desc:"Get native BNB balance of any address",src:"bnbchain-mcp",mode:"live",params:[{k:"addr",l:"Address",ph:"0x..."}]},
+{id:"create-erc20",tab:"bnb",cat:"Tokens",name:"Create ERC-20 Token",desc:"Deploy a new ERC-20 token contract on BSC",src:"bnbchain-mcp",mode:"sim",params:[{k:"name",l:"Token Name",ph:"My Token"},{k:"sym",l:"Symbol",ph:"MTK"},{k:"supply",l:"Total Supply",ph:"1000000"}],sim:{cost:"~0.01 BNB ($6.75)",needs:"Private Key + BNB for gas",does:"Deploy a new ERC-20 contract with name, symbol, and initial supply"}},
+{id:"transfer-native",tab:"bnb",cat:"Tokens",name:"Transfer BNB",desc:"Send BNB to another wallet",src:"bnbchain-mcp",mode:"sim",params:[{k:"to",l:"Recipient",ph:"0x..."},{k:"amt",l:"Amount (BNB)",ph:"0.1"}],sim:{cost:"~0.0001 BNB ($0.07)",needs:"Private Key + BNB",does:"Transfer native BNB from your wallet to the recipient"}},
+{id:"transfer-erc20",tab:"bnb",cat:"Tokens",name:"Transfer ERC-20",desc:"Send ERC-20 tokens to another wallet",src:"bnbchain-mcp",mode:"sim",params:[{k:"token",l:"Token",ph:"0x..."},{k:"to",l:"Recipient",ph:"0x..."},{k:"amt",l:"Amount",ph:"100"}],sim:{cost:"~0.0003 BNB ($0.20)",needs:"Private Key + BNB for gas + Token balance",does:"Transfer ERC-20 tokens from your wallet"}},
+{id:"approve-spending",tab:"bnb",cat:"Tokens",name:"Approve Spending",desc:"Approve a spender to use your tokens (for DEX)",src:"bnbchain-mcp",mode:"sim",params:[{k:"token",l:"Token",ph:"0x..."},{k:"spender",l:"Spender",ph:"0x..."},{k:"amt",l:"Amount",ph:"1000"}],sim:{cost:"~0.0002 BNB ($0.13)",needs:"Private Key + BNB for gas",does:"Set approval for a contract to spend your tokens"}},
+{id:"nft-info",tab:"bnb",cat:"NFTs",name:"Get NFT Info",desc:"Get ERC-721 NFT metadata",src:"bnbchain-mcp",mode:"live",params:[{k:"addr",l:"NFT Contract",ph:"0x..."},{k:"id",l:"Token ID",ph:"1"}]},
+{id:"nft-balance",tab:"bnb",cat:"NFTs",name:"Get NFT Balance",desc:"Check how many NFTs a wallet owns",src:"bnbchain-mcp",mode:"live",params:[{k:"addr",l:"NFT Contract",ph:"0x..."},{k:"wallet",l:"Wallet",ph:"0x..."}]},
+{id:"erc1155-meta",tab:"bnb",cat:"NFTs",name:"ERC-1155 Metadata",desc:"Get ERC-1155 token URI",src:"bnbchain-mcp",mode:"live",params:[{k:"addr",l:"Contract",ph:"0x..."},{k:"id",l:"Token ID",ph:"1"}]},
+{id:"erc1155-bal",tab:"bnb",cat:"NFTs",name:"ERC-1155 Balance",desc:"Get ERC-1155 balance for a wallet",src:"bnbchain-mcp",mode:"live",params:[{k:"addr",l:"Contract",ph:"0x..."},{k:"id",l:"Token ID",ph:"1"},{k:"wallet",l:"Wallet",ph:"0x..."}]},
+{id:"transfer-nft",tab:"bnb",cat:"NFTs",name:"Transfer NFT",desc:"Transfer an ERC-721 NFT",src:"bnbchain-mcp",mode:"sim",params:[{k:"addr",l:"NFT Contract",ph:"0x..."},{k:"id",l:"Token ID",ph:"1"},{k:"to",l:"Recipient",ph:"0x..."}],sim:{cost:"~0.0005 BNB ($0.34)",needs:"Private Key + NFT ownership",does:"Transfer an ERC-721 token to a new owner"}},
+{id:"transfer-1155",tab:"bnb",cat:"NFTs",name:"Transfer ERC-1155",desc:"Transfer ERC-1155 tokens",src:"bnbchain-mcp",mode:"sim",params:[{k:"addr",l:"Contract",ph:"0x..."},{k:"id",l:"Token ID",ph:"1"},{k:"amt",l:"Amount",ph:"1"},{k:"to",l:"Recipient",ph:"0x..."}],sim:{cost:"~0.0005 BNB ($0.34)",needs:"Private Key + Token balance",does:"Transfer ERC-1155 tokens to a new owner"}},
+{id:"is-contract",tab:"bnb",cat:"Contracts",name:"Is Contract?",desc:"Check if an address is a smart contract or EOA",src:"bnbchain-mcp",mode:"live",params:[{k:"addr",l:"Address",ph:"0x..."}]},
+{id:"get-code",tab:"bnb",cat:"Contracts",name:"Get Contract Code",desc:"Get the deployed bytecode",src:"bnbchain-mcp",mode:"live",params:[{k:"addr",l:"Contract",ph:"0x..."}]},
+{id:"read-contract",tab:"bnb",cat:"Contracts",name:"Read Contract",desc:"Call a view function (name, symbol, decimals, totalSupply, owner)",src:"bnbchain-mcp",mode:"live",params:[{k:"addr",l:"Contract",ph:"0x..."},{k:"fn",l:"Function",ph:"name(), symbol(), decimals(), totalSupply(), owner()"}]},
+{id:"write-contract",tab:"bnb",cat:"Contracts",name:"Write Contract",desc:"Call a state-changing function",src:"bnbchain-mcp",mode:"sim",params:[{k:"addr",l:"Contract",ph:"0x..."},{k:"fn",l:"Function",ph:"transfer(address,uint256)"},{k:"args",l:"Arguments",ph:"0x...,100"}],sim:{cost:"Varies",needs:"Private Key + BNB for gas",does:"Execute a state-changing contract call"}},
+{id:"gas-price",tab:"bnb",cat:"Network",name:"Gas Price",desc:"Get current BSC gas price in Gwei",src:"bnbchain-mcp",mode:"live",params:[]},
+{id:"chain-info",tab:"bnb",cat:"Network",name:"Chain Info",desc:"Get BSC chain ID and network info",src:"bnbchain-mcp",mode:"live",params:[]},
+{id:"nonce",tab:"bnb",cat:"Network",name:"Get Nonce",desc:"Get transaction count for an address",src:"bnbchain-mcp",mode:"live",params:[{k:"addr",l:"Address",ph:"0x..."}]},
+{id:"8004-agent",tab:"bnb",cat:"ERC-8004",name:"Get Agent Info",desc:"Lookup an ERC-8004 agent by ID",src:"bnbchain-mcp",mode:"live",params:[{k:"id",l:"Agent ID",ph:"e.g. 36035"}]},
+{id:"8004-wallet",tab:"bnb",cat:"ERC-8004",name:"Get Agent Wallet",desc:"Get the wallet of an ERC-8004 agent",src:"bnbchain-mcp",mode:"live",params:[{k:"id",l:"Agent ID",ph:"e.g. 36035"}]},
+{id:"register-agent",tab:"bnb",cat:"ERC-8004",name:"Register Agent",desc:"Register a new AI agent on-chain",src:"bnbchain-mcp",mode:"sim",params:[{k:"uri",l:"Metadata URI",ph:"ipfs://..."}],sim:{cost:"~0.002 BNB ($1.35)",needs:"Private Key + BNB + IPFS metadata",does:"Mint a new ERC-8004 agent NFT"}},
+{id:"set-agent-uri",tab:"bnb",cat:"ERC-8004",name:"Update Agent URI",desc:"Update metadata URI of your agent",src:"bnbchain-mcp",mode:"sim",params:[{k:"id",l:"Agent ID",ph:"36035"},{k:"uri",l:"New URI",ph:"ipfs://..."}],sim:{cost:"~0.0003 BNB ($0.20)",needs:"Private Key + Agent ownership",does:"Update on-chain metadata URI"}},
+{id:"gnfd-balance",tab:"bnb",cat:"Greenfield",name:"Account Balance",desc:"Get Greenfield account balance",src:"bnbchain-mcp",mode:"sim",params:[{k:"addr",l:"Address",ph:"0x..."}],sim:{cost:"Free",needs:"Greenfield RPC",does:"Query BNB balance on Greenfield chain"}},
+{id:"gnfd-sps",tab:"bnb",cat:"Greenfield",name:"Storage Providers",desc:"List all Greenfield storage providers",src:"bnbchain-mcp",mode:"sim",params:[],sim:{cost:"Free",needs:"Greenfield RPC",does:"List storage providers with endpoints and pricing"}},
+{id:"gnfd-buckets",tab:"bnb",cat:"Greenfield",name:"List Buckets",desc:"List storage buckets for an address",src:"bnbchain-mcp",mode:"sim",params:[{k:"addr",l:"Owner",ph:"0x..."}],sim:{cost:"Free",needs:"Greenfield RPC",does:"List all storage buckets with names and visibility"}},
+{id:"gnfd-objects",tab:"bnb",cat:"Greenfield",name:"List Objects",desc:"List files in a bucket",src:"bnbchain-mcp",mode:"sim",params:[{k:"bucket",l:"Bucket",ph:"my-bucket"}],sim:{cost:"Free",needs:"Greenfield RPC",does:"List all objects/files in a storage bucket"}},
+{id:"gnfd-create-bucket",tab:"bnb",cat:"Greenfield",name:"Create Bucket",desc:"Create a storage bucket",src:"bnbchain-mcp",mode:"sim",params:[{k:"name",l:"Name",ph:"my-bucket"}],sim:{cost:"~0.01 BNB",needs:"Private Key + BNB on Greenfield",does:"Create a decentralized storage bucket"}},
+{id:"gnfd-upload",tab:"bnb",cat:"Greenfield",name:"Upload File",desc:"Upload a file to Greenfield",src:"bnbchain-mcp",mode:"sim",params:[{k:"bucket",l:"Bucket",ph:"my-bucket"},{k:"file",l:"File",ph:"/path/to/file"}],sim:{cost:"Storage fee based on size",needs:"Private Key + Bucket ownership",does:"Upload and store a file on Greenfield"}},
+{id:"gnfd-download",tab:"bnb",cat:"Greenfield",name:"Download Object",desc:"Download a file from Greenfield",src:"bnbchain-mcp",mode:"sim",params:[{k:"bucket",l:"Bucket",ph:"my-bucket"},{k:"obj",l:"Object",ph:"file.txt"}],sim:{cost:"Bandwidth fee",needs:"Read permission",does:"Download a stored object"}},
+{id:"gnfd-delete",tab:"bnb",cat:"Greenfield",name:"Delete Object",desc:"Delete a file from Greenfield",src:"bnbchain-mcp",mode:"sim",params:[{k:"bucket",l:"Bucket",ph:"my-bucket"},{k:"obj",l:"Object",ph:"file.txt"}],sim:{cost:"~0.0005 BNB",needs:"Private Key + Ownership",does:"Permanently delete an object"}},
+{id:"gnfd-payment",tab:"bnb",cat:"Greenfield",name:"Payment Info",desc:"Get payment account details",src:"bnbchain-mcp",mode:"sim",params:[{k:"addr",l:"Payment Address",ph:"0x..."}],sim:{cost:"Free",needs:"Greenfield RPC",does:"Query payment streams and balance"}},
+
+// ── BINANCE (22) ──
+{id:"bn-ping",tab:"binance",cat:"General",name:"Ping",desc:"Test Binance API connectivity",src:"binance-mcp",mode:"live",params:[]},
+{id:"bn-time",tab:"binance",cat:"General",name:"Server Time",desc:"Get Binance server time",src:"binance-mcp",mode:"live",params:[]},
+{id:"bn-info",tab:"binance",cat:"General",name:"Exchange Info",desc:"Get exchange rules and symbols",src:"binance-mcp",mode:"live",params:[{k:"sym",l:"Symbol (opt)",ph:"BNBUSDT"}]},
+{id:"bn-price",tab:"binance",cat:"Tickers",name:"Price Ticker",desc:"Get current price",src:"binance-mcp",mode:"live",params:[{k:"sym",l:"Symbol",ph:"BNBUSDT"}]},
+{id:"bn-24h",tab:"binance",cat:"Tickers",name:"24h Ticker",desc:"24-hour price change stats",src:"binance-mcp",mode:"live",params:[{k:"sym",l:"Symbol",ph:"BTCUSDT"}]},
+{id:"bn-book-ticker",tab:"binance",cat:"Tickers",name:"Book Ticker",desc:"Best bid and ask price",src:"binance-mcp",mode:"live",params:[{k:"sym",l:"Symbol",ph:"BNBUSDT"}]},
+{id:"bn-avg",tab:"binance",cat:"Tickers",name:"Average Price",desc:"Current average price (5 min)",src:"binance-mcp",mode:"live",params:[{k:"sym",l:"Symbol",ph:"BNBUSDT"}]},
+{id:"bn-day",tab:"binance",cat:"Tickers",name:"Trading Day",desc:"Current trading day stats",src:"binance-mcp",mode:"live",params:[{k:"sym",l:"Symbol",ph:"ETHUSDT"}]},
+{id:"bn-depth",tab:"binance",cat:"Order Book",name:"Order Book",desc:"Bids and asks depth",src:"binance-mcp",mode:"live",params:[{k:"sym",l:"Symbol",ph:"BNBUSDT"},{k:"lim",l:"Limit",ph:"5"}]},
+{id:"bn-trades",tab:"binance",cat:"Trades",name:"Recent Trades",desc:"Most recent trades",src:"binance-mcp",mode:"live",params:[{k:"sym",l:"Symbol",ph:"BNBUSDT"},{k:"lim",l:"Limit",ph:"5"}]},
+{id:"bn-agg",tab:"binance",cat:"Trades",name:"Aggregated Trades",desc:"Compressed trade data",src:"binance-mcp",mode:"live",params:[{k:"sym",l:"Symbol",ph:"BTCUSDT"},{k:"lim",l:"Limit",ph:"5"}]},
+{id:"bn-klines",tab:"binance",cat:"Charts",name:"Candlesticks",desc:"OHLCV candlestick data",src:"binance-mcp",mode:"live",params:[{k:"sym",l:"Symbol",ph:"BNBUSDT"},{k:"int",l:"Interval",ph:"1h"},{k:"lim",l:"Limit",ph:"5"}]},
+{id:"bn-uiklines",tab:"binance",cat:"Charts",name:"UI Klines",desc:"UI-optimized candles",src:"binance-mcp",mode:"live",params:[{k:"sym",l:"Symbol",ph:"BNBUSDT"},{k:"int",l:"Interval",ph:"1h"},{k:"lim",l:"Limit",ph:"5"}]},
+{id:"bn-funding",tab:"binance",cat:"Futures",name:"All Funding Rates",desc:"Funding rates for all perpetuals",src:"binance-mcp",mode:"live",params:[]},
+{id:"bn-funding-sym",tab:"binance",cat:"Futures",name:"Funding + OI",desc:"Funding rate and open interest",src:"binance-mcp",mode:"live",params:[{k:"sym",l:"Symbol",ph:"BTCUSDT"}]},
+{id:"bn-order",tab:"binance",cat:"Trading",name:"Place Order",desc:"Place a spot order",src:"binance-mcp",mode:"sim",params:[{k:"sym",l:"Symbol",ph:"BNBUSDT"},{k:"side",l:"Side",ph:"BUY"},{k:"qty",l:"Quantity",ph:"0.1"}],sim:{cost:"0.1% fee",needs:"Binance API Key",does:"Place a spot order on Binance"}},
+{id:"bn-cancel",tab:"binance",cat:"Trading",name:"Cancel Order",desc:"Cancel an open order",src:"binance-mcp",mode:"sim",params:[{k:"sym",l:"Symbol",ph:"BNBUSDT"},{k:"oid",l:"Order ID",ph:"12345"}],sim:{cost:"Free",needs:"Binance API Key",does:"Cancel a pending order"}},
+{id:"bn-open",tab:"binance",cat:"Trading",name:"Open Orders",desc:"List open orders",src:"binance-mcp",mode:"sim",params:[],sim:{cost:"Free",needs:"Binance API Key",does:"List all pending orders"}},
+{id:"bn-account",tab:"binance",cat:"Account",name:"Account Info",desc:"Get balances and permissions",src:"binance-mcp",mode:"sim",params:[],sim:{cost:"Free",needs:"Binance API Key",does:"View all balances and account status"}},
+{id:"bn-my-trades",tab:"binance",cat:"Account",name:"My Trades",desc:"Trading history",src:"binance-mcp",mode:"sim",params:[{k:"sym",l:"Symbol",ph:"BNBUSDT"}],sim:{cost:"Free",needs:"Binance API Key",does:"List executed trades with fees"}},
+{id:"bn-twap",tab:"binance",cat:"Account",name:"TWAP Order",desc:"Time-weighted average price order",src:"binance-mcp",mode:"sim",params:[{k:"sym",l:"Symbol",ph:"BTCUSDT"},{k:"side",l:"Side",ph:"BUY"},{k:"qty",l:"Qty",ph:"0.01"},{k:"dur",l:"Duration (s)",ph:"3600"}],sim:{cost:"0.1% spread over time",needs:"Binance API Key",does:"Split large order over time to reduce impact"}},
+
+// ── DEX & MARKET (12) ──
+{id:"bnb-price",tab:"dex",cat:"Prices",name:"BNB Price",desc:"Current BNB/USD from CoinGecko",src:"heurist-mesh",mode:"live",params:[]},
+{id:"token-search",tab:"dex",cat:"Prices",name:"Token Search",desc:"Search by name or address",src:"heurist-mesh",mode:"live",params:[{k:"q",l:"Name or Address",ph:"CAKE or 0x..."}]},
+{id:"token-profile",tab:"dex",cat:"Prices",name:"Token Profile",desc:"Detailed token data with price and volume",src:"heurist-mesh",mode:"live",params:[{k:"addr",l:"Token Address",ph:"0x..."}]},
+{id:"trending",tab:"dex",cat:"Discovery",name:"Trending Tokens",desc:"Currently trending on DEXes",src:"heurist-mesh",mode:"live",params:[]},
+{id:"dex-search",tab:"dex",cat:"Discovery",name:"DEX Search",desc:"Search tokens on DexScreener",src:"heurist-mesh",mode:"live",params:[{k:"q",l:"Query",ph:"CAKE, pepe, meme"}]},
+{id:"dex-pair",tab:"dex",cat:"Pools",name:"DEX Pair Info",desc:"Detailed pair/pool data",src:"heurist-mesh",mode:"live",params:[{k:"addr",l:"Pair Address",ph:"0x..."}]},
+{id:"new-pairs",tab:"dex",cat:"Pools",name:"New BSC Pairs",desc:"Latest token pairs on BSC",src:"heurist-mesh",mode:"live",params:[]},
+{id:"top-pools",tab:"dex",cat:"Pools",name:"Top BSC Pools",desc:"Highest volume pools",src:"heurist-mesh",mode:"live",params:[]},
+{id:"ohlcv",tab:"dex",cat:"Pools",name:"OHLCV Data",desc:"Candlestick data for a pool",src:"heurist-mesh",mode:"live",params:[{k:"addr",l:"Pool Address",ph:"0x..."}]},
+{id:"heur-arb",tab:"dex",cat:"Intelligence",name:"Spot-Futures Arb",desc:"Find arbitrage opportunities",src:"heurist-mesh",mode:"live",params:[]},
+{id:"heur-twitter",tab:"dex",cat:"Intelligence",name:"Twitter Search",desc:"Search crypto Twitter",src:"heurist-mesh",mode:"sim",params:[{k:"q",l:"Query",ph:"BNB Chain AI"}],sim:{cost:"Free",needs:"Heurist API Key",does:"AI-powered crypto Twitter search"}},
+{id:"heur-wallet",tab:"dex",cat:"Intelligence",name:"Wallet Analysis",desc:"Analyze any wallet's holdings",src:"heurist-mesh",mode:"sim",params:[{k:"addr",l:"Wallet",ph:"0x..."}],sim:{cost:"Free",needs:"Zerion API Key",does:"Complete portfolio breakdown"}},
+
+// ── SECURITY (5) ──
+{id:"sec-token",tab:"security",cat:"Token",name:"Token Security",desc:"Full security scan: honeypot, tax, ownership",src:"bsc-mcp",mode:"live",params:[{k:"addr",l:"Token Contract",ph:"0x..."}]},
+{id:"sec-approval",tab:"security",cat:"Token",name:"Approval Check",desc:"Check token approval risks",src:"bsc-mcp",mode:"live",params:[{k:"token",l:"Token",ph:"0x..."},{k:"owner",l:"Wallet",ph:"0x..."}]},
+{id:"sec-nft",tab:"security",cat:"NFT",name:"NFT Security",desc:"Security scan for NFT contracts",src:"bsc-mcp",mode:"live",params:[{k:"addr",l:"NFT Contract",ph:"0x..."}]},
+{id:"sec-addr",tab:"security",cat:"Address",name:"Malicious Address",desc:"Check if address is flagged",src:"bsc-mcp",mode:"live",params:[{k:"addr",l:"Address",ph:"0x..."}]},
+{id:"sec-phish",tab:"security",cat:"Address",name:"Phishing Check",desc:"Check if URL is phishing",src:"bsc-mcp",mode:"live",params:[{k:"url",l:"URL",ph:"https://..."}]},
+
+// ── DeFi (8) ──
+{id:"pancake-swap",tab:"defi",cat:"PancakeSwap",name:"Swap Tokens",desc:"Swap on PancakeSwap V3",src:"bsc-mcp",mode:"sim",params:[{k:"in",l:"Input",ph:"BNB"},{k:"out",l:"Output",ph:"USDT"},{k:"amt",l:"Amount",ph:"0.1"}],sim:{cost:"~0.25% fee + gas",needs:"Private Key + Balance",does:"Execute token swap on PancakeSwap"}},
+{id:"pancake-liq",tab:"defi",cat:"PancakeSwap",name:"Add Liquidity",desc:"Add liquidity to a pool",src:"bsc-mcp",mode:"sim",params:[{k:"t0",l:"Token A",ph:"BNB"},{k:"t1",l:"Token B",ph:"USDT"},{k:"a0",l:"Amount A",ph:"1"},{k:"a1",l:"Amount B",ph:"600"}],sim:{cost:"~0.002 BNB gas",needs:"Private Key + Both tokens",does:"Provide liquidity to earn fees"}},
+{id:"pancake-pos",tab:"defi",cat:"PancakeSwap",name:"My Positions",desc:"View liquidity positions",src:"bsc-mcp",mode:"sim",params:[],sim:{cost:"Free",needs:"Wallet address",does:"List active positions with value and fees"}},
+{id:"pancake-remove",tab:"defi",cat:"PancakeSwap",name:"Remove Liquidity",desc:"Withdraw from pool",src:"bsc-mcp",mode:"sim",params:[{k:"id",l:"Position ID",ph:"12345"}],sim:{cost:"~0.002 BNB gas",needs:"Private Key + Position",does:"Withdraw tokens from pool"}},
+{id:"four-create",tab:"defi",cat:"Four.Meme",name:"Create Meme Token",desc:"Launch on Four.Meme",src:"bsc-mcp",mode:"sim",params:[{k:"name",l:"Name",ph:"Super Doge"},{k:"sym",l:"Symbol",ph:"SDOGE"}],sim:{cost:"~0.01 BNB",needs:"Private Key + BNB",does:"Deploy meme token with bonding curve"}},
+{id:"four-buy",tab:"defi",cat:"Four.Meme",name:"Buy Meme Token",desc:"Buy on Four.Meme",src:"bsc-mcp",mode:"sim",params:[{k:"addr",l:"Token",ph:"0x..."},{k:"amt",l:"BNB",ph:"0.1"}],sim:{cost:"~1% fee + gas",needs:"Private Key + BNB",does:"Buy via bonding curve"}},
+{id:"four-sell",tab:"defi",cat:"Four.Meme",name:"Sell Meme Token",desc:"Sell on Four.Meme",src:"bsc-mcp",mode:"sim",params:[{k:"addr",l:"Token",ph:"0x..."},{k:"amt",l:"Amount",ph:"10000"}],sim:{cost:"~1% fee + gas",needs:"Private Key + Tokens",does:"Sell back to bonding curve"}},
+{id:"bep20-create",tab:"defi",cat:"Token Factory",name:"Create BEP-20",desc:"Deploy custom token",src:"bsc-mcp",mode:"sim",params:[{k:"name",l:"Name",ph:"My Token"},{k:"sym",l:"Symbol",ph:"MTK"},{k:"dec",l:"Decimals",ph:"18"},{k:"supply",l:"Supply",ph:"1000000"}],sim:{cost:"~0.01 BNB gas",needs:"Private Key + BNB",does:"Deploy BEP-20 contract"}},
+
+// ── 8004scan (3) ──
+{id:"agent-detail",tab:"agents",cat:"Discovery",name:"Agent Details",desc:"Full agent info from 8004scan",src:"bnbchain-mcp",mode:"live",params:[{k:"id",l:"Token ID",ph:"36035"}]},
+{id:"agent-search",tab:"agents",cat:"Discovery",name:"Search Agents",desc:"Search by keyword",src:"bnbchain-mcp",mode:"live",params:[{k:"q",l:"Query",ph:"trading, DeFi"}]},
+{id:"agent-list",tab:"agents",cat:"Discovery",name:"Top Agents",desc:"Top-rated BSC agents",src:"bnbchain-mcp",mode:"live",params:[]},
 ];
 
-let cur = TOOLS[0].id;
+const TABS=[
+{id:"bnb",label:"BNB Chain"},
+{id:"binance",label:"Binance"},
+{id:"dex",label:"DEX & Market"},
+{id:"security",label:"Security"},
+{id:"defi",label:"DeFi"},
+{id:"agents",label:"8004scan"},
+{id:"a2a",label:"A2A Chat"},
+];
 
-// Build sidebar
-function buildSidebar() {
-  const sb = document.getElementById("sidebar");
-  let lastCat = "";
-  let html = "";
-  TOOLS.forEach((t,i) => {
-    if (t.cat !== lastCat) { html += `<div class="tg">${t.cat}</div>`; lastCat = t.cat; }
-    html += `<button class="ti${i===0?" active":""}" onclick="sel('${t.id}',this)">${t.name}</button>`;
+let curTab="bnb",curTool=null;
+
+function renderTabs(){
+  document.getElementById("tabs").innerHTML=TABS.map(t=>{
+    const c=t.id==="a2a"?"":T.filter(x=>x.tab===t.id).length;
+    return `<button class="tab${curTab===t.id?" on":""}" onclick="switchTab('${t.id}')">${t.label}${c?`<span class="cnt">${c}</span>`:""}</button>`;
+  }).join("");
+}
+
+function renderSidebar(){
+  if(curTab==="a2a"){renderA2ASide();return}
+  const q=document.getElementById("q").value.toLowerCase();
+  const tools=T.filter(t=>t.tab===curTab&&(!q||t.name.toLowerCase().includes(q)||t.desc.toLowerCase().includes(q)));
+  let h="",lc="";
+  tools.forEach(t=>{if(t.cat!==lc){h+=`<div class="cat">${t.cat}</div>`;lc=t.cat}
+    h+=`<button class="item${curTool===t.id?" on":""}" onclick="sel('${t.id}')"><span class="dot ${t.mode}"></span>${t.name}</button>`;
   });
-  sb.innerHTML = html;
+  document.getElementById("side").innerHTML=h||'<div style="padding:16px;font-size:11px;color:var(--t3)">No matches.</div>';
 }
 
-function sw(tab) {
-  document.querySelectorAll(".tc").forEach(t=>t.classList.remove("active"));
-  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
-  document.getElementById("tab-"+tab).classList.add("active");
-  document.querySelectorAll(".tab").forEach(t=>{
-    const m={"test":"On-Chain","a2a":"A2A","eco":"Ecosystem","agent":"Agent"};
-    if(t.textContent.includes(m[tab]||"xxx"))t.classList.add("active");
-  });
+function renderPanel(){
+  const t=T.find(x=>x.id===curTool);if(!t)return;
+  document.getElementById("pname").innerHTML=t.name+(t.mode==="live"?'<span class="live-badge">LIVE</span>':'<span class="sim-badge">SIMULATION</span>');
+  document.getElementById("pdesc").textContent=t.desc;
+  const repo=t.src==="bnbchain-mcp"?"bnb-chain/bnbchain-mcp":t.src==="binance-mcp"?"TermiX-official/binance-mcp":t.src==="bsc-mcp"?"TermiX-official/bsc-mcp":"heurist-network/heurist-mesh-mcp-server";
+  document.getElementById("psrc").innerHTML=`Source: <a href="https://github.com/${repo}" target="_blank">${t.src}</a>`;
+  const pf=document.getElementById("pform");
+  let h=t.params.map(p=>`<div class="prow"><label>${p.l}</label><input type="text" id="p-${p.k}" placeholder="${p.ph}" onkeydown="if(event.key==='Enter')exec()"></div>`).join("");
+  h+=`<button class="run" onclick="exec()">${t.mode==="live"?"Run":"Simulate"}</button>`;
+  pf.innerHTML=h;pf.style.display="flex";
+  document.getElementById("out").innerHTML=`<pre class="inf">Ready. Click ${t.mode==="live"?"Run":"Simulate"}.</pre>`;
 }
 
-function sel(id, el) {
-  cur = id;
-  document.querySelectorAll(".ti").forEach(t=>t.classList.remove("active"));
-  if(el)el.classList.add("active");
-  const t = TOOLS.find(t=>t.id===id);
-  document.getElementById("lbl").textContent = t.label;
-  const inp = document.getElementById("par");
-  inp.placeholder = t.ph;
-  inp.value = "";
-  inp.disabled = !t.need;
-  document.getElementById("out").innerHTML = '<pre class="inf">Click Run to test.</pre>';
+function switchTab(id){curTab=id;curTool=null;renderTabs();renderSidebar();
+  if(id==="a2a"){renderA2APanel();return}
+  document.getElementById("pname").textContent="Select a tool";
+  document.getElementById("pdesc").textContent="Pick a tool from the "+TABS.find(t=>t.id===id).label+" category.";
+  document.getElementById("psrc").innerHTML="";
+  document.getElementById("pform").style.display="none";
+  document.getElementById("out").innerHTML='<pre class="inf">Pick a tool from the sidebar.</pre>';
+}
+function sel(id){curTool=id;renderSidebar();renderPanel()}
+function filter(){renderSidebar()}
+function gv(k){const el=document.getElementById("p-"+k);return el?el.value.trim():""}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
+
+// API
+async function rpc(m,p=[]){const r=await fetch("/api/rpc",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({method:m,params:p})});return r.json()}
+async function proxy(url){const r=await fetch("/api/proxy",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({url})});return r.json()}
+async function binance(path){return proxy("https://api.binance.com"+path)}
+async function fbin(path){return proxy("https://fapi.binance.com"+path)}
+
+function out(h){document.getElementById("out").innerHTML=h}
+function pre(t,c="ok"){out(`<pre class="${c}">${esc(typeof t==="object"?JSON.stringify(t,null,2):String(t))}</pre>`)}
+function hexN(h){return parseInt(h,16)}
+function wei(w){return(parseInt(w,16)/1e18).toFixed(6)}
+function gwei(h){return(parseInt(h,16)/1e9).toFixed(2)}
+function decStr(h){try{const hex=h.slice(130);const len=parseInt(hex.slice(0,64),16);let s="";for(let i=0;i<len;i++)s+=String.fromCharCode(parseInt(hex.slice(64+i*2,66+i*2),16));return s}catch{return"?"}}
+
+function simOut(t){
+  const s=t.sim;
+  out(`<pre class="sim">SIMULATION MODE\n${"─".repeat(40)}\n\nTool: ${esc(t.name)}\nSource: ${esc(t.src)}\n\nWhat it does:\n  ${esc(s.does)}\n\nEstimated cost:\n  ${esc(s.cost)}\n\nRequirements:\n  ${esc(s.needs)}\n${t.params.length?"\nYour inputs:\n"+t.params.map(p=>"  "+p.l+": "+(gv(p.k)||"(empty)")).join("\n")+"\n":""}\n${"─".repeat(40)}\nTo use this for real, run the ${esc(t.src)}\nMCP server locally with your own keys.\nGitHub: github.com/${t.src==="bnbchain-mcp"?"bnb-chain/bnbchain-mcp":t.src==="binance-mcp"?"TermiX-official/binance-mcp":t.src==="bsc-mcp"?"TermiX-official/bsc-mcp":"heurist-network/heurist-mesh-mcp-server"}</pre>`);
 }
 
-async function rpc(method, params=[]) {
-  const r = await fetch("/api/rpc", {
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({method,params})
-  });
-  return r.json();
-}
-
-async function proxy(url) {
-  const r = await fetch("/api/proxy", {
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({url})
-  });
-  return r.json();
-}
-
-function o(t,c=""){document.getElementById("out").innerHTML=`<pre class="${c}">${t}</pre>`}
-function J(x){return JSON.stringify(x,null,2)}
-function hex(h){return parseInt(h,16)}
-
-function decStr(h){
-  if(!h||h==="0x")return"?";
-  const d=h.slice(2);
-  const off=parseInt(d.slice(0,64),16)*2;
-  const len=parseInt(d.slice(off,off+64),16);
-  const s=d.slice(off+64,off+64+len*2);
-  let r="";
-  for(let i=0;i<s.length;i+=2){const c=parseInt(s.slice(i,i+2),16);if(c>0)r+=String.fromCharCode(c)}
-  return r;
-}
-
-async function run() {
-  const p = document.getElementById("par").value.trim();
-  const btn = document.getElementById("rbtn");
-  btn.disabled=true; btn.textContent="...";
-  o("Loading...","inf");
-  try { await exec(cur, p); } catch(e) { o("Error: "+e.message,"err"); }
-  btn.disabled=false; btn.textContent="Run";
-}
-
-async function exec(id, p) {
-  switch(id) {
-    case "latest-block": {
-      const r=await rpc("eth_blockNumber");
-      const bn=hex(r.result);
-      const b=(await rpc("eth_getBlockByNumber",[r.result,false])).result;
-      o(`BSC Latest Block\n\nBlock:        ${bn.toLocaleString()}\nTimestamp:    ${new Date(hex(b.timestamp)*1000).toISOString()}\nTransactions: ${b.transactions.length}\nGas Used:     ${hex(b.gasUsed).toLocaleString()}\nMiner:        ${b.miner}\nHash:         ${b.hash}`);
-      break;
-    }
-    case "block-by-num": {
-      if(!p){o("Enter a block number","err");break}
-      const h="0x"+parseInt(p).toString(16);
-      const b=(await rpc("eth_getBlockByNumber",[h,false])).result;
-      if(!b){o("Block not found","err");break}
-      o(`Block #${p}\n\nTimestamp:    ${new Date(hex(b.timestamp)*1000).toISOString()}\nTransactions: ${b.transactions.length}\nGas Used:     ${hex(b.gasUsed).toLocaleString()}\nMiner:        ${b.miner}\nHash:         ${b.hash}`);
-      break;
-    }
-    case "tx-lookup": {
-      if(!p){o("Enter a transaction hash","err");break}
-      const t=(await rpc("eth_getTransactionByHash",[p])).result;
-      if(!t){o("Transaction not found","err");break}
-      o(`Transaction\n\nHash:   ${t.hash}\nFrom:   ${t.from}\nTo:     ${t.to}\nValue:  ${(hex(t.value)/1e18).toFixed(6)} BNB\nBlock:  ${hex(t.blockNumber).toLocaleString()}\nGas:    ${hex(t.gas).toLocaleString()}\nNonce:  ${hex(t.nonce)}`);
-      break;
-    }
-    case "tx-receipt": {
-      if(!p){o("Enter a transaction hash","err");break}
-      const r=(await rpc("eth_getTransactionReceipt",[p])).result;
-      if(!r){o("Receipt not found","err");break}
-      o(`Transaction Receipt\n\nHash:      ${r.transactionHash}\nStatus:    ${r.status==="0x1"?"Success":"Failed"}\nBlock:     ${hex(r.blockNumber).toLocaleString()}\nGas Used:  ${hex(r.gasUsed).toLocaleString()}\nLogs:      ${r.logs.length} events\nContract:  ${r.contractAddress||"none"}`);
-      break;
-    }
-    case "balance": {
-      if(!p){o("Enter an address","err");break}
-      const r=await rpc("eth_getBalance",[p,"latest"]);
-      o(`Balance\n\nAddress: ${p}\nBNB:     ${(hex(r.result)/1e18).toFixed(6)}`);
-      break;
-    }
-    case "token-info": {
-      if(!p){o("Enter token address","err");break}
-      const[n,s,d,sup]=await Promise.all([
-        rpc("eth_call",[{to:p,data:"0x06fdde03"},"latest"]),
-        rpc("eth_call",[{to:p,data:"0x95d89b41"},"latest"]),
-        rpc("eth_call",[{to:p,data:"0x313ce567"},"latest"]),
-        rpc("eth_call",[{to:p,data:"0x18160ddd"},"latest"]),
-      ]);
-      let name="?",sym="?",dec=18,supply="?";
-      try{name=decStr(n.result)}catch{}
-      try{sym=decStr(s.result)}catch{}
-      try{dec=hex(d.result)}catch{}
-      try{supply=(Number(BigInt(sup.result))/Math.pow(10,dec)).toLocaleString()}catch{}
-      o(`Token Info\n\nContract: ${p}\nName:     ${name}\nSymbol:   ${sym}\nDecimals: ${dec}\nSupply:   ${supply}`);
-      break;
-    }
-    case "token-balance": {
-      const[tok,wal]=p.split(",").map(s=>s.trim());
-      if(!tok||!wal){o("Enter: TokenAddress,WalletAddress","err");break}
-      const data="0x70a08231000000000000000000000000"+wal.slice(2).toLowerCase();
-      const r=await rpc("eth_call",[{to:tok,data},"latest"]);
-      const bal=hex(r.result)/1e18;
-      o(`ERC-20 Balance\n\nToken:  ${tok}\nWallet: ${wal}\nBalance: ${bal.toLocaleString()}`);
-      break;
-    }
-    case "nft-balance": {
-      const[nft,wal]=p.split(",").map(s=>s.trim());
-      if(!nft||!wal){o("Enter: NFTAddress,WalletAddress","err");break}
-      const data="0x70a08231000000000000000000000000"+wal.slice(2).toLowerCase();
-      const r=await rpc("eth_call",[{to:nft,data},"latest"]);
-      o(`NFT Balance (ERC-721)\n\nContract: ${nft}\nWallet:   ${wal}\nNFTs:     ${hex(r.result)}`);
-      break;
-    }
-    case "is-contract": {
-      if(!p){o("Enter an address","err");break}
-      const r=await rpc("eth_getCode",[p,"latest"]);
-      const is=r.result&&r.result!=="0x"&&r.result!=="0x0";
-      o(`Contract Check\n\nAddress:  ${p}\nContract: ${is?"YES - Smart Contract":"NO - EOA (Wallet)"}\nCode:     ${is?r.result.slice(0,66)+"... ("+((r.result.length-2)/2)+" bytes)":"none"}`);
-      break;
-    }
-    case "gas-price": {
-      const r=await rpc("eth_gasPrice");
-      const gwei=hex(r.result)/1e9;
-      o(`BSC Gas Price\n\nGwei: ${gwei.toFixed(2)}\nWei:  ${hex(r.result).toLocaleString()}`);
-      break;
-    }
-    case "chain-id": {
-      const r=await rpc("eth_chainId");
-      o(`Chain Info\n\nChain ID: ${hex(r.result)} (0x${hex(r.result).toString(16)})\nNetwork:  BNB Smart Chain Mainnet\nRPC:      bsc-dataseed.binance.org`);
-      break;
-    }
-    case "code": {
-      if(!p){o("Enter contract address","err");break}
-      const r=await rpc("eth_getCode",[p,"latest"]);
-      const bytes=(r.result.length-2)/2;
-      o(`Contract Bytecode\n\nAddress: ${p}\nSize:    ${bytes} bytes\nCode:    ${r.result.slice(0,200)}${bytes>99?"...":""}`);
-      break;
-    }
-    case "nonce": {
-      if(!p){o("Enter address","err");break}
-      const r=await rpc("eth_getTransactionCount",[p,"latest"]);
-      o(`Nonce\n\nAddress: ${p}\nNonce:   ${hex(r.result)} (total transactions sent)`);
-      break;
-    }
-    case "estimate-gas": {
-      if(!p){o("Enter to address","err");break}
-      const r=await rpc("eth_estimateGas",[{to:p,value:"0x0"}]);
-      o(`Gas Estimate\n\nTo:  ${p}\nGas: ${hex(r.result).toLocaleString()}`);
-      break;
-    }
-    case "8004-agent": {
-      if(!p){o("Enter agent ID","err");break}
-      const r=await fetch("/api/agent/"+p);
-      const d=await r.json();
-      o(`8004scan Agent #${p}\n\n${J(d)}`);
-      break;
-    }
-    // Market
-    case "bnb-price": {
-      const d=await proxy("https://api.coingecko.com/api/v3/simple/price?ids=binancecoin&vs_currencies=usd,eur&include_24hr_change=true");
-      const b=d.binancecoin;
-      o(`BNB Price\n\nUSD:  $${b.usd.toFixed(2)}\nEUR:  \u20AC${b.eur.toFixed(2)}\n24h:  ${b.usd_24h_change>0?"+":""}${b.usd_24h_change.toFixed(2)}%`);
-      break;
-    }
-    case "trending-bsc": {
-      const d=await proxy("https://api.dexscreener.com/token-boosts/top/v1");
-      const bsc=(d||[]).filter(t=>t.chainId==="bsc").slice(0,10);
-      if(!bsc.length){o("No trending BSC tokens right now.","inf");break}
-      let t="Trending BSC Tokens (DexScreener)\n\n";
-      bsc.forEach((x,i)=>{t+=`${i+1}. ${x.tokenAddress?.slice(0,12)}... boosts:${x.amount||"?"}\n   ${x.url||""}\n\n`});
-      o(t);
-      break;
-    }
-    case "dex-search": {
-      if(!p){o("Enter token or symbol","err");break}
-      const d=await proxy("https://api.dexscreener.com/latest/dex/search?q="+encodeURIComponent(p));
-      const pairs=(d.pairs||[]).filter(x=>x.chainId==="bsc").slice(0,8);
-      if(!pairs.length){o("No BSC pairs for: "+p,"inf");break}
-      let t=`DEX Search "${p}"\n\n`;
-      pairs.forEach((x,i)=>{
-        t+=`${i+1}. ${x.baseToken.symbol}/${x.quoteToken.symbol}\n   Price: $${x.priceUsd||"?"} | Vol24h: $${Number(x.volume?.h24||0).toLocaleString()} | Liq: $${Number(x.liquidity?.usd||0).toLocaleString()}\n   DEX: ${x.dexId}\n\n`;
-      });
-      o(t);
-      break;
-    }
-    case "dex-pair": {
-      if(!p){o("Enter pair address","err");break}
-      const d=await proxy("https://api.dexscreener.com/latest/dex/pairs/bsc/"+p);
-      if(!d.pair){o("Pair not found","err");break}
-      const x=d.pair;
-      o(`DEX Pair\n\n${x.baseToken.symbol}/${x.quoteToken.symbol}\nPrice:    $${x.priceUsd||"?"}\nVol 24h:  $${Number(x.volume?.h24||0).toLocaleString()}\nLiquidity: $${Number(x.liquidity?.usd||0).toLocaleString()}\n5m:  ${x.priceChange?.m5||0}%\n1h:  ${x.priceChange?.h1||0}%\n24h: ${x.priceChange?.h24||0}%\nDEX: ${x.dexId}\nPair: ${x.pairAddress}`);
-      break;
-    }
-    case "new-pairs": {
-      const d=await proxy("https://api.geckoterminal.com/api/v2/networks/bsc/new_pools?page=1");
-      const pools=(d.data||[]).slice(0,8);
-      if(!pools.length){o("No new pairs found","inf");break}
-      let t="New BSC Pairs (GeckoTerminal)\n\n";
-      pools.forEach((x,i)=>{
-        const a=x.attributes;
-        t+=`${i+1}. ${a.name}\n   Vol24h: $${Number(a.volume_usd?.h24||0).toLocaleString()} | Created: ${a.pool_created_at?.slice(0,10)||"?"}\n\n`;
-      });
-      o(t);
-      break;
-    }
-    case "top-bsc": {
-      const d=await proxy("https://api.geckoterminal.com/api/v2/networks/bsc/trending_pools?page=1");
-      const pools=(d.data||[]).slice(0,10);
-      if(!pools.length){o("No trending pools","inf");break}
-      let t="Top BSC Pools (GeckoTerminal)\n\n";
-      pools.forEach((x,i)=>{
-        const a=x.attributes;
-        t+=`${i+1}. ${a.name}\n   Price: $${a.base_token_price_usd||"?"} | Vol24h: $${Number(a.volume_usd?.h24||0).toLocaleString()}\n\n`;
-      });
-      o(t);
-      break;
-    }
-    case "ohlcv": {
-      if(!p){o("Enter BSC pool address","err");break}
-      const d=await proxy("https://api.geckoterminal.com/api/v2/networks/bsc/pools/"+p+"/ohlcv/day?limit=7");
-      const list=d.data?.attributes?.ohlcv_list||[];
-      if(!list.length){o("No OHLCV data found","inf");break}
-      let t="OHLCV (7 days)\n\nDate        | Open      | High      | Low       | Close     | Volume\n";
-      t+="------------|-----------|-----------|-----------|-----------|----------\n";
-      list.forEach(x=>{
-        const dt=new Date(x[0]*1000).toISOString().slice(0,10);
-        t+=`${dt} | $${Number(x[1]).toFixed(4).padStart(8)} | $${Number(x[2]).toFixed(4).padStart(8)} | $${Number(x[3]).toFixed(4).padStart(8)} | $${Number(x[4]).toFixed(4).padStart(8)} | $${Number(x[5]).toLocaleString()}\n`;
-      });
-      o(t);
-      break;
-    }
-    // Security
-    case "security": {
-      if(!p){o("Enter token address","err");break}
-      const d=await proxy("https://api.gopluslabs.io/api/v1/token_security/56?contract_addresses="+p);
-      const info=d.result?.[p.toLowerCase()];
-      if(!info){o("Not found in GoPlus","inf");break}
-      const flags=[];
-      if(info.is_honeypot==="1")flags.push("HONEYPOT");
-      if(info.is_proxy==="1")flags.push("PROXY");
-      if(info.cannot_sell_all==="1")flags.push("CANNOT SELL ALL");
-      if(info.is_mintable==="1")flags.push("MINTABLE");
-      if(info.is_blacklisted==="1")flags.push("BLACKLIST");
-      let t=`Token Security (GoPlus)\n\n${info.token_name||"?"} (${info.token_symbol||"?"})\nContract:   ${p}\n\nHoneypot:   ${info.is_honeypot==="1"?"YES":"No"}\nOpen Source: ${info.is_open_source==="1"?"Yes":"No"}\nProxy:      ${info.is_proxy==="1"?"Yes":"No"}\nMintable:   ${info.is_mintable==="1"?"Yes":"No"}\nOwner:      ${info.owner_address||"renounced"}\nBuy Tax:    ${(parseFloat(info.buy_tax||0)*100).toFixed(1)}%\nSell Tax:   ${(parseFloat(info.sell_tax||0)*100).toFixed(1)}%\nHolders:    ${info.holder_count||"?"}`;
-      if(flags.length)t+="\n\nFLAGS: "+flags.join(", ");
-      else t+="\n\nNo major red flags.";
-      o(t,flags.length?"err":"");
-      break;
-    }
-    case "approval": {
-      const[tok,own]=p.split(",").map(s=>s.trim());
-      if(!tok||!own){o("Enter: TokenAddress,OwnerAddress","err");break}
-      const d=await proxy("https://api.gopluslabs.io/api/v1/approval_security/56?contract_addresses="+tok);
-      o(`Approval Security\n\n${J(d)}`);
-      break;
-    }
-    case "nft-security": {
-      if(!p){o("Enter NFT contract","err");break}
-      const d=await proxy("https://api.gopluslabs.io/api/v1/nft_security/56?contract_addresses="+p);
-      o(`NFT Security\n\n${J(d)}`);
-      break;
-    }
-    case "malicious": {
-      if(!p){o("Enter address","err");break}
-      const d=await proxy("https://api.gopluslabs.io/api/v1/address_security/"+p+"?chain_id=56");
-      o(`Malicious Address Check\n\n${J(d)}`);
-      break;
-    }
-    case "phishing": {
-      if(!p){o("Enter URL","err");break}
-      const d=await proxy("https://api.gopluslabs.io/api/v1/phishing_site?url="+encodeURIComponent(p));
-      o(`Phishing Site Check\n\n${J(d)}`);
-      break;
-    }
-    // 8004scan
-    case "agent-info": {
-      if(!p){o("Enter agent ID","err");break}
-      const r=await fetch("/api/agent/"+p);
-      const d=await r.json();
-      o(`8004scan Agent #${p}\n\n${J(d)}`);
-      break;
-    }
-    case "agent-search": {
-      if(!p){o("Enter search query","err");break}
-      const d=await proxy("https://api.8004scan.io/api/v1/agents?chain_id=56&is_testnet=false&search="+encodeURIComponent(p)+"&limit=10");
-      o(`Agent Search: "${p}"\n\n${J(d)}`);
-      break;
-    }
-    case "agent-list": {
-      const d=await proxy("https://api.8004scan.io/api/v1/agents?chain_id=56&is_testnet=false&limit=10&sort_by=created_at&sort_order=desc");
-      o(`Recent Agents\n\n${J(d)}`);
-      break;
-    }
-    default: o("Tool not implemented: "+id,"err");
-  }
+// EXEC
+async function exec(){
+  const t=T.find(x=>x.id===curTool);if(!t)return;
+  if(t.mode==="sim"){simOut(t);return}
+  out('<pre class="inf">Loading...</pre>');
+  try{switch(t.id){
+    case "latest-block":{const d=await rpc("eth_getBlockByNumber",["latest",false]);const b=d.result;pre(`Block: ${hexN(b.number)}\nHash: ${b.hash}\nTime: ${new Date(hexN(b.timestamp)*1000).toISOString()}\nTXs: ${b.transactions.length}\nGas: ${hexN(b.gasUsed)}\nMiner: ${b.miner}`);break}
+    case "block-by-num":{const n=gv("num");if(!n){pre("Enter block number","err");break}const d=await rpc("eth_getBlockByNumber",["0x"+parseInt(n).toString(16),false]);if(!d.result){pre("Not found","err");break}const b=d.result;pre(`Block: ${hexN(b.number)}\nHash: ${b.hash}\nTime: ${new Date(hexN(b.timestamp)*1000).toISOString()}\nTXs: ${b.transactions.length}`);break}
+    case "block-by-hash":{const h=gv("hash");if(!h){pre("Enter hash","err");break}const d=await rpc("eth_getBlockByHash",[h,false]);if(!d.result){pre("Not found","err");break}const b=d.result;pre(`Block: ${hexN(b.number)}\nHash: ${b.hash}\nTXs: ${b.transactions.length}`);break}
+    case "get-tx":{const h=gv("hash");if(!h){pre("Enter TX hash","err");break}const d=await rpc("eth_getTransactionByHash",[h]);if(!d.result){pre("Not found","err");break}const x=d.result;pre(`Hash: ${x.hash}\nFrom: ${x.from}\nTo: ${x.to}\nValue: ${wei(x.value)} BNB\nGas: ${gwei(x.gasPrice)} Gwei\nBlock: ${hexN(x.blockNumber)}`);break}
+    case "tx-receipt":{const h=gv("hash");if(!h){pre("Enter TX hash","err");break}const d=await rpc("eth_getTransactionReceipt",[h]);if(!d.result){pre("Not found","err");break}const r=d.result;pre(`Status: ${r.status==="0x1"?"Success":"Failed"}\nBlock: ${hexN(r.blockNumber)}\nGas: ${hexN(r.gasUsed)}\nFrom: ${r.from}\nTo: ${r.to}\nLogs: ${r.logs.length}`);break}
+    case "estimate-gas":{const to=gv("to");if(!to){pre("Enter address","err");break}const d=await rpc("eth_estimateGas",[{to,value:"0x0"}]);pre(`Gas: ${hexN(d.result)} units\n~${(hexN(d.result)*3/1e9).toFixed(6)} BNB`);break}
+    case "erc20-info":{const a=gv("addr");if(!a){pre("Enter token address","err");break}const[n,s,dc,ts]=await Promise.all([rpc("eth_call",[{to:a,data:"0x06fdde03"},"latest"]),rpc("eth_call",[{to:a,data:"0x95d89b41"},"latest"]),rpc("eth_call",[{to:a,data:"0x313ce567"},"latest"]),rpc("eth_call",[{to:a,data:"0x18160ddd"},"latest"])]);const d=parseInt(dc.result,16);pre(`Name: ${decStr(n.result)}\nSymbol: ${decStr(s.result)}\nDecimals: ${d}\nSupply: ${(parseInt(ts.result,16)/Math.pow(10,d)).toLocaleString()}`);break}
+    case "erc20-balance":{const tk=gv("token"),w=gv("wallet");if(!tk||!w){pre("Enter both","err");break}const pad=w.slice(2).toLowerCase().padStart(64,"0");const[b,dc]=await Promise.all([rpc("eth_call",[{to:tk,data:"0x70a08231000000000000000000000000"+pad},"latest"]),rpc("eth_call",[{to:tk,data:"0x313ce567"},"latest"])]);const d=parseInt(dc.result,16);pre(`Balance: ${(parseInt(b.result,16)/Math.pow(10,d)).toLocaleString()}`);break}
+    case "native-balance":{const a=gv("addr");if(!a){pre("Enter address","err");break}const d=await rpc("eth_getBalance",[a,"latest"]);pre(`Balance: ${wei(d.result)} BNB`);break}
+    case "nft-info":{const a=gv("addr"),id=gv("id");if(!a||!id){pre("Enter both","err");break}const ih=parseInt(id).toString(16).padStart(64,"0");const[n,s,u]=await Promise.all([rpc("eth_call",[{to:a,data:"0x06fdde03"},"latest"]),rpc("eth_call",[{to:a,data:"0x95d89b41"},"latest"]),rpc("eth_call",[{to:a,data:"0xc87b56dd"+ih},"latest"])]);pre(`Name: ${decStr(n.result)}\nSymbol: ${decStr(s.result)}\nURI: ${decStr(u.result)}`);break}
+    case "nft-balance":{const a=gv("addr"),w=gv("wallet");if(!a||!w){pre("Enter both","err");break}const d=await rpc("eth_call",[{to:a,data:"0x70a08231000000000000000000000000"+w.slice(2).toLowerCase().padStart(64,"0")},"latest"]);pre(`Balance: ${parseInt(d.result,16)} NFTs`);break}
+    case "erc1155-meta":{const a=gv("addr"),id=gv("id");if(!a||!id){pre("Enter both","err");break}const d=await rpc("eth_call",[{to:a,data:"0x0e89341c"+parseInt(id).toString(16).padStart(64,"0")},"latest"]);pre(`URI: ${decStr(d.result)}`);break}
+    case "erc1155-bal":{const a=gv("addr"),id=gv("id"),w=gv("wallet");if(!a||!id||!w){pre("Enter all","err");break}const d=await rpc("eth_call",[{to:a,data:"0x00fdd58e000000000000000000000000"+w.slice(2).toLowerCase().padStart(64,"0")+parseInt(id).toString(16).padStart(64,"0")},"latest"]);pre(`Balance: ${parseInt(d.result,16)}`);break}
+    case "is-contract":{const a=gv("addr");if(!a){pre("Enter address","err");break}const d=await rpc("eth_getCode",[a,"latest"]);pre(d.result&&d.result!=="0x"?`Yes — Smart Contract (${(d.result.length-2)/2} bytes)`:"No — EOA (wallet)");break}
+    case "get-code":{const a=gv("addr");if(!a){pre("Enter address","err");break}const d=await rpc("eth_getCode",[a,"latest"]);if(!d.result||d.result==="0x"){pre("No code","err");break}pre(`Bytecode (${(d.result.length-2)/2} bytes):\n${d.result.slice(0,200)}...`);break}
+    case "read-contract":{const a=gv("addr"),fn=gv("fn");if(!a||!fn){pre("Enter both","err");break}const k={"name()":"0x06fdde03","symbol()":"0x95d89b41","decimals()":"0x313ce567","totalSupply()":"0x18160ddd","owner()":"0x8da5cb5b"};const sel=k[fn];if(!sel){pre("Use: name(), symbol(), decimals(), totalSupply(), owner()","inf");break}const d=await rpc("eth_call",[{to:a,data:sel},"latest"]);if(fn==="decimals()"||fn==="totalSupply()")pre(`Result: ${parseInt(d.result,16)}`);else if(fn==="owner()")pre(`Result: 0x${d.result.slice(26)}`);else pre(`Result: ${decStr(d.result)}`);break}
+    case "gas-price":{const d=await rpc("eth_gasPrice");pre(`Gas: ${gwei(d.result)} Gwei`);break}
+    case "chain-info":{const d=await rpc("eth_chainId");pre(`Chain ID: ${parseInt(d.result,16)}\nNetwork: BNB Smart Chain\nCurrency: BNB`);break}
+    case "nonce":{const a=gv("addr");if(!a){pre("Enter address","err");break}const d=await rpc("eth_getTransactionCount",[a,"latest"]);pre(`Nonce: ${parseInt(d.result,16)} transactions sent`);break}
+    case "8004-agent":case "8004-wallet":{const id=gv("id");if(!id){pre("Enter agent ID","err");break}const r=await fetch("/api/agent/"+id);const d=await r.json();if(d.detail||d.error){pre("Not found","err");break}if(t.id==="8004-wallet")pre(`Agent #${d.token_id}: ${d.name||"?"}\nOwner: ${d.owner_address}`);else pre(`${d.name||"Agent #"+d.token_id}\nID: ${d.token_id}\nOwner: ${d.owner_address}\nScore: ${d.total_score?.toFixed(1)||"?"}/100\nHealth: ${d.health_status||"?"}\nProtocols: ${(d.supported_protocols||[]).join(", ")}\nA2A: ${d.a2a_endpoint||"none"}\nCreated: ${d.created_at}`);break}
+    // BINANCE
+    case "bn-ping":{await binance("/api/v3/ping");pre("Binance API OK");break}
+    case "bn-time":{const d=await binance("/api/v3/time");pre(`Time: ${new Date(d.serverTime).toISOString()}`);break}
+    case "bn-info":{const s=gv("sym");const d=await binance(s?`/api/v3/exchangeInfo?symbol=${s.toUpperCase()}`:"/api/v3/exchangeInfo");if(s&&d.symbols?.[0]){const i=d.symbols[0];pre(`${i.symbol} — ${i.status}\nBase: ${i.baseAsset}\nQuote: ${i.quoteAsset}`)}else pre(`Symbols: ${d.symbols?.length||"?"}`);break}
+    case "bn-price":{const s=gv("sym");if(!s){pre("Enter symbol","err");break}const d=await binance(`/api/v3/ticker/price?symbol=${s.toUpperCase()}`);pre(`${d.symbol}: $${parseFloat(d.price).toLocaleString()}`);break}
+    case "bn-24h":{const s=gv("sym");if(!s){pre("Enter symbol","err");break}const d=await binance(`/api/v3/ticker/24hr?symbol=${s.toUpperCase()}`);pre(`${d.symbol} 24h\nPrice: $${parseFloat(d.lastPrice).toLocaleString()}\nChange: ${d.priceChangePercent}%\nHigh: $${parseFloat(d.highPrice).toLocaleString()}\nLow: $${parseFloat(d.lowPrice).toLocaleString()}\nVolume: ${parseFloat(d.volume).toLocaleString()}\nTrades: ${d.count?.toLocaleString()}`);break}
+    case "bn-book-ticker":{const s=gv("sym");if(!s){pre("Enter symbol","err");break}const d=await binance(`/api/v3/ticker/bookTicker?symbol=${s.toUpperCase()}`);pre(`${d.symbol}\nBid: $${d.bidPrice} (${d.bidQty})\nAsk: $${d.askPrice} (${d.askQty})\nSpread: $${(parseFloat(d.askPrice)-parseFloat(d.bidPrice)).toFixed(4)}`);break}
+    case "bn-avg":{const s=gv("sym");if(!s){pre("Enter symbol","err");break}const d=await binance(`/api/v3/avgPrice?symbol=${s.toUpperCase()}`);pre(`${s.toUpperCase()} Avg (${d.mins}m): $${parseFloat(d.price).toLocaleString()}`);break}
+    case "bn-day":{const s=gv("sym");if(!s){pre("Enter symbol","err");break}const d=await binance(`/api/v3/ticker/tradingDay?symbol=${s.toUpperCase()}`);pre(`${d.symbol}\nPrice: $${parseFloat(d.lastPrice).toLocaleString()}\nChange: ${d.priceChangePercent}%\nVolume: ${parseFloat(d.volume).toLocaleString()}`);break}
+    case "bn-depth":{const s=gv("sym"),l=gv("lim")||"5";if(!s){pre("Enter symbol","err");break}const d=await binance(`/api/v3/depth?symbol=${s.toUpperCase()}&limit=${l}`);let o=`${s.toUpperCase()} Order Book\n\nAsks:\n`;(d.asks||[]).slice(0,5).reverse().forEach(a=>o+=`  $${parseFloat(a[0]).toLocaleString()} — ${a[1]}\n`);o+=`\nBids:\n`;(d.bids||[]).slice(0,5).forEach(b=>o+=`  $${parseFloat(b[0]).toLocaleString()} — ${b[1]}\n`);pre(o);break}
+    case "bn-trades":{const s=gv("sym"),l=gv("lim")||"5";if(!s){pre("Enter symbol","err");break}const d=await binance(`/api/v3/trades?symbol=${s.toUpperCase()}&limit=${l}`);let o=`${s.toUpperCase()} Trades\n\n`;(d||[]).forEach(t=>o+=`${t.isBuyerMaker?"SELL":"BUY "} $${parseFloat(t.price).toLocaleString()} qty:${t.qty} ${new Date(t.time).toLocaleTimeString()}\n`);pre(o);break}
+    case "bn-agg":{const s=gv("sym"),l=gv("lim")||"5";if(!s){pre("Enter symbol","err");break}const d=await binance(`/api/v3/aggTrades?symbol=${s.toUpperCase()}&limit=${l}`);let o=`${s.toUpperCase()} Agg Trades\n\n`;(d||[]).forEach(t=>o+=`$${parseFloat(t.p).toLocaleString()} qty:${t.q} ${t.m?"SELL":"BUY "}\n`);pre(o);break}
+    case "bn-klines":{const s=gv("sym"),i=gv("int")||"1h",l=gv("lim")||"5";if(!s){pre("Enter symbol","err");break}const d=await binance(`/api/v3/klines?symbol=${s.toUpperCase()}&interval=${i}&limit=${l}`);let o=`${s.toUpperCase()} ${i}\n\nTime             Open       High       Low        Close      Vol\n`;(d||[]).forEach(k=>o+=`${new Date(k[0]).toISOString().slice(0,16)} $${(+k[1]).toFixed(2).padStart(9)} $${(+k[2]).toFixed(2).padStart(9)} $${(+k[3]).toFixed(2).padStart(9)} $${(+k[4]).toFixed(2).padStart(9)} ${(+k[5]).toFixed(0).padStart(9)}\n`);pre(o);break}
+    case "bn-uiklines":{const s=gv("sym"),i=gv("int")||"1h",l=gv("lim")||"5";if(!s){pre("Enter symbol","err");break}const d=await binance(`/api/v3/uiKlines?symbol=${s.toUpperCase()}&interval=${i}&limit=${l}`);let o=`${s.toUpperCase()} UI Klines\n\n`;(d||[]).forEach(k=>o+=`${new Date(k[0]).toISOString().slice(0,16)} O:$${(+k[1]).toFixed(2)} C:$${(+k[4]).toFixed(2)}\n`);pre(o);break}
+    case "bn-funding":{const d=await fbin("/fapi/v1/premiumIndex");let o="Funding Rates\n\n";(d||[]).slice(0,20).forEach(f=>o+=`${f.symbol.padEnd(12)} ${(parseFloat(f.lastFundingRate)*100).toFixed(4)}% Mark:$${(+f.markPrice).toFixed(2)}\n`);o+=`\n${(d||[]).length} total`;pre(o);break}
+    case "bn-funding-sym":{const s=gv("sym");if(!s){pre("Enter symbol","err");break}const[f,oi]=await Promise.all([fbin(`/fapi/v1/premiumIndex?symbol=${s.toUpperCase()}`),fbin(`/fapi/v1/openInterest?symbol=${s.toUpperCase()}`)]);const v=Array.isArray(f)?f[0]:f;pre(`${v.symbol}\nMark: $${(+v.markPrice).toLocaleString()}\nIndex: $${(+v.indexPrice).toLocaleString()}\nFunding: ${(parseFloat(v.lastFundingRate)*100).toFixed(4)}%\nNext: ${new Date(v.nextFundingTime).toISOString()}\nOI: ${(+oi.openInterest).toLocaleString()}`);break}
+    // DEX
+    case "bnb-price":{const d=await proxy("https://api.coingecko.com/api/v3/simple/price?ids=binancecoin&vs_currencies=usd,eur,btc&include_24hr_change=true");const b=d.binancecoin;pre(`BNB\nUSD: $${b.usd.toLocaleString()}\nEUR: €${b.eur.toLocaleString()}\nBTC: ${b.btc}\n24h: ${b.usd_24h_change?.toFixed(2)}%`);break}
+    case "token-search":{const q=gv("q");if(!q){pre("Enter query","err");break}if(q.startsWith("0x")){const d=await proxy(`https://api.dexscreener.com/latest/dex/tokens/${q}`);if(d.pairs?.[0]){const p=d.pairs[0];pre(`${p.baseToken.name} (${p.baseToken.symbol})\nPrice: $${p.priceUsd}\nLiq: $${parseInt(p.liquidity?.usd||0).toLocaleString()}\nVol: $${parseInt(p.volume?.h24||0).toLocaleString()}`)}else pre("Not found","err")}else{const d=await proxy(`https://api.coingecko.com/api/v3/search?query=${encodeURIComponent(q)}`);let o=`"${q}"\n\n`;(d.coins||[]).slice(0,10).forEach(c=>o+=`${c.name} (${c.symbol.toUpperCase()}) #${c.market_cap_rank||"?"}\n`);pre(o)}break}
+    case "token-profile":{const a=gv("addr");if(!a){pre("Enter address","err");break}const d=await proxy(`https://api.dexscreener.com/latest/dex/tokens/${a}`);if(!d.pairs?.[0]){pre("Not found","err");break}const p=d.pairs[0];pre(`${p.baseToken.name} (${p.baseToken.symbol})\nPrice: $${p.priceUsd}\n24h: ${p.priceChange?.h24||"?"}%\nLiq: $${parseInt(p.liquidity?.usd||0).toLocaleString()}\nVol: $${parseInt(p.volume?.h24||0).toLocaleString()}\nFDV: $${parseInt(p.fdv||0).toLocaleString()}\nDEX: ${p.dexId} (${p.chainId})`);break}
+    case "trending":{const d=await proxy("https://api.dexscreener.com/token-boosts/top/v1");let o="Trending\n\n";const bsc=(d||[]).filter(t=>t.chainId==="bsc");const list=bsc.length?bsc:(d||[]);list.slice(0,15).forEach(t=>o+=`${(t.description||t.tokenAddress?.slice(0,10)||"?").slice(0,30)} — ${t.chainId}\n`);pre(o);break}
+    case "dex-search":{const q=gv("q");if(!q){pre("Enter query","err");break}const d=await proxy(`https://api.dexscreener.com/latest/dex/search?q=${encodeURIComponent(q)}`);let o=`"${q}"\n\n`;(d.pairs||[]).slice(0,10).forEach(p=>o+=`${p.baseToken.symbol}/${p.quoteToken.symbol} $${p.priceUsd||"?"} Vol:$${parseInt(p.volume?.h24||0).toLocaleString()} ${p.dexId}\n`);pre(o);break}
+    case "dex-pair":{const a=gv("addr");if(!a){pre("Enter pair","err");break}const d=await proxy(`https://api.dexscreener.com/latest/dex/pairs/bsc/${a}`);if(!d.pairs?.[0]){pre("Not found","err");break}const p=d.pairs[0];pre(`${p.baseToken.symbol}/${p.quoteToken.symbol}\nPrice: $${p.priceUsd}\nLiq: $${parseInt(p.liquidity?.usd||0).toLocaleString()}\nVol: $${parseInt(p.volume?.h24||0).toLocaleString()}\nDEX: ${p.dexId}`);break}
+    case "new-pairs":{const d=await proxy("https://api.geckoterminal.com/api/v2/networks/bsc/new_pools?page=1");let o="New BSC Pairs\n\n";(d.data||[]).slice(0,10).forEach(p=>o+=`${p.attributes.name} Vol:$${parseInt(p.attributes.volume_usd?.h24||0).toLocaleString()}\n`);pre(o);break}
+    case "top-pools":{const d=await proxy("https://api.geckoterminal.com/api/v2/networks/bsc/trending_pools");let o="Top BSC Pools\n\n";(d.data||[]).slice(0,10).forEach(p=>o+=`${p.attributes.name} Vol:$${parseInt(p.attributes.volume_usd?.h24||0).toLocaleString()}\n`);pre(o);break}
+    case "ohlcv":{const a=gv("addr");if(!a){pre("Enter pool","err");break}const d=await proxy(`https://api.geckoterminal.com/api/v2/networks/bsc/pools/${a}/ohlcv/hour?limit=10`);const l=d.data?.attributes?.ohlcv_list||[];let o="OHLCV\n\nTime             O          H          L          C\n";l.forEach(c=>o+=`${new Date(c[0]*1000).toISOString().slice(0,16)} $${(+c[1]).toFixed(4).padStart(9)} $${(+c[2]).toFixed(4).padStart(9)} $${(+c[3]).toFixed(4).padStart(9)} $${(+c[4]).toFixed(4).padStart(9)}\n`);pre(o);break}
+    case "heur-arb":{const d=await fbin("/fapi/v1/premiumIndex");let o="Spot-Futures Arb\n\n";const s=(d||[]).filter(f=>Math.abs(+f.lastFundingRate)>0.0005).sort((a,b)=>Math.abs(+b.lastFundingRate)-Math.abs(+a.lastFundingRate));s.slice(0,15).forEach(f=>o+=`${f.symbol.padEnd(12)} ${(+f.lastFundingRate*100).toFixed(4)}% Annual:${(+f.lastFundingRate*100*3*365).toFixed(1)}%\n`);o+="\n+ = short opp, - = long opp";pre(o);break}
+    // SECURITY
+    case "sec-token":{const a=gv("addr");if(!a){pre("Enter token","err");break}const d=await proxy(`https://api.gopluslabs.io/api/v1/token_security/56?contract_addresses=${a}`);const r=d.result?.[a.toLowerCase()];if(!r){pre("Not found","err");break}pre(`${r.token_name||"?"} (${r.token_symbol||"?"})\n\nHoneypot: ${r.is_honeypot==="1"?"YES":"No"}\nBuy Tax: ${r.buy_tax||"0"}%\nSell Tax: ${r.sell_tax||"0"}%\nOwner: ${r.owner_address||"renounced"}\nProxy: ${r.is_proxy==="1"?"YES":"No"}\nMintable: ${r.is_mintable==="1"?"YES":"No"}\nOpen Source: ${r.is_open_source==="1"?"Yes":"No"}\nHolders: ${r.holder_count||"?"}`);break}
+    case "sec-approval":{const tk=gv("token"),ow=gv("owner");if(!tk||!ow){pre("Enter both","err");break}const d=await proxy(`https://api.gopluslabs.io/api/v1/approval_security/56?contract_addresses=${tk}`);pre(JSON.stringify(d.result||d,null,2));break}
+    case "sec-nft":{const a=gv("addr");if(!a){pre("Enter NFT","err");break}const d=await proxy(`https://api.gopluslabs.io/api/v1/nft_security/56?contract_addresses=${a}`);const r=d.result?.[a.toLowerCase()];if(!r){pre("Not found","err");break}pre(`${r.nft_name||"?"}\nOpen Source: ${r.nft_open_source==="1"?"Yes":"No"}\nProxy: ${r.nft_proxy==="1"?"YES":"No"}\nSelf Destruct: ${r.self_destruct==="1"?"YES":"No"}`);break}
+    case "sec-addr":{const a=gv("addr");if(!a){pre("Enter address","err");break}const d=await proxy(`https://api.gopluslabs.io/api/v1/address_security/${a}?chain_id=56`);const r=d.result;if(!r){pre("Not found","err");break}pre(`${a}\n\nMalicious: ${r.malicious_address==="1"?"YES":"No"}\nHoneypot: ${r.honeypot_related_address==="1"?"YES":"No"}\nPhishing: ${r.phishing_activities==="1"?"YES":"No"}\nDarkweb: ${r.darkweb_transactions==="1"?"YES":"No"}`);break}
+    case "sec-phish":{const u=gv("url");if(!u){pre("Enter URL","err");break}const d=await proxy(`https://api.gopluslabs.io/api/v1/phishing_site?url=${encodeURIComponent(u)}`);pre(`${u}\n\nPhishing: ${d.result?.phishing_site==="1"?"YES — DANGEROUS":"No — Looks safe"}`);break}
+    // 8004SCAN
+    case "agent-detail":{const id=gv("id");if(!id){pre("Enter ID","err");break}const r=await fetch("/api/agent/"+id);const d=await r.json();if(d.detail||d.error){pre("Not found","err");break}pre(`${d.name||"#"+d.token_id}\nID: ${d.token_id}\nOwner: ${d.owner_address}\nScore: ${d.total_score?.toFixed(1)||"?"}/100\nHealth: ${d.health_status||"?"}\nProtocols: ${(d.supported_protocols||[]).join(", ")}\nA2A: ${d.a2a_endpoint||"none"}\nCreated: ${d.created_at}`);break}
+    case "agent-search":{const q=gv("q");if(!q){pre("Enter query","err");break}const d=await proxy(`https://api.8004scan.io/api/v1/agents?chain_id=56&is_testnet=false&search=${encodeURIComponent(q)}&limit=10`);let o=`"${q}" (${d.total||0})\n\n`;(d.items||[]).forEach(a=>o+=`#${a.token_id} ${(a.name||"?").padEnd(25)} Score:${a.total_score?.toFixed(1)||"?"}\n`);pre(o);break}
+    case "agent-list":{const d=await proxy("https://api.8004scan.io/api/v1/agents?chain_id=56&is_testnet=false&limit=15&sort_by=total_score&sort_order=desc");let o=`Top BSC Agents (${d.total||0})\n\n`;(d.items||[]).forEach(a=>o+=`#${a.token_id} ${(a.name||"?").padEnd(25)} ${(a.total_score?.toFixed(1)||"?").padStart(5)} ${(a.supported_protocols||[]).join(",")}\n`);pre(o);break}
+    default:pre("Not implemented: "+t.id,"err")
+  }}catch(e){pre("Error: "+e.message,"err")}
 }
 
 // A2A
-function pickAgent(ep, name) {
-  document.getElementById("a2a-ep").value = ep;
-  document.getElementById("a2a-out").innerHTML = `<pre class="inf">Ready to message ${name}. Type a message and click Send.</pre>`;
+function renderA2ASide(){
+  document.getElementById("side").innerHTML=`<div class="cat">Your Agent</div><button class="item on" onclick="pickA2A('/api/a2a','BOB')"><span class="dot live"></span>BOB Build On BNB</button><div class="cat">BSC A2A Agents</div><div id="a2a-list" style="padding:4px 12px;font-size:10px;color:var(--t3)">Loading...</div>`;
+  loadAgents();
+}
+function renderA2APanel(){
+  document.getElementById("pname").textContent="A2A Agent Chat";
+  document.getElementById("pdesc").textContent="Send messages to AI agents on BNB Chain.";
+  document.getElementById("psrc").innerHTML='<a href="https://google.github.io/A2A/" target="_blank">A2A Protocol</a>';
+  const pf=document.getElementById("pform");
+  pf.innerHTML=`<div class="prow"><label>Endpoint</label><input type="text" id="a2a-ep" value="/api/a2a" placeholder="https://..."></div><div class="prow"><label>Message</label><input type="text" id="a2a-msg" placeholder="Hello!" onkeydown="if(event.key==='Enter')sendA2A()"></div><button class="run" onclick="sendA2A()">Send</button>`;
+  pf.style.display="flex";
+  out('<pre class="inf">Pick an agent and send a message.</pre>');
+}
+function pickA2A(ep,n){const el=document.getElementById("a2a-ep");if(el)el.value=ep;out(`<pre class="inf">Ready to message ${esc(n)}.</pre>`)}
+async function sendA2A(){
+  const ep=document.getElementById("a2a-ep")?.value.trim(),msg=document.getElementById("a2a-msg")?.value.trim()||"Hello!";
+  if(!ep){out('<pre class="err">Enter endpoint.</pre>');return}
+  out('<pre class="inf">Sending...</pre>');
+  try{let r;if(ep.startsWith("/"))r=await fetch(ep,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({jsonrpc:"2.0",id:1,method:"message/send",params:{message:{parts:[{type:"text",text:msg}]}}})});
+  else r=await fetch("/api/a2a-proxy",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({endpoint:ep,message:msg})});
+  const d=await r.json();if(d.error)pre("Error: "+(d.error.message||d.error),"err");
+  else pre("Response:\n\n"+(d.result?.artifacts?.[0]?.parts?.[0]?.text||JSON.stringify(d.result||d,null,2)));
+  }catch(e){pre("Error: "+e.message,"err")}
+}
+async function loadAgents(){
+  try{const d=await proxy("https://api.8004scan.io/api/v1/agents?chain_id=56&is_testnet=false&has_a2a=true&limit=12&sort_by=total_score&sort_order=desc");
+  const el=document.getElementById("a2a-list");if(!el)return;let h="";
+  for(const a of(d.items||[])){try{const r=await fetch("/api/agent/"+a.token_id);const dt=await r.json();if(!dt.a2a_endpoint)continue;
+  let ep=dt.a2a_endpoint;if(ep.includes("/.well-known/"))ep=ep.split("/.well-known/")[0];
+  h+=`<button class="item" onclick="pickA2A('${esc(ep)}','${esc(a.name||"Agent")}')"><span class="dot live"></span>${esc((a.name||"#"+a.token_id).slice(0,24))}</button>`}catch{}}
+  el.outerHTML=h||'<div style="padding:12px;font-size:10px;color:var(--t3)">None found.</div>'}catch{}
 }
 
-async function sendA2A() {
-  const ep = document.getElementById("a2a-ep").value.trim();
-  const msg = document.getElementById("a2a-msg").value.trim() || "Hello!";
-  if(!ep){document.getElementById("a2a-out").innerHTML='<pre class="err">Enter an endpoint</pre>';return}
-
-  document.getElementById("a2a-out").innerHTML='<pre class="inf">Sending...</pre>';
-
-  try {
-    let r;
-    if(ep.startsWith("/")) {
-      // Local endpoint
-      r = await fetch(ep, {
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({jsonrpc:"2.0",id:1,method:"message/send",params:{message:{parts:[{type:"text",text:msg}]}}})
-      });
-    } else {
-      // Proxy through our API to avoid CORS
-      r = await fetch("/api/a2a-proxy", {
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({endpoint:ep,message:msg})
-      });
-    }
-    const d = await r.json();
-    const reply = d.result?.artifacts?.[0]?.parts?.[0]?.text || J(d);
-    document.getElementById("a2a-out").innerHTML = `<pre>You: ${msg}\n\nAgent: ${reply}</pre>`;
-  } catch(e) {
-    document.getElementById("a2a-out").innerHTML = `<pre class="err">Error: ${e.message}</pre>`;
-  }
-}
-
-// Load A2A agents from 8004scan
-async function loadA2AAgents() {
-  try {
-    const r = await fetch("/api/proxy", {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({url:"https://api.8004scan.io/api/v1/agents?chain_id=56&is_testnet=false&has_a2a=true&limit=15&sort_by=total_score&sort_order=desc"})
-    });
-    const d = await r.json();
-    const agents = d.items || d.data || [];
-    if(!Array.isArray(agents) || !agents.length) return;
-    const btns = document.getElementById("agent-btns");
-    // Add BOB first
-    const bobBtn = document.createElement("button");
-    bobBtn.className = "tag";
-    bobBtn.style.cursor = "pointer";
-    bobBtn.textContent = "BOB Build On BNB";
-    bobBtn.onclick = () => pickAgent("/api/a2a", "BOB Build On BNB");
-    btns.appendChild(bobBtn);
-    // Fetch details for each agent to get a2a_endpoint
-    for(const a of agents.slice(0, 12)) {
-      try {
-        const dr = await fetch("/api/agent/" + a.token_id);
-        const detail = await dr.json();
-        if(!detail.a2a_endpoint) continue;
-        // Convert agent-card URL to actual A2A endpoint
-        let ep = detail.a2a_endpoint;
-        if(ep.includes("/.well-known/")) ep = ep.split("/.well-known/")[0];
-        const btn = document.createElement("button");
-        btn.className = "tag";
-        btn.style.cursor = "pointer";
-        btn.textContent = (a.name || "Agent #"+a.token_id).slice(0, 22);
-        btn.onclick = () => pickAgent(ep, a.name || "Agent");
-        btns.appendChild(btn);
-      } catch {}
-    }
-  } catch(e) { console.log("loadA2AAgents error:", e); }
-}
-
-document.getElementById("par").addEventListener("keydown",e=>{if(e.key==="Enter")run()});
-document.getElementById("a2a-msg").addEventListener("keydown",e=>{if(e.key==="Enter")sendA2A()});
-buildSidebar();
-loadA2AAgents();
+renderTabs();renderSidebar();
 </script>
 </body>
 </html>
