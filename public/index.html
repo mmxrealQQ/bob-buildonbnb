@@ -6,6 +6,15 @@
   <title>BOB Build On BNB — 116+ BNB Chain AI Tools</title>
   <meta name="description" content="Test 116+ MCP tools for BNB Chain. On-chain data, Binance markets, DeFi, security, AI agents. No setup needed.">
   <link rel="icon" href="https://raw.githubusercontent.com/mmxrealQQ/bob-assets/main/bob.jpg" type="image/jpeg">
+  <meta property="og:title" content="BOB Build On BNB — 116+ BNB Chain AI Tools">
+  <meta property="og:description" content="Test 116+ MCP tools for BNB Chain. On-chain data, Binance markets, DeFi, security, AI agents. No setup needed.">
+  <meta property="og:image" content="https://raw.githubusercontent.com/mmxrealQQ/bob-assets/main/bob.jpg">
+  <meta property="og:url" content="https://bobbuildonbnb.vercel.app">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="BOB Build On BNB — 116+ BNB Chain AI Tools">
+  <meta name="twitter:description" content="Test 116+ MCP tools for BNB Chain. On-chain data, Binance, DeFi, security. No setup needed.">
+  <meta name="twitter:image" content="https://raw.githubusercontent.com/mmxrealQQ/bob-assets/main/bob.jpg">
   <style>
     *{margin:0;padding:0;box-sizing:border-box}
     :root{--bg:#0a0a0a;--s:#111;--s2:#1a1a1a;--b:#222;--y:#F0B90B;--yd:rgba(240,185,11,.12);--g:#0ECB81;--r:#F6465D;--t:#eee;--t2:#888;--t3:#555;--rd:10px}
@@ -52,8 +61,15 @@
     .sim-badge{display:inline-block;background:rgba(136,136,136,.15);color:var(--t2);padding:2px 8px;border-radius:4px;font-size:10px;margin-left:8px}
     .live-badge{display:inline-block;background:rgba(14,203,129,.15);color:var(--g);padding:2px 8px;border-radius:4px;font-size:10px;margin-left:8px}
 
-    .out{flex:1;overflow-y:auto;padding:12px 16px}
+    .out{flex:1;overflow-y:auto;padding:12px 16px;position:relative}
     .out pre{font-family:'SF Mono',Monaco,'Cascadia Code',monospace;font-size:11px;line-height:1.6;white-space:pre-wrap;word-break:break-all}
+    .copy-btn{position:sticky;float:right;top:0;background:var(--s2);border:1px solid var(--b);color:var(--t2);padding:4px 10px;border-radius:5px;font-size:10px;cursor:pointer;z-index:10;transition:.15s}
+    .copy-btn:hover{border-color:var(--y);color:var(--y)}
+    .copy-btn.copied{background:rgba(14,203,129,.15);border-color:var(--g);color:var(--g)}
+    .live-cost{background:linear-gradient(135deg,rgba(240,185,11,.08),rgba(14,203,129,.08));border:1px solid rgba(240,185,11,.2);border-radius:8px;padding:10px 14px;margin-top:10px;font-size:11px;line-height:1.7}
+    .live-cost .lc-title{font-size:9px;text-transform:uppercase;letter-spacing:.8px;color:var(--y);font-weight:700;margin-bottom:4px}
+    .live-cost .lc-row{display:flex;justify-content:space-between;color:var(--t2)}
+    .live-cost .lc-val{color:var(--t);font-weight:600;font-family:'SF Mono',Monaco,monospace}
     .out .ok{color:var(--g)}.out .err{color:var(--r)}.out .inf{color:var(--t2)}.out .sim{color:var(--y)}
     .help{background:var(--s2);border-left:2px solid var(--y);padding:8px 12px;margin:0;font-size:11px;color:var(--t2);line-height:1.6}
     .hint{font-size:9px;color:var(--t3);margin-top:1px;line-height:1.4}
@@ -74,12 +90,64 @@
     .modal .mbtn:hover{opacity:.9}
     .modal .mfoot{font-size:10px;color:var(--t3);text-align:center;margin-top:10px}
 
+    .testnet-bar{background:linear-gradient(90deg,rgba(246,70,93,.15),rgba(240,185,11,.15));border-bottom:1px solid rgba(246,70,93,.3);padding:4px 16px;font-size:10px;color:var(--r);text-align:center;font-weight:600;display:none}
+    .testnet-bar a{color:var(--y);margin-left:8px}
+    .testnet-bar.on{display:block}
+    .settings-btn{background:none;border:1px solid var(--b);color:var(--t2);padding:4px 8px;border-radius:6px;font-size:11px;cursor:pointer;transition:.15s;display:flex;align-items:center;gap:4px}
+    .settings-btn:hover{border-color:var(--y);color:var(--y)}
+    .net-toggle{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--t2)}
+    .net-toggle .switch{position:relative;width:32px;height:18px;background:var(--b);border-radius:9px;cursor:pointer;transition:.2s}
+    .net-toggle .switch.on{background:var(--r)}
+    .net-toggle .switch::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;background:var(--t);border-radius:50%;transition:.2s}
+    .net-toggle .switch.on::after{left:16px}
+    .smodal{background:var(--s);border:1px solid var(--b);border-radius:14px;max-width:520px;width:90%;padding:24px;animation:modalIn .25s ease;max-height:85vh;overflow-y:auto}
+    .smodal h2{font-size:16px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+    .smodal .sgroup{margin-bottom:16px}
+    .smodal .sgroup-title{font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--y);font-weight:700;margin-bottom:8px}
+    .smodal .sfield{margin-bottom:8px}
+    .smodal .sfield label{display:block;font-size:11px;color:var(--t2);margin-bottom:3px}
+    .smodal .sfield input{width:100%;background:var(--s2);border:1px solid var(--b);border-radius:6px;padding:7px 10px;color:var(--t);font-size:11px;font-family:'SF Mono',Monaco,monospace;outline:none}
+    .smodal .sfield input:focus{border-color:var(--y)}
+    .smodal .sfield .swarn{font-size:9px;color:var(--r);margin-top:2px}
+    .smodal .sfield .sinfo{font-size:9px;color:var(--t3);margin-top:2px}
+    .smodal .sbtn-row{display:flex;gap:8px;margin-top:16px}
+    .smodal .sbtn{flex:1;padding:8px;border-radius:8px;border:none;font-size:12px;font-weight:700;cursor:pointer;transition:.15s}
+    .smodal .sbtn-save{background:var(--y);color:#000}
+    .smodal .sbtn-save:hover{opacity:.9}
+    .smodal .sbtn-close{background:var(--s2);color:var(--t2);border:1px solid var(--b)}
+    .smodal .sbtn-close:hover{border-color:var(--t3)}
+    .smodal .sbtn-clear{background:rgba(246,70,93,.15);color:var(--r);border:1px solid rgba(246,70,93,.2)}
+    .key-status{display:inline-block;width:6px;height:6px;border-radius:50%;margin-left:4px}
+    .key-status.has{background:var(--g)}
+    .key-status.no{background:var(--t3)}
+
+    .lp-card{padding:10px 12px;cursor:pointer;border:none;background:none;width:100%;text-align:left;border-bottom:1px solid var(--b);transition:.1s}
+    .lp-card:hover{background:var(--s2)}
+    .lp-card.on{background:var(--yd);border-left:2px solid var(--y)}
+    .lp-card .lp-icon{font-size:16px;margin-bottom:2px}
+    .lp-card .lp-name{font-size:11px;font-weight:700;color:var(--t)}
+    .lp-card .lp-desc{font-size:9px;color:var(--t3);margin-top:1px}
+    .lp-card .lp-steps{font-size:9px;color:var(--t2);margin-top:2px}
+    .lp-step{padding:14px 16px;border-bottom:1px solid var(--b)}
+    .lp-step-num{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;font-size:10px;font-weight:700;margin-right:8px;flex-shrink:0}
+    .lp-step-num.done{background:rgba(14,203,129,.15);color:var(--g)}
+    .lp-step-num.cur{background:var(--yd);color:var(--y)}
+    .lp-step-num.todo{background:var(--s2);color:var(--t3)}
+    .lp-step-title{font-size:12px;font-weight:700}
+    .lp-step-text{font-size:11px;color:var(--t2);margin-top:4px;line-height:1.6}
+    .lp-step-head{display:flex;align-items:center;margin-bottom:6px}
+    .lp-nav{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--b)}
+    .lp-nav button{padding:7px 16px;border-radius:6px;border:none;font-size:11px;font-weight:700;cursor:pointer;transition:.15s}
+    .lp-progress{height:3px;background:var(--s2);border-radius:2px;margin:8px 16px 0}
+    .lp-progress-fill{height:100%;background:var(--y);border-radius:2px;transition:width .3s}
+
     @media(max-width:768px){
       .main{flex-direction:column;height:auto}
       .side{width:100%;max-height:200px;border-right:none;border-bottom:1px solid var(--b)}
       .search{max-width:160px}
       .badge{display:none}
       .prow input{min-width:120px}
+      .settings-btn span{display:none}
     }
   </style>
 </head>
@@ -89,7 +157,9 @@
   <a href="/" class="logo" onclick="curTab='bnb';curTool=null;renderTabs();renderSidebar();document.getElementById('pname').textContent='Select a tool';document.getElementById('pdesc').textContent='Pick a tool from the sidebar to get started.';document.getElementById('psrc').innerHTML='';document.getElementById('pform').style.display='none';document.getElementById('out').innerHTML='<pre class=inf>Pick any tool from the left sidebar and click Run to try it.\n\nGreen dot = Live — makes real API calls, returns live data\nGray dot  = Simulation — shows what the tool does and what you need to run it</pre>';return false"><img src="https://raw.githubusercontent.com/mmxrealQQ/bob-assets/main/bob.jpg" alt="BOB">BOB Build On BNB</a>
   <span class="badge">116+ Tools</span>
   <div class="search"><input type="text" id="q" placeholder="Search tools..." oninput="filter()"></div>
+  <button class="settings-btn" onclick="openSettings()">&#9881;<span>Settings</span></button>
 </div>
+<div class="testnet-bar" id="testnet-bar">&#9888; TESTNET MODE — You are using BSC Testnet (Chain ID 97). Data is not real.<a href="https://www.bnbchain.org/en/testnet-faucet" target="_blank">Get test BNB &#8594;</a></div>
 <div class="tabs" id="tabs"></div>
 <div class="main">
   <div class="side" id="side"></div>
@@ -108,6 +178,52 @@ Gray dot  = Simulation — shows what the tool does and what you need to run it<
 </div>
 
 <script>
+// Live price data for cost calculations
+let liveGasGwei=3,liveBnbUsd=600,livePricesReady=false;
+async function fetchLivePrices(){
+  try{
+    const[gRes,pRes]=await Promise.all([
+      fetch("/api/rpc",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({method:"eth_gasPrice",params:[]})}).then(r=>r.json()),
+      fetch("/api/proxy",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({url:"https://api.coingecko.com/api/v3/simple/price?ids=binancecoin&vs_currencies=usd"})}).then(r=>r.json())
+    ]);
+    if(gRes.result)liveGasGwei=Math.max(1,(parseInt(gRes.result,16)/1e9));
+    if(pRes.binancecoin?.usd)liveBnbUsd=pRes.binancecoin.usd;
+    livePricesReady=true;
+  }catch(e){console.log("Price fetch fallback:",e)}
+}
+fetchLivePrices();
+
+function calcLiveCost(gasUnits){
+  const bnb=gasUnits*liveGasGwei/1e9;
+  const usd=bnb*liveBnbUsd;
+  return{bnb:bnb.toFixed(6),usd:usd.toFixed(2)};
+}
+
+// Gas estimates per operation type
+const GAS_EST={
+  "transfer-native":21000,"transfer-erc20":52000,"transfer-nft":65000,"transfer-1155":67000,
+  "approve-spending":46000,"create-erc20":850000,"register-agent":185000,"set-agent-uri":48000,
+  "write-contract":100000,"gnfd-create-bucket":125000,"gnfd-upload":95000,"gnfd-delete":60000
+};
+
+function liveCostBar(toolId){
+  if(!livePricesReady)return"";
+  const gas=GAS_EST[toolId];
+  if(!gas)return"";
+  const c=calcLiveCost(gas);
+  return`<div class="live-cost"><div class="lc-title">Live Cost Estimate (right now)</div><div class="lc-row"><span>Gas Price</span><span class="lc-val">${liveGasGwei.toFixed(1)} Gwei</span></div><div class="lc-row"><span>Gas Units</span><span class="lc-val">${gas.toLocaleString()}</span></div><div class="lc-row"><span>Cost</span><span class="lc-val">${c.bnb} BNB (~$${c.usd})</span></div><div class="lc-row"><span>BNB Price</span><span class="lc-val">$${liveBnbUsd.toLocaleString()}</span></div></div>`;
+}
+
+// Copy button
+function copyOutput(){
+  const el=document.getElementById("out");
+  const text=el.innerText.replace(/^Copy(ed!?)?\n?/,"");
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=el.querySelector(".copy-btn");
+    if(btn){btn.textContent="Copied!";btn.classList.add("copied");setTimeout(()=>{btn.textContent="Copy";btn.classList.remove("copied")},1500)}
+  });
+}
+
 const T=[
 // ── BNB CHAIN MCP (47) ──
 {id:"latest-block",tab:"bnb",cat:"Blocks",name:"Get Latest Block",desc:"Get the most recent block on BSC",src:"bnbchain-mcp",mode:"live",params:[],help:"Every 3 seconds, BSC produces a new block containing all transactions. This shows the latest block number, timestamp, and how many transactions were included."},
@@ -250,19 +366,21 @@ const TABS=[
 {id:"defi",label:"DeFi"},
 {id:"agents",label:"8004scan"},
 {id:"a2a",label:"A2A Agents"},
+{id:"learn",label:"Learn"},
 ];
 
 let curTab="bnb",curTool=null;
 
 function renderTabs(){
   document.getElementById("tabs").innerHTML=TABS.map(t=>{
-    const c=t.id==="a2a"?"":T.filter(x=>x.tab===t.id).length;
+    const c=(t.id==="a2a"||t.id==="learn")?"":T.filter(x=>x.tab===t.id).length;
     return `<button class="tab${curTab===t.id?" on":""}" onclick="switchTab('${t.id}')">${t.label}${c?`<span class="cnt">${c}</span>`:""}</button>`;
   }).join("");
 }
 
 function renderSidebar(){
   if(curTab==="a2a"){renderA2ASide();return}
+  if(curTab==="learn"){renderLearnSide();return}
   const q=document.getElementById("q").value.toLowerCase();
   const tools=T.filter(t=>t.tab===curTab&&(!q||t.name.toLowerCase().includes(q)||t.desc.toLowerCase().includes(q)));
   let h="",lc="";
@@ -274,7 +392,8 @@ function renderSidebar(){
 
 function renderPanel(){
   const t=T.find(x=>x.id===curTool);if(!t)return;
-  document.getElementById("pname").innerHTML=t.name+(t.mode==="live"?'<span class="live-badge">LIVE</span>':'<span class="sim-badge">SIMULATION</span>');
+  const netBadge=isTestnet?'<span class="sim-badge" style="background:rgba(246,70,93,.15);color:var(--r)">TESTNET</span>':"";
+  document.getElementById("pname").innerHTML=t.name+(t.mode==="live"?'<span class="live-badge">LIVE</span>':'<span class="sim-badge">SIMULATION</span>')+netBadge;
   document.getElementById("pdesc").textContent=t.desc;
   const repo=t.src==="bnbchain-mcp"?"bnb-chain/bnbchain-mcp":t.src==="binance-mcp"?"TermiX-official/binance-mcp":t.src==="bsc-mcp"?"TermiX-official/bsc-mcp":"heurist-network/heurist-mesh-mcp-server";
   document.getElementById("psrc").innerHTML=`Source: <a href="https://github.com/${repo}" target="_blank">${t.src}</a>`;
@@ -291,12 +410,13 @@ function renderPanel(){
   let info=t.help?`<div class="help">${t.help}</div>`:"";
   if(t.mode==="live")info+=`<pre class="inf">${t.params.length?"Fill in the fields and click Run. Use 'Try Example' for quick test data.":"No input needed — just click Run!"}</pre>`;
   else info+=`<pre class="inf">Click Simulate to see a realistic demo of what this tool does in production.</pre>`;
-  document.getElementById("out").innerHTML=info;
+  out(info,false);
 }
 function fillDemo(){const t=T.find(x=>x.id===curTool);if(!t)return;t.params.forEach(p=>{if(p.ex){const el=document.getElementById("p-"+p.k);if(el)el.value=p.ex}})}
 
 function switchTab(id){curTab=id;curTool=null;renderTabs();renderSidebar();
   if(id==="a2a"){renderA2APanel();return}
+  if(id==="learn"){renderLearnPanel();return}
   document.getElementById("pname").textContent="Select a tool";
   document.getElementById("pdesc").textContent="Pick a tool from the "+TABS.find(t=>t.id===id).label+" category.";
   document.getElementById("psrc").innerHTML="";
@@ -309,12 +429,66 @@ function gv(k){const el=document.getElementById("p-"+k);return el?el.value.trim(
 function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
 
 // API
-async function rpc(m,p=[]){const r=await fetch("/api/rpc",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({method:m,params:p})});return r.json()}
+// Settings & Testnet
+let isTestnet=localStorage.getItem("bob-testnet")==="1";
+function getKey(k){return localStorage.getItem("bob-key-"+k)||""}
+function setKey(k,v){if(v)localStorage.setItem("bob-key-"+k,v);else localStorage.removeItem("bob-key-"+k)}
+function hasKey(k){return!!getKey(k)}
+
+function updateTestnetUI(){
+  document.getElementById("testnet-bar").classList.toggle("on",isTestnet);
+  const badge=document.querySelector(".badge");
+  if(badge)badge.textContent=isTestnet?"TESTNET":"116+ Tools";
+}
+setTimeout(updateTestnetUI,0);
+
+function toggleTestnet(){
+  isTestnet=!isTestnet;
+  localStorage.setItem("bob-testnet",isTestnet?"1":"0");
+  updateTestnetUI();
+  const sw=document.getElementById("net-switch");
+  if(sw)sw.classList.toggle("on",isTestnet);
+  // Re-fetch live prices for the new network
+  if(livePricesReady||!isTestnet)fetchLivePrices();
+}
+
+function openSettings(){
+  const bg=document.createElement("div");bg.className="modal-bg";bg.id="settings-modal";
+  bg.onclick=e=>{if(e.target===bg)closeSettings()};
+  const ks=[
+    {id:"binance",label:"Binance API Key",info:"For advanced market data. Get one at binance.com/en/my/settings/api-management"},
+    {id:"heurist",label:"Heurist API Key",info:"For AI-powered tools (sentiment, NFT valuation). Get at heurist.xyz"},
+    {id:"moralis",label:"Moralis API Key",info:"For extended on-chain data. Get at moralis.io"},
+  ];
+  const keyFields=ks.map(k=>`<div class="sfield"><label>${k.label} <span class="key-status ${hasKey(k.id)?"has":"no"}"></span></label><input type="password" id="sk-${k.id}" value="${getKey(k.id)}" placeholder="Enter key..."><div class="sinfo">${k.info}</div></div>`).join("");
+  bg.innerHTML=`<div class="smodal"><h2>&#9881; Settings</h2><div class="sgroup"><div class="sgroup-title">Network</div><div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0"><div class="net-toggle"><span>BSC Mainnet</span><div class="switch${isTestnet?" on":""}" id="net-switch" onclick="toggleTestnet()"></div><span>Testnet</span></div><div style="font-size:10px;color:var(--t3)">Chain ID: ${isTestnet?97:56}</div></div><div class="sinfo" style="margin-top:4px">Testnet uses free test BNB — perfect for trying write operations (deploy tokens, send TX) without real money.</div></div><div class="sgroup"><div class="sgroup-title">API Keys</div><div class="sinfo" style="margin-bottom:8px">Keys are stored <b>only in your browser</b> (localStorage). They never leave your device and are never sent to our server.</div>${keyFields}</div><div class="sgroup"><div class="sgroup-title">Wallet (Testnet only)</div><div class="sfield"><label>Private Key <span class="key-status ${hasKey("privkey")?"has":"no"}"></span></label><input type="password" id="sk-privkey" value="${getKey("privkey")}" placeholder="0x..."><div class="swarn">&#9888; Only use a TESTNET wallet! Never enter a mainnet private key with real funds.</div></div></div><div class="sbtn-row"><button class="sbtn sbtn-save" onclick="saveSettings()">Save</button><button class="sbtn sbtn-clear" onclick="clearSettings()">Clear All</button><button class="sbtn sbtn-close" onclick="closeSettings()">Close</button></div></div>`;
+  document.body.appendChild(bg);
+}
+
+function saveSettings(){
+  ["binance","heurist","moralis","privkey"].forEach(k=>{
+    const el=document.getElementById("sk-"+k);
+    if(el)setKey(k,el.value.trim());
+  });
+  closeSettings();
+}
+
+function clearSettings(){
+  if(!confirm("Clear all saved keys?"))return;
+  ["binance","heurist","moralis","privkey"].forEach(k=>localStorage.removeItem("bob-key-"+k));
+  isTestnet=false;localStorage.setItem("bob-testnet","0");
+  updateTestnetUI();
+  closeSettings();
+}
+
+function closeSettings(){const el=document.getElementById("settings-modal");if(el)el.remove()}
+
+async function rpc(m,p=[]){const r=await fetch("/api/rpc",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({method:m,params:p,testnet:isTestnet})});return r.json()}
 async function proxy(url){const r=await fetch("/api/proxy",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({url})});return r.json()}
 async function binance(path){return proxy("https://data-api.binance.vision"+path)}
 async function fbin(path){return proxy("https://fapi.binance.com"+path).then(d=>{if(d.code===0)return proxy("https://fapi.binance.vision"+path);return d})}
 
-function out(h){document.getElementById("out").innerHTML=h}
+function out(h,showCopy=true){document.getElementById("out").innerHTML=(showCopy?'<button class="copy-btn" onclick="copyOutput()">Copy</button>':"")+h}
 function pre(t,c="ok"){out(`<pre class="${c}">${esc(typeof t==="object"?JSON.stringify(t,null,2):String(t))}</pre>`)}
 function hexN(h){return parseInt(h,16)}
 function wei(w){return(parseInt(w,16)/1e18).toFixed(6)}
@@ -327,7 +501,7 @@ function simOut(t){
   const s=t.sim;
   const repo=t.src==="bnbchain-mcp"?"bnb-chain/bnbchain-mcp":t.src==="binance-mcp"?"TermiX-official/binance-mcp":t.src==="bsc-mcp"?"TermiX-official/bsc-mcp":"heurist-network/heurist-mesh-mcp-server";
   // Try demo function first
-  if(t.demo){const demoResult=t.demo(t);if(demoResult){out(demoResult);return}}
+  if(t.demo){const demoResult=t.demo(t);if(demoResult){out(demoResult+liveCostBar(t.id));return}}
   // Fallback: generic sim with steps
   const inputs=t.params.map(p=>({l:p.l,v:gv(p.k)||p.ex||p.ph||"(demo)"}));
   let o=`<pre class="sim">DEMO SIMULATION — ${esc(t.name)}\n${"─".repeat(50)}\n\n`;
@@ -337,14 +511,14 @@ function simOut(t){
   o+=`  TX Hash: ${fakeTx()}\n  Block: ${87100000+Math.floor(Math.random()*10000)}\n  Time: ${new Date().toISOString()}\n\n`;
   o+=`${"─".repeat(50)}\n  Cost: ${esc(s.cost)}\n  You need: ${esc(s.needs)}\n\n`;
   o+=`  To use for real:\n  1. Clone: github.com/${repo}\n  2. Add your API keys / private key\n  3. Connect to your AI assistant\n  4. Run with live data!</pre>`;
-  out(o);
+  out(o+liveCostBar(t.id));
 }
 
 // EXEC
 async function exec(){
   const t=T.find(x=>x.id===curTool);if(!t)return;
   if(t.mode==="sim"){simOut(t);return}
-  out('<pre class="inf">Loading...</pre>');
+  out('<pre class="inf">Loading...</pre>',false);
   try{switch(t.id){
     case "latest-block":{const d=await rpc("eth_getBlockByNumber",["latest",false]);const b=d.result;pre(`Block: ${hexN(b.number)}\nHash: ${b.hash}\nTime: ${new Date(hexN(b.timestamp)*1000).toISOString()}\nTXs: ${b.transactions.length}\nGas: ${hexN(b.gasUsed)}\nMiner: ${b.miner}`);break}
     case "block-by-num":{const n=gv("num");if(!n){pre("Enter block number","err");break}const d=await rpc("eth_getBlockByNumber",["0x"+parseInt(n).toString(16),false]);if(!d.result){pre("Not found","err");break}const b=d.result;pre(`Block: ${hexN(b.number)}\nHash: ${b.hash}\nTime: ${new Date(hexN(b.timestamp)*1000).toISOString()}\nTXs: ${b.transactions.length}`);break}
@@ -431,6 +605,133 @@ async function sendA2A(){
   const d=await r.json();if(d.error)pre("Error: "+(d.error.message||d.error),"err");
   else{const txt=d.result?.artifacts?.[0]?.parts?.[0]?.text;pre(txt?"Agent Response:\n\n"+txt:"Response:\n\n"+JSON.stringify(d.result||d,null,2))}
   }catch(e){pre("Connection failed: "+e.message,"err")}
+}
+
+// ── LEARN: Guided paths ──
+const PATHS=[
+{id:"tokens-101",icon:"\uD83E\uDE99",name:"Tokens 101",desc:"Understand how tokens work on BNB Chain",steps:[
+  {tool:"native-balance",title:"Check a Wallet's BNB Balance",text:"Every address on BSC has a native BNB balance. Let's start by checking the Binance Hot Wallet — one of the largest wallets on the chain. Click 'Try Example' then 'Run'.",prefill:{addr:"0x8894E0a0c962CB723c1ef8a1B63d0b8aCD8c202C"}},
+  {tool:"erc20-info",title:"Inspect a Token Contract",text:"Every token (CAKE, USDT, etc.) is a smart contract with basic info: name, symbol, decimals, and total supply. Let's look at PancakeSwap's CAKE token.",prefill:{addr:"0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82"}},
+  {tool:"erc20-balance",title:"Check a Token Balance",text:"Now let's see how much CAKE a specific wallet holds. This reads the token contract's balanceOf() function.",prefill:{token:"0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82",wallet:"0x8b18575c29F842BdA93EEb1Db9F2198D5CC0Ba2f"}},
+  {tool:"sec-token",title:"Security Check the Token",text:"Before buying any token, always run a security check. This scans for honeypots, hidden taxes, mint functions, and ownership risks.",prefill:{addr:"0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82"}},
+  {tool:"create-erc20",title:"Create Your Own Token (Sim)",text:"Now you understand tokens — here's how you'd deploy your own! This simulation shows the full process. On testnet, you could do this for real with test BNB.",prefill:{name:"My First Token",sym:"MFT",supply:"1000000"}},
+]},
+{id:"tx-deep-dive",icon:"\uD83D\uDD0D",name:"Transaction Deep Dive",desc:"Trace a transaction from start to finish",steps:[
+  {tool:"latest-block",title:"See the Latest Block",text:"BSC produces a new block every ~3 seconds. Each block bundles hundreds of transactions. Let's see what the current block looks like.",prefill:{}},
+  {tool:"gas-price",title:"Check Current Gas Price",text:"Every transaction costs gas. Gas price is measured in Gwei (1 BNB = 1 billion Gwei). BSC is cheap — usually 1-5 Gwei.",prefill:{}},
+  {tool:"estimate-gas",title:"Estimate a Transaction's Cost",text:"Before sending a transaction, you can estimate how much gas it will use. A simple BNB transfer costs ~21,000 gas units.",prefill:{to:"0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82"}},
+  {tool:"nonce",title:"Understand the Nonce",text:"Every wallet has a 'nonce' — a counter of how many transactions it has sent. Each new TX must use nonce+1. If a TX is stuck, it's often a nonce issue.",prefill:{addr:"0x8894E0a0c962CB723c1ef8a1B63d0b8aCD8c202C"}},
+  {tool:"transfer-native",title:"Send BNB (Sim)",text:"Here's how a BNB transfer works under the hood. In testnet mode with a private key, you could actually execute this!",prefill:{to:"0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",amt:"0.1"}},
+]},
+{id:"security-audit",icon:"\uD83D\uDEE1\uFE0F",name:"Security Audit",desc:"Learn to spot scams and protect yourself",steps:[
+  {tool:"sec-token",title:"Scan a Token for Risks",text:"GoPlus Labs scans tokens for common scam patterns: honeypots (can't sell), hidden taxes, owner privileges, proxy contracts. Let's check CAKE — a safe, well-known token.",prefill:{addr:"0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82"}},
+  {tool:"sec-addr",title:"Check if an Address is Malicious",text:"You can check if any address has been flagged for phishing, honeypot activity, or darkweb transactions. Always check before interacting with unknown addresses.",prefill:{addr:"0x8894E0a0c962CB723c1ef8a1B63d0b8aCD8c202C"}},
+  {tool:"is-contract",title:"Is it a Wallet or Contract?",text:"A key safety check: is this address a regular wallet or a smart contract? Contracts can contain tricky logic. Wallets (EOAs) can't.",prefill:{addr:"0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82"}},
+  {tool:"sec-nft",title:"NFT Collection Security",text:"NFT scams are common too. Check if a collection has proxy upgrades, self-destruct functions, or other red flags.",prefill:{addr:"0x0a8901b0E25DEb55A87524f0cC164E9644020EBA"}},
+  {tool:"sec-phish",title:"Phishing Site Detector",text:"Finally, you can check if any URL is a known phishing site. Bookmark this tool — it can save you from losing everything to a fake dApp.",prefill:{url:"pancakeswap.finance"}},
+]},
+{id:"defi-explorer",icon:"\uD83D\uDCC8",name:"DeFi Explorer",desc:"Navigate the BNB Chain DeFi ecosystem",steps:[
+  {tool:"bnb-price",title:"Get BNB's Current Price",text:"Start with the basics — what's BNB worth right now? This pulls live data from CoinGecko: USD, EUR, BTC pairs + 24h change.",prefill:{}},
+  {tool:"bn-price",title:"Binance Price Ticker",text:"Binance's own API gives you real-time prices with more precision. Try BNBUSDT to see the exact trading price.",prefill:{sym:"BNBUSDT"}},
+  {tool:"token-search",title:"Search for Any Token",text:"Looking for a specific token? Search by name to find it on CoinGecko, or paste a contract address for DexScreener data.",prefill:{q:"PancakeSwap"}},
+  {tool:"top-pools",title:"Top BSC Liquidity Pools",text:"Liquidity pools are where DeFi trading happens. These are the most active pools on BSC right now — sorted by volume.",prefill:{}},
+  {tool:"new-pairs",title:"Newly Created Pairs",text:"The freshest trading pairs on BSC. New pairs can be opportunities (early entry) or risks (rug pulls). Always DYOR and use the Security tools!",prefill:{}},
+]},
+{id:"ai-agents",icon:"\uD83E\uDD16",name:"AI Agents on BNB",desc:"Discover the AI agent ecosystem on BNB Chain",steps:[
+  {tool:"agent-list",title:"Browse Top AI Agents",text:"BNB Chain has its own AI agent registry (ERC-8004). Let's see the top-rated agents — each one is an NFT with on-chain identity.",prefill:{}},
+  {tool:"agent-detail",title:"Deep Dive into an Agent",text:"Let's inspect BOB (Agent #36035). You'll see the score, health status, supported protocols (A2A, MCP), and owner info.",prefill:{id:"36035"}},
+  {tool:"8004-agent",title:"Read On-Chain Agent Data",text:"ERC-8004 stores agent metadata directly on the blockchain. This reads the smart contract to get the raw on-chain data.",prefill:{id:"36035"}},
+  {tool:"agent-search",title:"Search for Agents",text:"Looking for a specific type of agent? Search by name or keyword across the entire BNB Chain agent registry.",prefill:{q:"BOB"}},
+]},
+];
+
+let curPath=null,curStep=0;
+
+function renderLearnSide(){
+  let h='<div class="cat">Learning Paths</div>';
+  PATHS.forEach(p=>{
+    const done=parseInt(localStorage.getItem("lp-"+p.id)||"0");
+    h+=`<button class="lp-card${curPath===p.id?" on":""}" onclick="pickPath('${p.id}')"><div class="lp-icon">${p.icon}</div><div class="lp-name">${p.name}</div><div class="lp-desc">${p.desc}</div><div class="lp-steps">${done}/${p.steps.length} completed</div></button>`;
+  });
+  document.getElementById("side").innerHTML=h;
+}
+
+function renderLearnPanel(){
+  if(!curPath){
+    document.getElementById("pname").innerHTML='Learn BNB Chain';
+    document.getElementById("pdesc").textContent='Guided tours through BNB Chain tools — pick a path from the sidebar.';
+    document.getElementById("psrc").innerHTML='';
+    document.getElementById("pform").style.display="none";
+    let h='<div style="padding:20px"><div style="font-size:13px;font-weight:700;margin-bottom:12px">Choose a learning path:</div>';
+    PATHS.forEach(p=>{
+      h+=`<div style="display:flex;align-items:center;gap:12px;padding:10px;cursor:pointer;border:1px solid var(--b);border-radius:8px;margin-bottom:8px;transition:.15s" onmouseover="this.style.borderColor='var(--y)'" onmouseout="this.style.borderColor='var(--b)'" onclick="pickPath('${p.id}')"><div style="font-size:28px">${p.icon}</div><div><div style="font-size:12px;font-weight:700">${p.name}</div><div style="font-size:11px;color:var(--t2)">${p.desc}</div><div style="font-size:10px;color:var(--t3);margin-top:2px">${p.steps.length} steps</div></div></div>`;
+    });
+    h+='</div>';
+    out(h,false);
+    return;
+  }
+  const path=PATHS.find(p=>p.id===curPath);
+  if(!path)return;
+  const step=path.steps[curStep];
+  const t=T.find(x=>x.id===step.tool);
+  if(!t)return;
+
+  // Header
+  document.getElementById("pname").innerHTML=`${path.icon} ${path.name} <span style="font-size:11px;color:var(--t2);font-weight:400">Step ${curStep+1}/${path.steps.length}</span>`;
+  document.getElementById("pdesc").textContent=step.title;
+  document.getElementById("psrc").innerHTML='';
+
+  // Progress bar
+  const progress=((curStep)/(path.steps.length))*100;
+
+  // Form — same as renderPanel but with prefilled values
+  const pf=document.getElementById("pform");
+  let fh=t.params.map(p=>{
+    const val=step.prefill[p.k]||"";
+    let r=`<div class="prow"><label>${p.l}</label><div class="prow-wrap"><input type="text" id="p-${p.k}" value="${val}" placeholder="${p.ph}" onkeydown="if(event.key==='Enter')exec()">`;
+    r+=`</div></div>`;return r;
+  }).join("");
+  fh+=`<button class="run" onclick="execLearnStep()">${t.mode==="live"?"Run":"Simulate"}</button>`;
+  pf.innerHTML=fh;pf.style.display="flex";
+
+  // Step guide + nav
+  let oh=`<div class="lp-progress"><div class="lp-progress-fill" style="width:${progress}%"></div></div>`;
+  oh+=`<div class="lp-step"><div class="lp-step-head"><span class="lp-step-num cur">${curStep+1}</span><span class="lp-step-title">${step.title}</span></div><div class="lp-step-text">${step.text}</div></div>`;
+  if(t.help)oh+=`<div class="help">${t.help}</div>`;
+  oh+=`<div class="lp-nav">`;
+  if(curStep>0)oh+=`<button onclick="learnPrev()" style="background:var(--s2);color:var(--t2);border:1px solid var(--b)">&larr; Previous</button>`;
+  oh+=`<div style="flex:1"></div>`;
+  if(curStep<path.steps.length-1)oh+=`<button onclick="learnNext()" style="background:var(--yd);color:var(--y);border:1px solid rgba(240,185,11,.3)">Next &rarr;</button>`;
+  else oh+=`<button onclick="learnComplete()" style="background:var(--g);color:#000">Complete Path!</button>`;
+  oh+=`</div>`;
+  out(oh,false);
+}
+
+function pickPath(id){curPath=id;curStep=0;renderLearnSide();renderLearnPanel()}
+
+function execLearnStep(){
+  const path=PATHS.find(p=>p.id===curPath);
+  if(!path)return;
+  // Mark step progress
+  const done=Math.max(curStep+1,parseInt(localStorage.getItem("lp-"+curPath)||"0"));
+  localStorage.setItem("lp-"+curPath,String(done));
+  renderLearnSide();
+  // Run the actual tool
+  curTool=path.steps[curStep].tool;
+  exec();
+}
+
+function learnNext(){curStep++;renderLearnPanel()}
+function learnPrev(){curStep--;renderLearnPanel()}
+function learnComplete(){
+  const path=PATHS.find(p=>p.id===curPath);
+  if(!path)return;
+  localStorage.setItem("lp-"+curPath,String(path.steps.length));
+  renderLearnSide();
+  document.getElementById("pname").innerHTML=`${path.icon} ${path.name} — Complete!`;
+  document.getElementById("pdesc").textContent="You finished this learning path!";
+  document.getElementById("pform").style.display="none";
+  out(`<div style="text-align:center;padding:40px 20px"><div style="font-size:48px;margin-bottom:12px">&#127881;</div><div style="font-size:16px;font-weight:700;margin-bottom:8px">Path Complete!</div><div style="font-size:12px;color:var(--t2);margin-bottom:20px">You've completed "${path.name}". Try another path or explore tools on your own!</div><div style="display:flex;gap:8px;justify-content:center"><button onclick="curPath=null;renderLearnPanel()" class="run" style="background:var(--yd);color:var(--y)">All Paths</button><button onclick="switchTab('bnb')" class="run">Explore Tools</button></div></div>`,false);
 }
 
 renderTabs();renderSidebar();

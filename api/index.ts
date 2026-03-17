@@ -10,6 +10,7 @@ const BOB_TOKEN = "0x51363F073b1E4920fdA7AA9E9d84BA97EdE1560e";
 const AGENT_IDS = [36035, 36336, 37092, 37093, 37103, 40908];
 const BASE_URL = "https://bobbuildonbnb.vercel.app";
 const BSC_RPC = "https://bsc-dataseed.binance.org";
+const BSC_TESTNET_RPC = "https://data-seed-prebsc-1-s1.binance.org:8545";
 
 const AGENT_CARD = {
   name: "BOB Build On BNB",
@@ -31,8 +32,9 @@ function json(res: VercelResponse, data: any, status = 200) {
   return res.status(status).setHeader("Access-Control-Allow-Origin", "*").json(data);
 }
 
-async function bscRpc(method: string, params: any[] = []) {
-  const r = await fetch(BSC_RPC, {
+async function bscRpc(method: string, params: any[] = [], testnet = false) {
+  const rpcUrl = testnet ? BSC_TESTNET_RPC : BSC_RPC;
+  const r = await fetch(rpcUrl, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ jsonrpc: "2.0", id: 1, method, params }),
@@ -167,9 +169,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   // BSC RPC proxy
   if (path === "/api/rpc" && req.method === "POST") {
-    const { method: m, params } = req.body || {};
+    const { method: m, params, testnet } = req.body || {};
     if (!m) return json(res, { error: "method required" }, 400);
-    return json(res, await bscRpc(m, params || []));
+    return json(res, await bscRpc(m, params || [], !!testnet));
   }
 
   // Generic API proxy (whitelist)
