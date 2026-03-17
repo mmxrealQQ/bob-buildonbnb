@@ -114,7 +114,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       services: [
         { name: "A2A", version: "0.3.0", endpoint: `${BASE_URL}/.well-known/agent-card.json` },
         { name: "agentWallet", endpoint: `eip155:56:${WALLET}` },
-        { name: "MCP", version: "2026-03-17", endpoint: BASE_URL },
+        { name: "MCP", version: "2026-03-17", endpoint: `${BASE_URL}/api/mcp` },
         { name: "Web", endpoint: BASE_URL },
       ],
       registrations: AGENT_IDS.map((id) => ({ agentId: id, agentRegistry: "eip155:56:0x8004a169fb4a3325136eb29fa0ceb6d2e539a432" })),
@@ -130,6 +130,39 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const { endpoint, message } = req.body || {};
     if (!endpoint) return json(res, { error: "endpoint required" }, 400);
     return json(res, await proxyA2A(endpoint, message || "Hello!"));
+  }
+
+  // MCP (Streamable HTTP)
+  if (path === "/api/mcp" && req.method === "POST") {
+    const { method, id } = req.body || {};
+    if (method === "initialize") {
+      return json(res, {
+        jsonrpc: "2.0", id,
+        result: {
+          protocolVersion: "2025-03-26",
+          serverInfo: { name: "BOB Build On BNB", version: "1.1.0" },
+          capabilities: { tools: { listChanged: false } },
+        },
+      });
+    }
+    if (method === "tools/list") {
+      return json(res, {
+        jsonrpc: "2.0", id,
+        result: {
+          tools: [
+            { name: "get_latest_block", description: "Get the latest BSC block number and details", inputSchema: { type: "object", properties: {} } },
+            { name: "get_bnb_balance", description: "Get native BNB balance of any address", inputSchema: { type: "object", properties: { address: { type: "string" } }, required: ["address"] } },
+            { name: "get_token_info", description: "Get ERC-20 token name, symbol, decimals, supply", inputSchema: { type: "object", properties: { contract: { type: "string" } }, required: ["contract"] } },
+            { name: "token_security", description: "Security scan: honeypot, tax, ownership", inputSchema: { type: "object", properties: { contract: { type: "string" } }, required: ["contract"] } },
+            { name: "bnb_price", description: "Current BNB/USD price from CoinGecko", inputSchema: { type: "object", properties: {} } },
+          ],
+        },
+      });
+    }
+    return json(res, { jsonrpc: "2.0", id, error: { code: -32601, message: `Unknown method: ${method}` } });
+  }
+  if (path === "/api/mcp" && req.method === "GET") {
+    return json(res, { name: "BOB Build On BNB", version: "1.1.0", protocol: "MCP", tools: 116 });
   }
 
   // BSC RPC proxy
