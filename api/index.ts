@@ -84,7 +84,13 @@ const PROXY_HOSTS = [
   "four.meme",
   "mesh.heurist.xyz",
   "api.binance.com",
+  "api1.binance.com",
+  "api2.binance.com",
+  "api3.binance.com",
+  "api4.binance.com",
+  "data-api.binance.vision",
   "fapi.binance.com",
+  "fapi.binance.vision",
 ];
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {

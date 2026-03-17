@@ -248,8 +248,8 @@ function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").repl
 // API
 async function rpc(m,p=[]){const r=await fetch("/api/rpc",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({method:m,params:p})});return r.json()}
 async function proxy(url){const r=await fetch("/api/proxy",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({url})});return r.json()}
-async function binance(path){return proxy("https://api.binance.com"+path)}
-async function fbin(path){return proxy("https://fapi.binance.com"+path)}
+async function binance(path){return proxy("https://data-api.binance.vision"+path)}
+async function fbin(path){return proxy("https://fapi.binance.com"+path).then(d=>{if(d.code===0)return proxy("https://fapi.binance.vision"+path);return d})}
 
 function out(h){document.getElementById("out").innerHTML=h}
 function pre(t,c="ok"){out(`<pre class="${c}">${esc(typeof t==="object"?JSON.stringify(t,null,2):String(t))}</pre>`)}
