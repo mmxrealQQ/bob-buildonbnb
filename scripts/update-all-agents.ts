@@ -29,10 +29,10 @@ function buildMetadata(agentId: number) {
   return {
     type: "https://eips.ethereum.org/EIPS/eip-8004#registration-v1",
     name: "BOB Build On BNB",
-    description: "If you can't build you won't be rich. The BNB Chain AI Agent — your gateway to everything on BSC. MCP tools, A2A communication, on-chain data, agent discovery. One agent, all of BNB.",
+    description: "If you can't build you won't be rich. The BNB Chain AI Dashboard — test 116+ MCP tools, explore agents, learn everything about AI on BNB Chain. No wallet, no API key, no setup needed.",
     image: "https://raw.githubusercontent.com/mmxrealQQ/bob-assets/main/bob.jpg",
     active: true,
-    version: "1.0.0",
+    version: "1.1.0",
     role: "builder",
     token: BOB_TOKEN,
     services: [
@@ -45,6 +45,16 @@ function buildMetadata(agentId: number) {
         version: "0.3.0",
         endpoint: "https://bobbuildonbnb.vercel.app",
         agentCard: "https://bobbuildonbnb.vercel.app/.well-known/agent-card.json",
+      },
+      {
+        name: "MCP",
+        version: "1.0.0",
+        endpoint: "https://bobbuildonbnb.vercel.app",
+        description: "116+ BNB Chain tools from 4 MCP servers",
+      },
+      {
+        name: "Web",
+        endpoint: "https://bobbuildonbnb.vercel.app",
       },
     ],
     registrations: [

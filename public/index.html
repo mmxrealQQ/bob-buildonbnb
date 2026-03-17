@@ -56,6 +56,18 @@
     .out pre{font-family:'SF Mono',Monaco,'Cascadia Code',monospace;font-size:11px;line-height:1.6;white-space:pre-wrap;word-break:break-all}
     .out .ok{color:var(--g)}.out .err{color:var(--r)}.out .inf{color:var(--t2)}.out .sim{color:var(--y)}
 
+    .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+    .modal{background:var(--s);border:1px solid var(--b);border-radius:14px;max-width:480px;width:90%;padding:28px;animation:modalIn .25s ease}
+    @keyframes modalIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+    .modal h2{font-size:18px;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+    .modal h2 img{width:28px;height:28px;border-radius:50%}
+    .modal p{font-size:12px;color:var(--t2);margin:8px 0;line-height:1.7}
+    .modal ul{font-size:12px;color:var(--t2);margin:8px 0 12px 16px;line-height:1.8}
+    .modal ul li::marker{color:var(--y)}
+    .modal .mbtn{display:block;width:100%;padding:10px;background:var(--y);color:#000;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;margin-top:16px;transition:.15s}
+    .modal .mbtn:hover{opacity:.9}
+    .modal .mfoot{font-size:10px;color:var(--t3);text-align:center;margin-top:10px}
+
     @media(max-width:768px){
       .main{flex-direction:column;height:auto}
       .side{width:100%;max-height:200px;border-right:none;border-bottom:1px solid var(--b)}
@@ -82,7 +94,10 @@
       <div class="psrc" id="psrc"></div>
     </div>
     <div class="pform" id="pform" style="display:none"></div>
-    <div class="out" id="out"><pre class="inf">Pick any tool from the left sidebar and click Run.</pre></div>
+    <div class="out" id="out"><pre class="inf">Pick any tool from the left sidebar and click Run to try it.
+
+Green dot = Live — makes real API calls, returns live data
+Gray dot  = Simulation — shows what the tool does and what you need to run it</pre></div>
   </div>
 </div>
 
@@ -196,7 +211,7 @@ const TABS=[
 {id:"security",label:"Security"},
 {id:"defi",label:"DeFi"},
 {id:"agents",label:"8004scan"},
-{id:"a2a",label:"A2A Chat"},
+{id:"a2a",label:"A2A Agents"},
 ];
 
 let curTab="bnb",curTool=null;
@@ -229,7 +244,7 @@ function renderPanel(){
   let h=t.params.map(p=>`<div class="prow"><label>${p.l}</label><input type="text" id="p-${p.k}" placeholder="${p.ph}" onkeydown="if(event.key==='Enter')exec()"></div>`).join("");
   h+=`<button class="run" onclick="exec()">${t.mode==="live"?"Run":"Simulate"}</button>`;
   pf.innerHTML=h;pf.style.display="flex";
-  document.getElementById("out").innerHTML=`<pre class="inf">Ready. Click ${t.mode==="live"?"Run":"Simulate"}.</pre>`;
+  document.getElementById("out").innerHTML=t.mode==="live"?`<pre class="inf">This tool calls a real API and returns live data.\n${t.params.length?"Fill in the fields above and click Run.":"No input needed — just click Run!"}</pre>`:`<pre class="inf">This tool requires a local MCP server or API key.\nClick Simulate to see what it does, what it costs, and what you need.</pre>`;
 }
 
 function switchTab(id){curTab=id;curTool=null;renderTabs();renderSidebar();
@@ -260,7 +275,8 @@ function decStr(h){try{const hex=h.slice(130);const len=parseInt(hex.slice(0,64)
 
 function simOut(t){
   const s=t.sim;
-  out(`<pre class="sim">SIMULATION MODE\n${"─".repeat(40)}\n\nTool: ${esc(t.name)}\nSource: ${esc(t.src)}\n\nWhat it does:\n  ${esc(s.does)}\n\nEstimated cost:\n  ${esc(s.cost)}\n\nRequirements:\n  ${esc(s.needs)}\n${t.params.length?"\nYour inputs:\n"+t.params.map(p=>"  "+p.l+": "+(gv(p.k)||"(empty)")).join("\n")+"\n":""}\n${"─".repeat(40)}\nTo use this for real, run the ${esc(t.src)}\nMCP server locally with your own keys.\nGitHub: github.com/${t.src==="bnbchain-mcp"?"bnb-chain/bnbchain-mcp":t.src==="binance-mcp"?"TermiX-official/binance-mcp":t.src==="bsc-mcp"?"TermiX-official/bsc-mcp":"heurist-network/heurist-mesh-mcp-server"}</pre>`);
+  const repo=t.src==="bnbchain-mcp"?"bnb-chain/bnbchain-mcp":t.src==="binance-mcp"?"TermiX-official/binance-mcp":t.src==="bsc-mcp"?"TermiX-official/bsc-mcp":"heurist-network/heurist-mesh-mcp-server";
+  out(`<pre class="sim">SIMULATION — What this tool would do in production\n${"─".repeat(50)}\n\n  Tool:         ${esc(t.name)}\n  MCP Server:   ${esc(t.src)}\n\n  What it does:\n  ${esc(s.does)}\n\n  Cost:         ${esc(s.cost)}\n  You need:     ${esc(s.needs)}\n${t.params.length?"\n  Your inputs:\n"+t.params.map(p=>"    "+p.l+": "+(gv(p.k)||"(not provided)")).join("\n")+"\n":""}\n${"─".repeat(50)}\n\n  How to use it for real:\n  1. Clone the MCP server: github.com/${repo}\n  2. Install dependencies and add your API keys\n  3. Connect it to your AI assistant (Claude, etc.)\n  4. The tool will then work with live data!</pre>`);
 }
 
 // EXEC
@@ -332,39 +348,38 @@ async function exec(){
 
 // A2A
 function renderA2ASide(){
-  document.getElementById("side").innerHTML=`<div class="cat">Your Agent</div><button class="item on" onclick="pickA2A('/api/a2a','BOB')"><span class="dot live"></span>BOB Build On BNB</button><div class="cat">BSC A2A Agents</div><div id="a2a-list" style="padding:4px 12px;font-size:10px;color:var(--t3)">Loading...</div>`;
-  loadAgents();
+  document.getElementById("side").innerHTML=`<div class="cat">Your Agent</div><button class="item on" onclick="pickA2A('/api/a2a','BOB Build On BNB')"><span class="dot live"></span>BOB Build On BNB</button><div class="cat">A2A Info</div><div style="padding:8px 12px;font-size:10px;color:var(--t3);line-height:1.6">A2A (Agent-to-Agent) is Google's protocol for AI agents to communicate. Currently most BSC agents don't respond — the ecosystem is still early. BOB is fully A2A compatible and ready to chat!</div>`;
 }
 function renderA2APanel(){
-  document.getElementById("pname").textContent="A2A Agent Chat";
-  document.getElementById("pdesc").textContent="Send messages to AI agents on BNB Chain.";
-  document.getElementById("psrc").innerHTML='<a href="https://google.github.io/A2A/" target="_blank">A2A Protocol</a>';
+  document.getElementById("pname").textContent="A2A Agent Communication";
+  document.getElementById("pdesc").textContent="Send JSON-RPC messages to AI agents using Google's A2A protocol. BOB is fully A2A compatible — try sending a message!";
+  document.getElementById("psrc").innerHTML='<a href="https://google.github.io/A2A/" target="_blank">A2A Protocol Spec</a> · <a href="https://eips.ethereum.org/EIPS/eip-8004" target="_blank">ERC-8004</a>';
   const pf=document.getElementById("pform");
-  pf.innerHTML=`<div class="prow"><label>Endpoint</label><input type="text" id="a2a-ep" value="/api/a2a" placeholder="https://..."></div><div class="prow"><label>Message</label><input type="text" id="a2a-msg" placeholder="Hello!" onkeydown="if(event.key==='Enter')sendA2A()"></div><button class="run" onclick="sendA2A()">Send</button>`;
+  pf.innerHTML=`<div class="prow"><label>Agent Endpoint</label><input type="text" id="a2a-ep" value="/api/a2a" placeholder="https://agent-url.com/a2a"></div><div class="prow"><label>Your Message</label><input type="text" id="a2a-msg" placeholder="Hello! What can you do?" onkeydown="if(event.key==='Enter')sendA2A()"></div><button class="run" onclick="sendA2A()">Send Message</button>`;
   pf.style.display="flex";
-  out('<pre class="inf">Pick an agent and send a message.</pre>');
+  out('<pre class="inf">Send a message to BOB! Try asking: "What tools do you have?" or "Tell me about BNB Chain."</pre>');
 }
-function pickA2A(ep,n){const el=document.getElementById("a2a-ep");if(el)el.value=ep;out(`<pre class="inf">Ready to message ${esc(n)}.</pre>`)}
+function pickA2A(ep,n){const el=document.getElementById("a2a-ep");if(el)el.value=ep;out(`<pre class="inf">Ready to message ${esc(n)}. Type your message and hit Send!</pre>`)}
 async function sendA2A(){
   const ep=document.getElementById("a2a-ep")?.value.trim(),msg=document.getElementById("a2a-msg")?.value.trim()||"Hello!";
-  if(!ep){out('<pre class="err">Enter endpoint.</pre>');return}
-  out('<pre class="inf">Sending...</pre>');
+  if(!ep){out('<pre class="err">Enter an agent endpoint URL.</pre>');return}
+  out('<pre class="inf">Sending message...</pre>');
   try{let r;if(ep.startsWith("/"))r=await fetch(ep,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({jsonrpc:"2.0",id:1,method:"message/send",params:{message:{parts:[{type:"text",text:msg}]}}})});
   else r=await fetch("/api/a2a-proxy",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({endpoint:ep,message:msg})});
   const d=await r.json();if(d.error)pre("Error: "+(d.error.message||d.error),"err");
-  else pre("Response:\n\n"+(d.result?.artifacts?.[0]?.parts?.[0]?.text||JSON.stringify(d.result||d,null,2)));
-  }catch(e){pre("Error: "+e.message,"err")}
-}
-async function loadAgents(){
-  try{const d=await proxy("https://api.8004scan.io/api/v1/agents?chain_id=56&is_testnet=false&has_a2a=true&limit=12&sort_by=total_score&sort_order=desc");
-  const el=document.getElementById("a2a-list");if(!el)return;let h="";
-  for(const a of(d.items||[])){try{const r=await fetch("/api/agent/"+a.token_id);const dt=await r.json();if(!dt.a2a_endpoint)continue;
-  let ep=dt.a2a_endpoint;if(ep.includes("/.well-known/"))ep=ep.split("/.well-known/")[0];
-  h+=`<button class="item" onclick="pickA2A('${esc(ep)}','${esc(a.name||"Agent")}')"><span class="dot live"></span>${esc((a.name||"#"+a.token_id).slice(0,24))}</button>`}catch{}}
-  el.outerHTML=h||'<div style="padding:12px;font-size:10px;color:var(--t3)">None found.</div>'}catch{}
+  else{const txt=d.result?.artifacts?.[0]?.parts?.[0]?.text;pre(txt?"Agent Response:\n\n"+txt:"Response:\n\n"+JSON.stringify(d.result||d,null,2))}
+  }catch(e){pre("Connection failed: "+e.message,"err")}
 }
 
 renderTabs();renderSidebar();
+
+// Welcome popup (first visit only)
+if(!localStorage.getItem("bob-welcomed")){
+  const bg=document.createElement("div");bg.className="modal-bg";bg.id="welcome";
+  bg.innerHTML=`<div class="modal"><h2><img src="https://raw.githubusercontent.com/mmxrealQQ/bob-assets/main/bob.jpg" alt="BOB">Welcome to BOB Build On BNB</h2><p>The open tool testing platform for BNB Chain AI agents. No wallet, no API key, no setup needed.</p><ul><li><b style="color:var(--g)">Green dot</b> = Live tool — runs real on-chain/API calls right now</li><li><b style="color:var(--t3)">Gray dot</b> = Simulation — shows what the tool does, costs & requirements</li><li><b>116+ tools</b> from 4 MCP servers: on-chain data, Binance markets, DeFi, security & more</li><li><b>A2A Chat</b> — talk to AI agents using Google's Agent-to-Agent protocol</li></ul><p>Pick any tool from the sidebar and hit <b>Run</b> to try it out!</p><button class="mbtn" onclick="closeWelcome()">Let's Go</button><div class="mfoot">Built by BOB on BNB Chain</div></div>`;
+  document.body.appendChild(bg);
+}
+function closeWelcome(){localStorage.setItem("bob-welcomed","1");const el=document.getElementById("welcome");if(el)el.remove()}
 </script>
 </body>
 </html>
