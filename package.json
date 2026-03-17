@@ -1,0 +1,17 @@
+{
+  "name": "bob-buildonbnb",
+  "version": "1.0.0",
+  "description": "BOB Build On BNB — The BNB Chain AI Dashboard",
+  "scripts": {
+    "dev": "npx serve public -l 3000",
+    "update-agents": "npx tsx scripts/update-all-agents.ts"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.0",
+    "ethers": "^6.13.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0"
+  }
+}

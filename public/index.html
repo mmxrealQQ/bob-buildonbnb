@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BOB Build On BNB — The BNB Chain AI Dashboard</title>
+  <meta name="description" content="If you can't build you won't be rich. Test 80+ MCP tools, explore AI agents, learn everything about AI on BNB Chain.">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0a0a0a;
+      --surface: #111;
+      --surface2: #1a1a1a;
+      --border: #222;
+      --yellow: #F0B90B;
+      --yellow-dim: rgba(240, 185, 11, 0.15);
+      --green: #0ECB81;
+      --red: #F6465D;
+      --text: #eee;
+      --text2: #888;
+      --radius: 12px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    a { color: var(--yellow); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* Header */
+    .header {
+      border-bottom: 1px solid var(--border);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      background: rgba(10, 10, 10, 0.95);
+      backdrop-filter: blur(10px);
+      z-index: 100;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--yellow);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: #000;
+      font-weight: 900;
+    }
+
+    .header-links {
+      display: flex;
+      gap: 20px;
+      font-size: 14px;
+    }
+
+    .header-links a { color: var(--text2); }
+    .header-links a:hover { color: var(--yellow); text-decoration: none; }
+
+    /* Hero */
+    .hero {
+      text-align: center;
+      padding: 80px 24px 60px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .hero h1 {
+      font-size: 48px;
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+
+    .hero h1 span { color: var(--yellow); }
+
+    .hero .tagline {
+      font-size: 20px;
+      color: var(--text2);
+      margin-bottom: 32px;
+    }
+
+    .hero .motto {
+      display: inline-block;
+      background: var(--yellow-dim);
+      color: var(--yellow);
+      padding: 8px 20px;
+      border-radius: 100px;
+      font-size: 14px;
+      font-weight: 600;
+      border: 1px solid rgba(240, 185, 11, 0.3);
+    }
+
+    /* Stats */
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      padding: 40px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 36px;
+      font-weight: 800;
+      color: var(--yellow);
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: var(--text2);
+      margin-top: 4px;
+    }
+
+    /* Section */
+    .section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 60px 24px;
+    }
+
+    .section-title {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .section-sub {
+      color: var(--text2);
+      margin-bottom: 32px;
+      font-size: 15px;
+    }
+
+    /* MCP Tool Cards */
+    .mcp-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .mcp-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      transition: border-color 0.2s;
+    }
+
+    .mcp-card:hover {
+      border-color: var(--yellow);
+    }
+
+    .mcp-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .mcp-card h3 {
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .tool-count {
+      background: var(--yellow-dim);
+      color: var(--yellow);
+      padding: 4px 10px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .mcp-card p {
+      font-size: 13px;
+      color: var(--text2);
+      margin-bottom: 16px;
+    }
+
+    .mcp-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .tag {
+      background: var(--surface2);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      color: var(--text2);
+      border: 1px solid var(--border);
+    }
+
+    /* Ecosystem */
+    .eco-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 16px;
+    }
+
+    .eco-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+    }
+
+    .eco-card h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .eco-card p {
+      font-size: 13px;
+      color: var(--text2);
+      margin-bottom: 12px;
+    }
+
+    .eco-link {
+      font-size: 13px;
+      color: var(--yellow);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Agent Section */
+    .agent-info {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+    }
+
+    .agent-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .agent-avatar {
+      width: 56px;
+      height: 56px;
+      background: var(--yellow);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      color: #000;
+      font-weight: 900;
+    }
+
+    .agent-name {
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .agent-chain {
+      font-size: 13px;
+      color: var(--text2);
+    }
+
+    .agent-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+    }
+
+    .detail {
+      background: var(--surface2);
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .detail-label {
+      font-size: 11px;
+      color: var(--text2);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .detail-value {
+      font-size: 14px;
+      font-weight: 600;
+      word-break: break-all;
+    }
+
+    .detail-value.mono {
+      font-family: 'SF Mono', Monaco, monospace;
+      font-size: 12px;
+    }
+
+    /* Protocols */
+    .protocols {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 16px;
+    }
+
+    .protocol-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      text-align: center;
+    }
+
+    .protocol-icon {
+      font-size: 36px;
+      margin-bottom: 12px;
+    }
+
+    .protocol-card h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .protocol-card p {
+      font-size: 13px;
+      color: var(--text2);
+    }
+
+    /* Footer */
+    .footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 24px;
+      text-align: center;
+      color: var(--text2);
+      font-size: 13px;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      margin-top: 16px;
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .hero h1 { font-size: 32px; }
+      .stats { flex-wrap: wrap; gap: 24px; }
+      .header-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="logo">
+      <div class="logo-icon">B</div>
+      BOB Build On BNB
+    </div>
+    <div class="header-links">
+      <a href="#tools">Tools</a>
+      <a href="#ecosystem">Ecosystem</a>
+      <a href="#agent">Agent</a>
+      <a href="https://www.8004scan.io/" target="_blank">8004scan</a>
+      <a href="https://www.bnbchain.org" target="_blank">BNB Chain</a>
+    </div>
+  </div>
+
+  <div class="hero">
+    <div class="motto">If you can't build, you won't be rich</div>
+    <h1 style="margin-top: 24px">The <span>BNB Chain</span> AI Dashboard</h1>
+    <p class="tagline">
+      Test 80+ MCP tools, explore AI agents, and learn everything about AI on BNB Chain.
+      One dashboard for builders, agents, and everyone in between.
+    </p>
+  </div>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-value">80+</div>
+      <div class="stat-label">MCP Tools</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">4</div>
+      <div class="stat-label">MCP Servers</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">7</div>
+      <div class="stat-label">Chains</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">A2A</div>
+      <div class="stat-label">Protocol</div>
+    </div>
+  </div>
+
+  <!-- MCP Tools -->
+  <div class="section" id="tools">
+    <h2 class="section-title">MCP Tool Servers</h2>
+    <p class="section-sub">All the MCP servers you can use on BNB Chain — from on-chain data to DeFi to market intelligence.</p>
+
+    <div class="mcp-grid">
+      <div class="mcp-card">
+        <div class="mcp-card-header">
+          <h3>BNB Chain MCP</h3>
+          <span class="tool-count">44+ tools</span>
+        </div>
+        <p>Official multi-chain EVM interaction. Blocks, transactions, tokens, NFTs, contracts, ERC-8004 agent registration, Greenfield decentralized storage.</p>
+        <div class="mcp-tags">
+          <span class="tag">Blocks</span>
+          <span class="tag">Transactions</span>
+          <span class="tag">ERC-20</span>
+          <span class="tag">NFTs</span>
+          <span class="tag">Contracts</span>
+          <span class="tag">ERC-8004</span>
+          <span class="tag">Greenfield</span>
+          <span class="tag">Multi-Chain</span>
+        </div>
+      </div>
+
+      <div class="mcp-card">
+        <div class="mcp-card-header">
+          <h3>Heurist Mesh MCP</h3>
+          <span class="tool-count">20+ tools</span>
+        </div>
+        <p>30+ specialized crypto analytics agents. Trending tokens, Twitter sentiment, funding rates, wallet analysis, web search — all behind one API.</p>
+        <div class="mcp-tags">
+          <span class="tag">Trending Tokens</span>
+          <span class="tag">Twitter Intel</span>
+          <span class="tag">Funding Rates</span>
+          <span class="tag">Wallet Analysis</span>
+          <span class="tag">Web Search</span>
+        </div>
+      </div>
+
+      <div class="mcp-card">
+        <div class="mcp-card-header">
+          <h3>BSC MCP (DeFi)</h3>
+          <span class="tool-count">11+ tools</span>
+        </div>
+        <p>BSC-specific DeFi actions. PancakeSwap V2/V3 swaps, GoPlus security checks, Four.Meme meme coins, liquidity management, token creation.</p>
+        <div class="mcp-tags">
+          <span class="tag">PancakeSwap</span>
+          <span class="tag">GoPlus Security</span>
+          <span class="tag">Meme Coins</span>
+          <span class="tag">Liquidity</span>
+          <span class="tag">Token Deploy</span>
+        </div>
+      </div>
+
+      <div class="mcp-card">
+        <div class="mcp-card-header">
+          <h3>Binance Exchange MCP</h3>
+          <span class="tool-count">5 tools</span>
+        </div>
+        <p>Binance CEX API integration. Portfolio balances, 30-day snapshots, order book depth, market orders, TWAP algorithmic trading.</p>
+        <div class="mcp-tags">
+          <span class="tag">Portfolio</span>
+          <span class="tag">Order Books</span>
+          <span class="tag">Market Orders</span>
+          <span class="tag">TWAP</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ecosystem -->
+  <div class="section" id="ecosystem">
+    <h2 class="section-title">BNB Chain AI Ecosystem</h2>
+    <p class="section-sub">Everything that's happening with AI agents on BNB Chain right now.</p>
+
+    <div class="eco-grid">
+      <div class="eco-card">
+        <h3>BNB Chain Dev Tools</h3>
+        <p>The official developer toolkit for building on BSC, opBNB, and Greenfield. SDKs, APIs, faucets, explorers, and more.</p>
+        <a class="eco-link" href="https://www.bnbchain.org/en/dev-tools?chain=bsc" target="_blank">Explore Dev Tools &rarr;</a>
+      </div>
+
+      <div class="eco-card">
+        <h3>BNB Chain AI Agents</h3>
+        <p>BNB Chain's official AI agent initiative. Infrastructure for autonomous agents on BSC with on-chain identity and reputation.</p>
+        <a class="eco-link" href="https://www.bnbchain.org/en/solutions/ai-agent" target="_blank">Learn More &rarr;</a>
+      </div>
+
+      <div class="eco-card">
+        <h3>ERC-8004 / 8004scan</h3>
+        <p>The Trustless Agents standard. On-chain identity (ERC-721), reputation, and validation for AI agents. 8004scan is the explorer.</p>
+        <a class="eco-link" href="https://www.8004scan.io/" target="_blank">Browse Agents &rarr;</a>
+      </div>
+
+      <div class="eco-card">
+        <h3>A2A Protocol</h3>
+        <p>Agent-to-Agent communication standard (Google). JSON-RPC based, allows agents to discover and message each other.</p>
+        <a class="eco-link" href="https://google.github.io/A2A/" target="_blank">A2A Spec &rarr;</a>
+      </div>
+
+      <div class="eco-card">
+        <h3>MCP Protocol</h3>
+        <p>Model Context Protocol (Anthropic). Standardized way for AI models to interact with tools and data sources.</p>
+        <a class="eco-link" href="https://modelcontextprotocol.io/" target="_blank">MCP Spec &rarr;</a>
+      </div>
+
+      <div class="eco-card">
+        <h3>Replit Agent Builder</h3>
+        <p>Build and deploy AI agents directly from Replit. Quick prototyping, instant deployment, collaborative development.</p>
+        <a class="eco-link" href="https://replit.com/" target="_blank">Start Building &rarr;</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Protocols -->
+  <div class="section">
+    <h2 class="section-title">Supported Protocols</h2>
+    <p class="section-sub">BOB speaks every protocol in the BNB Chain AI stack.</p>
+
+    <div class="protocols">
+      <div class="protocol-card">
+        <div class="protocol-icon">🔗</div>
+        <h3>MCP</h3>
+        <p>Model Context Protocol — connect AI to 80+ on-chain tools</p>
+      </div>
+      <div class="protocol-card">
+        <div class="protocol-icon">🤝</div>
+        <h3>A2A</h3>
+        <p>Agent-to-Agent — discover and talk to other agents</p>
+      </div>
+      <div class="protocol-card">
+        <div class="protocol-icon">🆔</div>
+        <h3>ERC-8004</h3>
+        <p>On-chain identity, reputation, and trust for AI agents</p>
+      </div>
+      <div class="protocol-card">
+        <div class="protocol-icon">🌐</div>
+        <h3>Web</h3>
+        <p>Human-friendly dashboard anyone can use</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Agent Info -->
+  <div class="section" id="agent">
+    <h2 class="section-title">The Agent</h2>
+    <p class="section-sub">One agent, all of BNB Chain AI.</p>
+
+    <div class="agent-info">
+      <div class="agent-header">
+        <div class="agent-avatar">B</div>
+        <div>
+          <div class="agent-name">BOB Build On BNB</div>
+          <div class="agent-chain">BNB Smart Chain &middot; ERC-8004 &middot; A2A + MCP</div>
+        </div>
+      </div>
+
+      <div class="agent-details">
+        <div class="detail">
+          <div class="detail-label">Token</div>
+          <div class="detail-value mono">0x51363F073b1E4920fdA7AA9E9d84BA97EdE1560e</div>
+        </div>
+        <div class="detail">
+          <div class="detail-label">Wallet</div>
+          <div class="detail-value mono">0x8b18575c29F842BdA93EEb1Db9F2198D5CC0Ba2f</div>
+        </div>
+        <div class="detail">
+          <div class="detail-label">Agent IDs</div>
+          <div class="detail-value">#36035 #36336 #37092 #37093 #37103 #40908</div>
+        </div>
+        <div class="detail">
+          <div class="detail-label">Protocols</div>
+          <div class="detail-value">A2A + MCP + ERC-8004</div>
+        </div>
+        <div class="detail">
+          <div class="detail-label">Status</div>
+          <div class="detail-value" style="color: var(--green)">Active</div>
+        </div>
+        <div class="detail">
+          <div class="detail-label">Chain</div>
+          <div class="detail-value">BNB Smart Chain (BSC)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p><strong>BOB Build On BNB</strong> &mdash; If you can't build, you won't be rich.</p>
+    <div class="footer-links">
+      <a href="https://www.8004scan.io/" target="_blank">8004scan</a>
+      <a href="https://www.bnbchain.org" target="_blank">BNB Chain</a>
+      <a href="/.well-known/agent.json">Agent Card</a>
+      <a href="/.well-known/agent-registration.json">Registration</a>
+    </div>
+  </div>
+
+</body>
+</html>
