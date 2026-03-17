@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BOB Build On BNB — The BNB Chain AI Dashboard</title>
   <meta name="description" content="If you can't build you won't be rich. Test 80+ MCP tools, explore AI agents, learn everything about AI on BNB Chain.">
+  <link rel="icon" href="https://raw.githubusercontent.com/mmxrealQQ/bob-assets/main/bob.jpg" type="image/jpeg">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -17,6 +18,7 @@
       --yellow-dim: rgba(240, 185, 11, 0.15);
       --green: #0ECB81;
       --red: #F6465D;
+      --blue: #1E90FF;
       --text: #eee;
       --text2: #888;
       --radius: 12px;
@@ -33,10 +35,9 @@
     a { color: var(--yellow); text-decoration: none; }
     a:hover { text-decoration: underline; }
 
-    /* Header */
     .header {
       border-bottom: 1px solid var(--border);
-      padding: 16px 24px;
+      padding: 12px 24px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -50,168 +51,246 @@
     .logo {
       display: flex;
       align-items: center;
-      gap: 12px;
-      font-size: 18px;
+      gap: 10px;
+      font-size: 17px;
       font-weight: 700;
     }
 
-    .logo-icon {
-      width: 36px;
-      height: 36px;
-      background: var(--yellow);
+    .logo img {
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      color: #000;
-      font-weight: 900;
     }
 
-    .header-links {
-      display: flex;
-      gap: 20px;
-      font-size: 14px;
-    }
-
+    .header-links { display: flex; gap: 20px; font-size: 14px; }
     .header-links a { color: var(--text2); }
     .header-links a:hover { color: var(--yellow); text-decoration: none; }
 
-    /* Hero */
     .hero {
       text-align: center;
-      padding: 80px 24px 60px;
+      padding: 60px 24px 40px;
       max-width: 800px;
       margin: 0 auto;
     }
 
-    .hero h1 {
-      font-size: 48px;
-      font-weight: 800;
-      line-height: 1.1;
-      margin-bottom: 16px;
-    }
-
+    .hero img { width: 80px; height: 80px; border-radius: 50%; margin-bottom: 20px; }
+    .hero h1 { font-size: 42px; font-weight: 800; line-height: 1.1; margin-bottom: 12px; }
     .hero h1 span { color: var(--yellow); }
-
-    .hero .tagline {
-      font-size: 20px;
-      color: var(--text2);
-      margin-bottom: 32px;
-    }
+    .hero .tagline { font-size: 18px; color: var(--text2); margin-bottom: 24px; }
 
     .hero .motto {
       display: inline-block;
       background: var(--yellow-dim);
       color: var(--yellow);
-      padding: 8px 20px;
+      padding: 6px 18px;
       border-radius: 100px;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
       border: 1px solid rgba(240, 185, 11, 0.3);
+      margin-bottom: 20px;
     }
 
-    /* Stats */
-    .stats {
+    /* Tabs */
+    .tabs {
       display: flex;
       justify-content: center;
-      gap: 40px;
-      padding: 40px 24px;
+      gap: 4px;
+      padding: 0 24px;
       border-bottom: 1px solid var(--border);
+      max-width: 1100px;
+      margin: 0 auto;
     }
 
-    .stat {
-      text-align: center;
-    }
-
-    .stat-value {
-      font-size: 36px;
-      font-weight: 800;
-      color: var(--yellow);
-    }
-
-    .stat-label {
-      font-size: 13px;
+    .tab {
+      padding: 12px 20px;
+      font-size: 14px;
+      font-weight: 600;
       color: var(--text2);
-      margin-top: 4px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+      background: none;
+      border-top: none;
+      border-left: none;
+      border-right: none;
     }
 
-    /* Section */
+    .tab:hover { color: var(--text); }
+    .tab.active { color: var(--yellow); border-bottom-color: var(--yellow); }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
     .section {
       max-width: 1100px;
       margin: 0 auto;
-      padding: 60px 24px;
+      padding: 40px 24px;
     }
 
-    .section-title {
-      font-size: 28px;
-      font-weight: 700;
-      margin-bottom: 8px;
+    .section-title { font-size: 24px; font-weight: 700; margin-bottom: 6px; }
+    .section-sub { color: var(--text2); margin-bottom: 24px; font-size: 14px; }
+
+    /* Interactive Tool Tester */
+    .tester {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
     }
 
-    .section-sub {
+    .tester-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .tester-header h3 { font-size: 15px; font-weight: 700; flex: 1; }
+
+    .tester-body { display: flex; min-height: 400px; }
+
+    .tester-sidebar {
+      width: 240px;
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+      max-height: 500px;
+    }
+
+    .tool-group-label {
+      padding: 10px 16px 6px;
+      font-size: 11px;
       color: var(--text2);
-      margin-bottom: 32px;
-      font-size: 15px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 700;
     }
 
-    /* MCP Tool Cards */
+    .tool-item {
+      padding: 8px 16px;
+      font-size: 13px;
+      cursor: pointer;
+      color: var(--text2);
+      transition: all 0.15s;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+    }
+
+    .tool-item:hover { background: var(--surface2); color: var(--text); }
+    .tool-item.active { background: var(--yellow-dim); color: var(--yellow); }
+
+    .tester-main { flex: 1; display: flex; flex-direction: column; }
+
+    .tester-input {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tester-input label {
+      display: block;
+      font-size: 12px;
+      color: var(--text2);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .tester-input input, .tester-input select {
+      flex: 1;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: var(--text);
+      font-size: 14px;
+      font-family: 'SF Mono', Monaco, monospace;
+      outline: none;
+    }
+
+    .tester-input input:focus { border-color: var(--yellow); }
+
+    .btn {
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: none;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-primary {
+      background: var(--yellow);
+      color: #000;
+    }
+
+    .btn-primary:hover { opacity: 0.9; }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .tester-output {
+      flex: 1;
+      padding: 16px 20px;
+      overflow-y: auto;
+      max-height: 350px;
+    }
+
+    .tester-output pre {
+      font-family: 'SF Mono', Monaco, monospace;
+      font-size: 12px;
+      line-height: 1.5;
+      color: var(--green);
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .tester-output .error { color: var(--red); }
+    .tester-output .info { color: var(--text2); }
+
+    /* MCP Cards */
     .mcp-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 12px;
+      margin-top: 20px;
     }
 
     .mcp-card {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 24px;
+      padding: 20px;
       transition: border-color 0.2s;
     }
 
-    .mcp-card:hover {
-      border-color: var(--yellow);
-    }
-
-    .mcp-card-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 12px;
-    }
-
-    .mcp-card h3 {
-      font-size: 16px;
-      font-weight: 700;
-    }
+    .mcp-card:hover { border-color: var(--yellow); }
+    .mcp-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
 
     .tool-count {
       background: var(--yellow-dim);
       color: var(--yellow);
-      padding: 4px 10px;
+      padding: 2px 8px;
       border-radius: 100px;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 700;
+      margin-left: 8px;
     }
 
-    .mcp-card p {
-      font-size: 13px;
-      color: var(--text2);
-      margin-bottom: 16px;
-    }
+    .mcp-card p { font-size: 12px; color: var(--text2); margin-bottom: 10px; }
 
-    .mcp-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
+    .mcp-tags { display: flex; flex-wrap: wrap; gap: 4px; }
 
     .tag {
       background: var(--surface2);
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 10px;
       color: var(--text2);
       border: 1px solid var(--border);
     }
@@ -219,161 +298,78 @@
     /* Ecosystem */
     .eco-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 12px;
     }
 
     .eco-card {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 24px;
+      padding: 20px;
     }
 
-    .eco-card h3 {
-      font-size: 16px;
-      font-weight: 700;
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+    .eco-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+    .eco-card p { font-size: 12px; color: var(--text2); margin-bottom: 10px; }
+    .eco-link { font-size: 12px; color: var(--yellow); }
 
-    .eco-card p {
-      font-size: 13px;
-      color: var(--text2);
-      margin-bottom: 12px;
-    }
-
-    .eco-link {
-      font-size: 13px;
-      color: var(--yellow);
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    /* Agent Section */
+    /* Agent Info */
     .agent-info {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 32px;
+      padding: 24px;
     }
 
     .agent-header {
       display: flex;
       align-items: center;
-      gap: 16px;
-      margin-bottom: 24px;
+      gap: 14px;
+      margin-bottom: 20px;
     }
 
-    .agent-avatar {
-      width: 56px;
-      height: 56px;
-      background: var(--yellow);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 28px;
-      color: #000;
-      font-weight: 900;
-    }
-
-    .agent-name {
-      font-size: 22px;
-      font-weight: 700;
-    }
-
-    .agent-chain {
-      font-size: 13px;
-      color: var(--text2);
-    }
+    .agent-header img { width: 48px; height: 48px; border-radius: 50%; }
+    .agent-name { font-size: 20px; font-weight: 700; }
+    .agent-chain { font-size: 12px; color: var(--text2); }
 
     .agent-details {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
     }
 
     .detail {
       background: var(--surface2);
       border-radius: 8px;
-      padding: 16px;
+      padding: 14px;
     }
 
     .detail-label {
-      font-size: 11px;
+      font-size: 10px;
       color: var(--text2);
       text-transform: uppercase;
       letter-spacing: 0.5px;
       margin-bottom: 4px;
     }
 
-    .detail-value {
-      font-size: 14px;
-      font-weight: 600;
-      word-break: break-all;
-    }
+    .detail-value { font-size: 13px; font-weight: 600; word-break: break-all; }
+    .detail-value.mono { font-family: 'SF Mono', Monaco, monospace; font-size: 11px; }
 
-    .detail-value.mono {
-      font-family: 'SF Mono', Monaco, monospace;
+    .footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 24px;
+      text-align: center;
+      color: var(--text2);
       font-size: 12px;
     }
 
-    /* Protocols */
-    .protocols {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 16px;
-    }
+    .footer-links { display: flex; justify-content: center; gap: 20px; margin-top: 12px; }
 
-    .protocol-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 24px;
-      text-align: center;
-    }
-
-    .protocol-icon {
-      font-size: 36px;
-      margin-bottom: 12px;
-    }
-
-    .protocol-card h3 {
-      font-size: 16px;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-
-    .protocol-card p {
-      font-size: 13px;
-      color: var(--text2);
-    }
-
-    /* Footer */
-    .footer {
-      border-top: 1px solid var(--border);
-      padding: 40px 24px;
-      text-align: center;
-      color: var(--text2);
-      font-size: 13px;
-    }
-
-    .footer-links {
-      display: flex;
-      justify-content: center;
-      gap: 24px;
-      margin-top: 16px;
-    }
-
-    /* Responsive */
-    @media (max-width: 640px) {
-      .hero h1 { font-size: 32px; }
-      .stats { flex-wrap: wrap; gap: 24px; }
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 28px; }
       .header-links { display: none; }
+      .tester-body { flex-direction: column; }
+      .tester-sidebar { width: 100%; max-height: 200px; border-right: none; border-bottom: 1px solid var(--border); }
     }
   </style>
 </head>
@@ -381,241 +377,464 @@
 
   <div class="header">
     <div class="logo">
-      <div class="logo-icon">B</div>
+      <img src="https://raw.githubusercontent.com/mmxrealQQ/bob-assets/main/bob.jpg" alt="BOB">
       BOB Build On BNB
     </div>
     <div class="header-links">
-      <a href="#tools">Tools</a>
-      <a href="#ecosystem">Ecosystem</a>
-      <a href="#agent">Agent</a>
+      <a href="#" onclick="switchTab('test')">Test Tools</a>
+      <a href="#" onclick="switchTab('explore')">Explore</a>
+      <a href="#" onclick="switchTab('agent')">Agent</a>
       <a href="https://www.8004scan.io/" target="_blank">8004scan</a>
-      <a href="https://www.bnbchain.org" target="_blank">BNB Chain</a>
     </div>
   </div>
 
   <div class="hero">
+    <img src="https://raw.githubusercontent.com/mmxrealQQ/bob-assets/main/bob.jpg" alt="BOB">
     <div class="motto">If you can't build, you won't be rich</div>
-    <h1 style="margin-top: 24px">The <span>BNB Chain</span> AI Dashboard</h1>
-    <p class="tagline">
-      Test 80+ MCP tools, explore AI agents, and learn everything about AI on BNB Chain.
-      One dashboard for builders, agents, and everyone in between.
-    </p>
+    <h1>The <span>BNB Chain</span> AI Dashboard</h1>
+    <p class="tagline">Test MCP tools, explore AI agents, and learn everything about AI on BNB Chain.</p>
   </div>
 
-  <div class="stats">
-    <div class="stat">
-      <div class="stat-value">80+</div>
-      <div class="stat-label">MCP Tools</div>
-    </div>
-    <div class="stat">
-      <div class="stat-value">4</div>
-      <div class="stat-label">MCP Servers</div>
-    </div>
-    <div class="stat">
-      <div class="stat-value">7</div>
-      <div class="stat-label">Chains</div>
-    </div>
-    <div class="stat">
-      <div class="stat-value">A2A</div>
-      <div class="stat-label">Protocol</div>
-    </div>
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('test')">Test Tools</button>
+    <button class="tab" onclick="switchTab('explore')">Explore Ecosystem</button>
+    <button class="tab" onclick="switchTab('agent')">Agent Info</button>
   </div>
 
-  <!-- MCP Tools -->
-  <div class="section" id="tools">
-    <h2 class="section-title">MCP Tool Servers</h2>
-    <p class="section-sub">All the MCP servers you can use on BNB Chain — from on-chain data to DeFi to market intelligence.</p>
+  <!-- TAB: Test Tools -->
+  <div class="tab-content active" id="tab-test">
+    <div class="section">
+      <h2 class="section-title">Interactive Tool Tester</h2>
+      <p class="section-sub">Test BNB Chain tools directly from your browser. No setup needed.</p>
 
-    <div class="mcp-grid">
-      <div class="mcp-card">
-        <div class="mcp-card-header">
-          <h3>BNB Chain MCP</h3>
-          <span class="tool-count">44+ tools</span>
+      <div class="tester">
+        <div class="tester-header">
+          <img src="https://raw.githubusercontent.com/mmxrealQQ/bob-assets/main/bob.jpg" alt="BOB" style="width:24px;height:24px;border-radius:50%">
+          <h3>BOB Tool Tester</h3>
+          <span id="status-dot" style="width:8px;height:8px;border-radius:50%;background:var(--green)"></span>
         </div>
-        <p>Official multi-chain EVM interaction. Blocks, transactions, tokens, NFTs, contracts, ERC-8004 agent registration, Greenfield decentralized storage.</p>
-        <div class="mcp-tags">
-          <span class="tag">Blocks</span>
-          <span class="tag">Transactions</span>
-          <span class="tag">ERC-20</span>
-          <span class="tag">NFTs</span>
-          <span class="tag">Contracts</span>
-          <span class="tag">ERC-8004</span>
-          <span class="tag">Greenfield</span>
-          <span class="tag">Multi-Chain</span>
+        <div class="tester-body">
+          <div class="tester-sidebar">
+            <div class="tool-group-label">On-Chain Data</div>
+            <button class="tool-item active" onclick="selectTool('block')">Get Latest Block</button>
+            <button class="tool-item" onclick="selectTool('tx')">Lookup Transaction</button>
+            <button class="tool-item" onclick="selectTool('balance')">Check BNB Balance</button>
+            <button class="tool-item" onclick="selectTool('token')">Token Info</button>
+
+            <div class="tool-group-label">Market Data</div>
+            <button class="tool-item" onclick="selectTool('price')">BNB Price</button>
+            <button class="tool-item" onclick="selectTool('trending')">Trending BSC Tokens</button>
+            <button class="tool-item" onclick="selectTool('dex')">DEX Token Lookup</button>
+
+            <div class="tool-group-label">Security</div>
+            <button class="tool-item" onclick="selectTool('security')">Token Security Check</button>
+
+            <div class="tool-group-label">Agents</div>
+            <button class="tool-item" onclick="selectTool('agent-lookup')">Lookup 8004 Agent</button>
+            <button class="tool-item" onclick="selectTool('a2a')">A2A Message</button>
+          </div>
+
+          <div class="tester-main">
+            <div class="tester-input" id="tool-input">
+              <label id="input-label">Latest BSC Block</label>
+              <div class="input-row">
+                <input type="text" id="tool-param" placeholder="No input needed — click Run">
+                <button class="btn btn-primary" id="run-btn" onclick="runTool()">Run</button>
+              </div>
+            </div>
+            <div class="tester-output" id="tool-output">
+              <pre class="info">Select a tool and click Run to test it.</pre>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="mcp-card">
-        <div class="mcp-card-header">
+      <div class="mcp-grid">
+        <div class="mcp-card">
+          <h3>BNB Chain MCP <span class="tool-count">44+</span></h3>
+          <p>Official multi-chain EVM. Blocks, tokens, NFTs, contracts, ERC-8004, Greenfield.</p>
+          <div class="mcp-tags">
+            <span class="tag">Blocks</span><span class="tag">ERC-20</span><span class="tag">NFTs</span><span class="tag">ERC-8004</span><span class="tag">Greenfield</span>
+          </div>
+        </div>
+        <div class="mcp-card">
+          <h3>Heurist Mesh <span class="tool-count">20+</span></h3>
+          <p>Crypto analytics. Trending tokens, Twitter intel, funding rates, wallet analysis.</p>
+          <div class="mcp-tags">
+            <span class="tag">Trending</span><span class="tag">Twitter</span><span class="tag">Funding Rates</span><span class="tag">Wallets</span>
+          </div>
+        </div>
+        <div class="mcp-card">
+          <h3>BSC DeFi MCP <span class="tool-count">11+</span></h3>
+          <p>PancakeSwap swaps, GoPlus security, Four.Meme, liquidity management.</p>
+          <div class="mcp-tags">
+            <span class="tag">PancakeSwap</span><span class="tag">GoPlus</span><span class="tag">Meme Coins</span><span class="tag">Liquidity</span>
+          </div>
+        </div>
+        <div class="mcp-card">
+          <h3>Binance MCP <span class="tool-count">5</span></h3>
+          <p>Binance CEX. Portfolio, order books, market orders, TWAP algo trading.</p>
+          <div class="mcp-tags">
+            <span class="tag">Portfolio</span><span class="tag">Order Books</span><span class="tag">TWAP</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: Explore -->
+  <div class="tab-content" id="tab-explore">
+    <div class="section">
+      <h2 class="section-title">BNB Chain AI Ecosystem</h2>
+      <p class="section-sub">Everything happening with AI agents on BNB Chain.</p>
+
+      <div class="eco-grid">
+        <div class="eco-card">
+          <h3>BNB Chain Dev Tools</h3>
+          <p>Official developer toolkit for BSC, opBNB, Greenfield. SDKs, APIs, faucets, explorers.</p>
+          <a class="eco-link" href="https://www.bnbchain.org/en/dev-tools?chain=bsc" target="_blank">Explore &rarr;</a>
+        </div>
+        <div class="eco-card">
+          <h3>BNB Chain AI Agents</h3>
+          <p>Official AI agent initiative. Infrastructure for autonomous agents on BSC with on-chain identity.</p>
+          <a class="eco-link" href="https://www.bnbchain.org/en/solutions/ai-agent" target="_blank">Learn More &rarr;</a>
+        </div>
+        <div class="eco-card">
+          <h3>ERC-8004 / 8004scan</h3>
+          <p>Trustless Agents standard. On-chain identity (ERC-721), reputation, and validation.</p>
+          <a class="eco-link" href="https://www.8004scan.io/" target="_blank">Browse Agents &rarr;</a>
+        </div>
+        <div class="eco-card">
+          <h3>A2A Protocol (Google)</h3>
+          <p>Agent-to-Agent communication. JSON-RPC based, discover and message other agents.</p>
+          <a class="eco-link" href="https://google.github.io/A2A/" target="_blank">A2A Spec &rarr;</a>
+        </div>
+        <div class="eco-card">
+          <h3>MCP Protocol (Anthropic)</h3>
+          <p>Model Context Protocol. Standardized way for AI models to interact with tools and data.</p>
+          <a class="eco-link" href="https://modelcontextprotocol.io/" target="_blank">MCP Spec &rarr;</a>
+        </div>
+        <div class="eco-card">
+          <h3>BNB Chain MCP Server</h3>
+          <p>Official MCP server with 44+ tools for BSC, opBNB, Greenfield. Built with Bun/TypeScript.</p>
+          <a class="eco-link" href="https://github.com/bnb-chain/bnbchain-mcp" target="_blank">GitHub &rarr;</a>
+        </div>
+        <div class="eco-card">
+          <h3>BSC MCP (TermiX)</h3>
+          <p>DeFi-focused MCP. PancakeSwap, token security (GoPlus), meme coins, liquidity.</p>
+          <a class="eco-link" href="https://github.com/TermiX-official/bsc-mcp" target="_blank">GitHub &rarr;</a>
+        </div>
+        <div class="eco-card">
           <h3>Heurist Mesh MCP</h3>
-          <span class="tool-count">20+ tools</span>
+          <p>30+ crypto analytics agents. Trending tokens, Twitter, funding rates, wallet analysis.</p>
+          <a class="eco-link" href="https://github.com/heurist-network/heurist-mesh-mcp-server" target="_blank">GitHub &rarr;</a>
         </div>
-        <p>30+ specialized crypto analytics agents. Trending tokens, Twitter sentiment, funding rates, wallet analysis, web search — all behind one API.</p>
-        <div class="mcp-tags">
-          <span class="tag">Trending Tokens</span>
-          <span class="tag">Twitter Intel</span>
-          <span class="tag">Funding Rates</span>
-          <span class="tag">Wallet Analysis</span>
-          <span class="tag">Web Search</span>
-        </div>
-      </div>
-
-      <div class="mcp-card">
-        <div class="mcp-card-header">
-          <h3>BSC MCP (DeFi)</h3>
-          <span class="tool-count">11+ tools</span>
-        </div>
-        <p>BSC-specific DeFi actions. PancakeSwap V2/V3 swaps, GoPlus security checks, Four.Meme meme coins, liquidity management, token creation.</p>
-        <div class="mcp-tags">
-          <span class="tag">PancakeSwap</span>
-          <span class="tag">GoPlus Security</span>
-          <span class="tag">Meme Coins</span>
-          <span class="tag">Liquidity</span>
-          <span class="tag">Token Deploy</span>
-        </div>
-      </div>
-
-      <div class="mcp-card">
-        <div class="mcp-card-header">
-          <h3>Binance Exchange MCP</h3>
-          <span class="tool-count">5 tools</span>
-        </div>
-        <p>Binance CEX API integration. Portfolio balances, 30-day snapshots, order book depth, market orders, TWAP algorithmic trading.</p>
-        <div class="mcp-tags">
-          <span class="tag">Portfolio</span>
-          <span class="tag">Order Books</span>
-          <span class="tag">Market Orders</span>
-          <span class="tag">TWAP</span>
+        <div class="eco-card">
+          <h3>Binance MCP (TermiX)</h3>
+          <p>Binance CEX API. Portfolio management, order books, market orders, TWAP.</p>
+          <a class="eco-link" href="https://github.com/TermiX-official/binance-mcp" target="_blank">GitHub &rarr;</a>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Ecosystem -->
-  <div class="section" id="ecosystem">
-    <h2 class="section-title">BNB Chain AI Ecosystem</h2>
-    <p class="section-sub">Everything that's happening with AI agents on BNB Chain right now.</p>
+  <!-- TAB: Agent -->
+  <div class="tab-content" id="tab-agent">
+    <div class="section">
+      <h2 class="section-title">The Agent</h2>
+      <p class="section-sub">One agent, all of BNB Chain AI.</p>
 
-    <div class="eco-grid">
-      <div class="eco-card">
-        <h3>BNB Chain Dev Tools</h3>
-        <p>The official developer toolkit for building on BSC, opBNB, and Greenfield. SDKs, APIs, faucets, explorers, and more.</p>
-        <a class="eco-link" href="https://www.bnbchain.org/en/dev-tools?chain=bsc" target="_blank">Explore Dev Tools &rarr;</a>
-      </div>
-
-      <div class="eco-card">
-        <h3>BNB Chain AI Agents</h3>
-        <p>BNB Chain's official AI agent initiative. Infrastructure for autonomous agents on BSC with on-chain identity and reputation.</p>
-        <a class="eco-link" href="https://www.bnbchain.org/en/solutions/ai-agent" target="_blank">Learn More &rarr;</a>
-      </div>
-
-      <div class="eco-card">
-        <h3>ERC-8004 / 8004scan</h3>
-        <p>The Trustless Agents standard. On-chain identity (ERC-721), reputation, and validation for AI agents. 8004scan is the explorer.</p>
-        <a class="eco-link" href="https://www.8004scan.io/" target="_blank">Browse Agents &rarr;</a>
-      </div>
-
-      <div class="eco-card">
-        <h3>A2A Protocol</h3>
-        <p>Agent-to-Agent communication standard (Google). JSON-RPC based, allows agents to discover and message each other.</p>
-        <a class="eco-link" href="https://google.github.io/A2A/" target="_blank">A2A Spec &rarr;</a>
-      </div>
-
-      <div class="eco-card">
-        <h3>MCP Protocol</h3>
-        <p>Model Context Protocol (Anthropic). Standardized way for AI models to interact with tools and data sources.</p>
-        <a class="eco-link" href="https://modelcontextprotocol.io/" target="_blank">MCP Spec &rarr;</a>
-      </div>
-
-      <div class="eco-card">
-        <h3>Replit Agent Builder</h3>
-        <p>Build and deploy AI agents directly from Replit. Quick prototyping, instant deployment, collaborative development.</p>
-        <a class="eco-link" href="https://replit.com/" target="_blank">Start Building &rarr;</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- Protocols -->
-  <div class="section">
-    <h2 class="section-title">Supported Protocols</h2>
-    <p class="section-sub">BOB speaks every protocol in the BNB Chain AI stack.</p>
-
-    <div class="protocols">
-      <div class="protocol-card">
-        <div class="protocol-icon">🔗</div>
-        <h3>MCP</h3>
-        <p>Model Context Protocol — connect AI to 80+ on-chain tools</p>
-      </div>
-      <div class="protocol-card">
-        <div class="protocol-icon">🤝</div>
-        <h3>A2A</h3>
-        <p>Agent-to-Agent — discover and talk to other agents</p>
-      </div>
-      <div class="protocol-card">
-        <div class="protocol-icon">🆔</div>
-        <h3>ERC-8004</h3>
-        <p>On-chain identity, reputation, and trust for AI agents</p>
-      </div>
-      <div class="protocol-card">
-        <div class="protocol-icon">🌐</div>
-        <h3>Web</h3>
-        <p>Human-friendly dashboard anyone can use</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Agent Info -->
-  <div class="section" id="agent">
-    <h2 class="section-title">The Agent</h2>
-    <p class="section-sub">One agent, all of BNB Chain AI.</p>
-
-    <div class="agent-info">
-      <div class="agent-header">
-        <div class="agent-avatar">B</div>
-        <div>
-          <div class="agent-name">BOB Build On BNB</div>
-          <div class="agent-chain">BNB Smart Chain &middot; ERC-8004 &middot; A2A + MCP</div>
+      <div class="agent-info">
+        <div class="agent-header">
+          <img src="https://raw.githubusercontent.com/mmxrealQQ/bob-assets/main/bob.jpg" alt="BOB">
+          <div>
+            <div class="agent-name">BOB Build On BNB</div>
+            <div class="agent-chain">BNB Smart Chain &middot; ERC-8004 &middot; A2A + MCP</div>
+          </div>
         </div>
-      </div>
-
-      <div class="agent-details">
-        <div class="detail">
-          <div class="detail-label">Token</div>
-          <div class="detail-value mono">0x51363F073b1E4920fdA7AA9E9d84BA97EdE1560e</div>
-        </div>
-        <div class="detail">
-          <div class="detail-label">Wallet</div>
-          <div class="detail-value mono">0x8b18575c29F842BdA93EEb1Db9F2198D5CC0Ba2f</div>
-        </div>
-        <div class="detail">
-          <div class="detail-label">Agent IDs</div>
-          <div class="detail-value">#36035 #36336 #37092 #37093 #37103 #40908</div>
-        </div>
-        <div class="detail">
-          <div class="detail-label">Protocols</div>
-          <div class="detail-value">A2A + MCP + ERC-8004</div>
-        </div>
-        <div class="detail">
-          <div class="detail-label">Status</div>
-          <div class="detail-value" style="color: var(--green)">Active</div>
-        </div>
-        <div class="detail">
-          <div class="detail-label">Chain</div>
-          <div class="detail-value">BNB Smart Chain (BSC)</div>
+        <div class="agent-details">
+          <div class="detail">
+            <div class="detail-label">Token</div>
+            <div class="detail-value mono">0x51363F073b1E4920fdA7AA9E9d84BA97EdE1560e</div>
+          </div>
+          <div class="detail">
+            <div class="detail-label">Wallet</div>
+            <div class="detail-value mono">0x8b18575c29F842BdA93EEb1Db9F2198D5CC0Ba2f</div>
+          </div>
+          <div class="detail">
+            <div class="detail-label">Agent IDs</div>
+            <div class="detail-value">#36035 #36336 #37092 #37093 #37103 #40908</div>
+          </div>
+          <div class="detail">
+            <div class="detail-label">Protocols</div>
+            <div class="detail-value">A2A + MCP + ERC-8004</div>
+          </div>
+          <div class="detail">
+            <div class="detail-label">Status</div>
+            <div class="detail-value" style="color: var(--green)">Active</div>
+          </div>
+          <div class="detail">
+            <div class="detail-label">Chain</div>
+            <div class="detail-value">BNB Smart Chain (BSC)</div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
   <div class="footer">
+    <img src="https://raw.githubusercontent.com/mmxrealQQ/bob-assets/main/bob.jpg" alt="BOB" style="width:28px;height:28px;border-radius:50%;margin-bottom:8px">
     <p><strong>BOB Build On BNB</strong> &mdash; If you can't build, you won't be rich.</p>
     <div class="footer-links">
       <a href="https://www.8004scan.io/" target="_blank">8004scan</a>
       <a href="https://www.bnbchain.org" target="_blank">BNB Chain</a>
       <a href="/.well-known/agent.json">Agent Card</a>
-      <a href="/.well-known/agent-registration.json">Registration</a>
     </div>
   </div>
+
+  <script>
+    const BSC_RPC = "https://bsc-dataseed.binance.org";
+
+    const TOOLS = {
+      block: { label: "Latest BSC Block", placeholder: "No input needed", needsInput: false },
+      tx: { label: "Transaction Hash", placeholder: "0x...", needsInput: true },
+      balance: { label: "Wallet Address", placeholder: "0x...", needsInput: true },
+      token: { label: "Token Contract Address", placeholder: "0x... (BSC token)", needsInput: true },
+      price: { label: "BNB Price", placeholder: "No input needed", needsInput: false },
+      trending: { label: "Trending BSC Tokens", placeholder: "No input needed", needsInput: false },
+      dex: { label: "Token Address or Symbol", placeholder: "0x... or symbol like CAKE", needsInput: true },
+      security: { label: "Token Contract Address", placeholder: "0x... (check if token is safe)", needsInput: true },
+      "agent-lookup": { label: "Agent ID", placeholder: "e.g. 37093", needsInput: true },
+      a2a: { label: "Message to BOB", placeholder: "Hello BOB!", needsInput: true },
+    };
+
+    let currentTool = "block";
+
+    function switchTab(tab) {
+      document.querySelectorAll(".tab-content").forEach(t => t.classList.remove("active"));
+      document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+      document.getElementById("tab-" + tab).classList.add("active");
+      document.querySelectorAll(".tab").forEach(t => {
+        if (t.textContent.toLowerCase().includes(tab === "test" ? "test" : tab === "explore" ? "explore" : "agent")) {
+          t.classList.add("active");
+        }
+      });
+    }
+
+    function selectTool(tool) {
+      currentTool = tool;
+      document.querySelectorAll(".tool-item").forEach(t => t.classList.remove("active"));
+      event.target.classList.add("active");
+
+      const config = TOOLS[tool];
+      document.getElementById("input-label").textContent = config.label;
+      const input = document.getElementById("tool-param");
+      input.placeholder = config.placeholder;
+      input.value = "";
+      if (!config.needsInput) input.disabled = true;
+      else input.disabled = false;
+
+      document.getElementById("tool-output").innerHTML = '<pre class="info">Click Run to test this tool.</pre>';
+    }
+
+    async function rpc(method, params) {
+      const res = await fetch(BSC_RPC, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ jsonrpc: "2.0", id: 1, method, params }),
+      });
+      return res.json();
+    }
+
+    function out(text, cls = "") {
+      document.getElementById("tool-output").innerHTML = `<pre class="${cls}">${text}</pre>`;
+    }
+
+    function formatJson(obj) {
+      return JSON.stringify(obj, null, 2);
+    }
+
+    async function runTool() {
+      const param = document.getElementById("tool-param").value.trim();
+      const btn = document.getElementById("run-btn");
+      btn.disabled = true;
+      btn.textContent = "...";
+      out("Loading...", "info");
+
+      try {
+        switch (currentTool) {
+          case "block": {
+            const r = await rpc("eth_blockNumber", []);
+            const blockNum = parseInt(r.result, 16);
+            const block = await rpc("eth_getBlockByNumber", [r.result, false]);
+            const b = block.result;
+            out(`BSC Latest Block\n\nBlock:        ${blockNum.toLocaleString()}\nTimestamp:    ${new Date(parseInt(b.timestamp, 16) * 1000).toISOString()}\nTransactions: ${b.transactions.length}\nGas Used:     ${parseInt(b.gasUsed, 16).toLocaleString()}\nGas Limit:    ${parseInt(b.gasLimit, 16).toLocaleString()}\nMiner:        ${b.miner}\nHash:         ${b.hash}`);
+            break;
+          }
+
+          case "tx": {
+            if (!param) { out("Enter a transaction hash", "error"); break; }
+            const r = await rpc("eth_getTransactionByHash", [param]);
+            if (!r.result) { out("Transaction not found", "error"); break; }
+            const t = r.result;
+            const val = (parseInt(t.value, 16) / 1e18).toFixed(6);
+            out(`Transaction Details\n\nHash:   ${t.hash}\nFrom:   ${t.from}\nTo:     ${t.to}\nValue:  ${val} BNB\nBlock:  ${parseInt(t.blockNumber, 16).toLocaleString()}\nGas:    ${parseInt(t.gas, 16).toLocaleString()}\nNonce:  ${parseInt(t.nonce, 16)}`);
+            break;
+          }
+
+          case "balance": {
+            if (!param) { out("Enter a wallet address", "error"); break; }
+            const r = await rpc("eth_getBalance", [param, "latest"]);
+            const bal = (parseInt(r.result, 16) / 1e18).toFixed(6);
+            out(`Wallet Balance\n\nAddress:  ${param}\nBalance:  ${bal} BNB`);
+            break;
+          }
+
+          case "token": {
+            if (!param) { out("Enter a token contract address", "error"); break; }
+            // name()
+            const nameCall = await rpc("eth_call", [{ to: param, data: "0x06fdde03" }, "latest"]);
+            const symCall = await rpc("eth_call", [{ to: param, data: "0x95d89b41" }, "latest"]);
+            const decCall = await rpc("eth_call", [{ to: param, data: "0x313ce567" }, "latest"]);
+            const supCall = await rpc("eth_call", [{ to: param, data: "0x18160ddd" }, "latest"]);
+
+            let name = "?", symbol = "?", decimals = 18, supply = "?";
+            try { name = decodeAbiString(nameCall.result); } catch {}
+            try { symbol = decodeAbiString(symCall.result); } catch {}
+            try { decimals = parseInt(decCall.result, 16); } catch {}
+            try {
+              const raw = BigInt(supCall.result);
+              supply = (Number(raw) / Math.pow(10, decimals)).toLocaleString();
+            } catch {}
+
+            out(`Token Info\n\nContract: ${param}\nName:     ${name}\nSymbol:   ${symbol}\nDecimals: ${decimals}\nSupply:   ${supply}`);
+            break;
+          }
+
+          case "price": {
+            const r = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=binancecoin&vs_currencies=usd,eur&include_24hr_change=true");
+            const d = await r.json();
+            const bnb = d.binancecoin;
+            out(`BNB Price\n\nUSD:      $${bnb.usd.toFixed(2)}\nEUR:      \u20AC${bnb.eur.toFixed(2)}\n24h:      ${bnb.usd_24h_change > 0 ? "+" : ""}${bnb.usd_24h_change.toFixed(2)}%`);
+            break;
+          }
+
+          case "trending": {
+            const r = await fetch("https://api.dexscreener.com/token-boosts/top/v1");
+            const tokens = await r.json();
+            const bsc = tokens.filter(t => t.chainId === "bsc").slice(0, 8);
+            if (!bsc.length) { out("No trending BSC tokens found right now.", "info"); break; }
+            let text = "Trending BSC Tokens (DexScreener Boosts)\n\n";
+            bsc.forEach((t, i) => {
+              text += `${i + 1}. ${t.tokenAddress.slice(0, 10)}...\n   Boosts: ${t.amount || "?"}\n   ${t.url || ""}\n\n`;
+            });
+            out(text);
+            break;
+          }
+
+          case "dex": {
+            if (!param) { out("Enter a token address or symbol", "error"); break; }
+            const r = await fetch("https://api.dexscreener.com/latest/dex/search?q=" + encodeURIComponent(param));
+            const d = await r.json();
+            const pairs = (d.pairs || []).filter(p => p.chainId === "bsc").slice(0, 5);
+            if (!pairs.length) { out("No BSC pairs found for: " + param, "info"); break; }
+            let text = `DEX Results for "${param}"\n\n`;
+            pairs.forEach((p, i) => {
+              text += `${i + 1}. ${p.baseToken.symbol}/${p.quoteToken.symbol}\n`;
+              text += `   Price:     $${p.priceUsd || "?"}\n`;
+              text += `   24h Vol:   $${Number(p.volume?.h24 || 0).toLocaleString()}\n`;
+              text += `   Liquidity: $${Number(p.liquidity?.usd || 0).toLocaleString()}\n`;
+              text += `   DEX:       ${p.dexId}\n\n`;
+            });
+            out(text);
+            break;
+          }
+
+          case "security": {
+            if (!param) { out("Enter a token contract address", "error"); break; }
+            const r = await fetch("https://api.gopluslabs.io/api/v1/token_security/56?contract_addresses=" + param);
+            const d = await r.json();
+            const info = d.result?.[param.toLowerCase()];
+            if (!info) { out("Token not found in GoPlus database", "info"); break; }
+            const flags = [];
+            if (info.is_honeypot === "1") flags.push("HONEYPOT");
+            if (info.is_proxy === "1") flags.push("PROXY CONTRACT");
+            if (info.can_take_back_ownership === "1") flags.push("CAN TAKE BACK OWNERSHIP");
+            if (info.cannot_sell_all === "1") flags.push("CANNOT SELL ALL");
+            if (info.is_blacklisted === "1") flags.push("HAS BLACKLIST");
+            if (info.is_mintable === "1") flags.push("MINTABLE");
+
+            let text = `Token Security Check (GoPlus)\n\nToken:     ${info.token_name || "?"} (${info.token_symbol || "?"})\nContract:  ${param}\n\n`;
+            text += `Honeypot:  ${info.is_honeypot === "1" ? "YES" : "No"}\n`;
+            text += `Open Source: ${info.is_open_source === "1" ? "Yes" : "No"}\n`;
+            text += `Proxy:     ${info.is_proxy === "1" ? "Yes" : "No"}\n`;
+            text += `Mintable:  ${info.is_mintable === "1" ? "Yes" : "No"}\n`;
+            text += `Owner:     ${info.owner_address || "renounced"}\n`;
+            text += `Buy Tax:   ${(parseFloat(info.buy_tax || 0) * 100).toFixed(1)}%\n`;
+            text += `Sell Tax:  ${(parseFloat(info.sell_tax || 0) * 100).toFixed(1)}%\n`;
+            text += `Holders:   ${info.holder_count || "?"}\n\n`;
+
+            if (flags.length) text += "FLAGS: " + flags.join(", ");
+            else text += "No major red flags detected.";
+
+            out(text, flags.length ? "error" : "");
+            break;
+          }
+
+          case "agent-lookup": {
+            if (!param) { out("Enter an agent ID (e.g. 37093)", "error"); break; }
+            const r = await fetch("https://api.8004scan.io/api/v1/agents/" + param);
+            const d = await r.json();
+            if (!d || d.error) { out("Agent not found: " + param, "error"); break; }
+            out(`8004scan Agent #${param}\n\n${formatJson(d)}`);
+            break;
+          }
+
+          case "a2a": {
+            const msg = param || "Hello BOB!";
+            const r = await fetch("/", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                jsonrpc: "2.0",
+                id: 1,
+                method: "message/send",
+                params: { message: { parts: [{ type: "text", text: msg }] } },
+              }),
+            });
+            const d = await r.json();
+            const reply = d.result?.artifacts?.[0]?.parts?.[0]?.text || formatJson(d);
+            out(`You: ${msg}\n\nBOB: ${reply}`);
+            break;
+          }
+        }
+      } catch (e) {
+        out("Error: " + e.message, "error");
+      }
+
+      btn.disabled = false;
+      btn.textContent = "Run";
+    }
+
+    function decodeAbiString(hex) {
+      if (!hex || hex === "0x") return "?";
+      const data = hex.slice(2);
+      const offset = parseInt(data.slice(0, 64), 16) * 2;
+      const len = parseInt(data.slice(offset, offset + 64), 16);
+      const strHex = data.slice(offset + 64, offset + 64 + len * 2);
+      let str = "";
+      for (let i = 0; i < strHex.length; i += 2) {
+        const code = parseInt(strHex.slice(i, i + 2), 16);
+        if (code > 0) str += String.fromCharCode(code);
+      }
+      return str;
+    }
+
+    // Keyboard shortcut: Enter to run
+    document.getElementById("tool-param").addEventListener("keydown", e => {
+      if (e.key === "Enter") runTool();
+    });
+  </script>
 
 </body>
 </html>
