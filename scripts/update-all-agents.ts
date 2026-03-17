@@ -43,7 +43,7 @@ function buildMetadata(agentId: number) {
       {
         name: "A2A",
         version: "0.3.0",
-        endpoint: "https://bobbuildonbnb.vercel.app",
+        endpoint: "https://bobbuildonbnb.vercel.app/api/a2a",
         agentCard: "https://bobbuildonbnb.vercel.app/.well-known/agent-card.json",
       },
       {
