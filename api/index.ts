@@ -112,9 +112,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       description: "If you can't build you won't be rich. The BNB Chain AI Dashboard.",
       active: true, token: BOB_TOKEN,
       services: [
-        { name: "A2A", version: "0.3.0", endpoint: `${BASE_URL}/api/a2a` },
+        { name: "A2A", version: "0.3.0", endpoint: `${BASE_URL}/.well-known/agent-card.json` },
         { name: "agentWallet", endpoint: `eip155:56:${WALLET}` },
-        { name: "MCP", version: "1.0.0", endpoint: BASE_URL },
+        { name: "MCP", version: "2026-03-17", endpoint: BASE_URL },
         { name: "Web", endpoint: BASE_URL },
       ],
       registrations: AGENT_IDS.map((id) => ({ agentId: id, agentRegistry: "eip155:56:0x8004a169fb4a3325136eb29fa0ceb6d2e539a432" })),

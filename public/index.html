@@ -30,7 +30,7 @@
 
     .main{display:flex;height:calc(100vh - 82px)}
     .side{width:220px;border-right:1px solid var(--b);overflow-y:auto;flex-shrink:0}
-    .cat{padding:8px 12px 4px;font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:.8px;font-weight:700}
+    .cat{padding:8px 12px 4px;font-size:9px;color:var(--y);text-transform:uppercase;letter-spacing:.8px;font-weight:700}
     .item{display:flex;align-items:center;gap:6px;padding:5px 12px;font-size:11px;cursor:pointer;color:var(--t2);border:none;background:none;width:100%;text-align:left;transition:.1s}
     .item:hover{background:var(--s2);color:var(--t)}.item.on{background:var(--yd);color:var(--y)}
     .dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
@@ -80,7 +80,7 @@
 <body>
 
 <div class="hd">
-  <div class="logo"><img src="https://raw.githubusercontent.com/mmxrealQQ/bob-assets/main/bob.jpg" alt="BOB">BOB Build On BNB</div>
+  <a href="/" class="logo" onclick="curTab='bnb';curTool=null;renderTabs();renderSidebar();document.getElementById('pname').textContent='Select a tool';document.getElementById('pdesc').textContent='Pick a tool from the sidebar to get started.';document.getElementById('psrc').innerHTML='';document.getElementById('pform').style.display='none';document.getElementById('out').innerHTML='<pre class=inf>Pick any tool from the left sidebar and click Run to try it.\n\nGreen dot = Live — makes real API calls, returns live data\nGray dot  = Simulation — shows what the tool does and what you need to run it</pre>';return false"><img src="https://raw.githubusercontent.com/mmxrealQQ/bob-assets/main/bob.jpg" alt="BOB">BOB Build On BNB</a>
   <span class="badge">116+ Tools</span>
   <div class="search"><input type="text" id="q" placeholder="Search tools..." oninput="filter()"></div>
 </div>
@@ -380,14 +380,14 @@ async function exec(){
 
 // A2A
 function renderA2ASide(){
-  document.getElementById("side").innerHTML=`<div class="cat">Your Agent</div><button class="item on" onclick="pickA2A('/api/a2a','BOB Build On BNB')"><span class="dot live"></span>BOB Build On BNB</button><div class="cat">A2A Info</div><div style="padding:8px 12px;font-size:10px;color:var(--t3);line-height:1.6">A2A (Agent-to-Agent) is Google's protocol for AI agents to communicate. Currently most BSC agents don't respond — the ecosystem is still early. BOB is fully A2A compatible and ready to chat!</div>`;
+  document.getElementById("side").innerHTML=`<div class="cat">Your Agent</div><button class="item on" onclick="pickA2A('https://bobbuildonbnb.vercel.app/api/a2a','BOB Build On BNB')"><span class="dot live"></span>BOB Build On BNB</button><div class="cat">A2A Info</div><div style="padding:8px 12px;font-size:10px;color:var(--t3);line-height:1.6">A2A (Agent-to-Agent) is Google's protocol for AI agents to communicate. Currently most BSC agents don't respond — the ecosystem is still early. BOB is fully A2A compatible and ready to chat!</div>`;
 }
 function renderA2APanel(){
   document.getElementById("pname").textContent="A2A Agent Communication";
   document.getElementById("pdesc").textContent="Send JSON-RPC messages to AI agents using Google's A2A protocol. BOB is fully A2A compatible — try sending a message!";
   document.getElementById("psrc").innerHTML='<a href="https://google.github.io/A2A/" target="_blank">A2A Protocol Spec</a> · <a href="https://eips.ethereum.org/EIPS/eip-8004" target="_blank">ERC-8004</a>';
   const pf=document.getElementById("pform");
-  pf.innerHTML=`<div class="prow"><label>Agent Endpoint</label><input type="text" id="a2a-ep" value="/api/a2a" placeholder="https://agent-url.com/a2a"></div><div class="prow"><label>Your Message</label><input type="text" id="a2a-msg" placeholder="Hello! What can you do?" onkeydown="if(event.key==='Enter')sendA2A()"></div><button class="run" onclick="sendA2A()">Send Message</button>`;
+  pf.innerHTML=`<div class="prow"><label>Agent Endpoint</label><input type="text" id="a2a-ep" value="https://bobbuildonbnb.vercel.app/api/a2a" placeholder="https://agent-url.com/a2a" style="min-width:320px"></div><div class="prow"><label>Your Message</label><input type="text" id="a2a-msg" placeholder="Hello! What can you do?" onkeydown="if(event.key==='Enter')sendA2A()"></div><button class="run" onclick="sendA2A()">Send Message</button>`;
   pf.style.display="flex";
   out('<pre class="inf">Send a message to BOB! Try asking: "What tools do you have?" or "Tell me about BNB Chain."</pre>');
 }
@@ -396,7 +396,8 @@ async function sendA2A(){
   const ep=document.getElementById("a2a-ep")?.value.trim(),msg=document.getElementById("a2a-msg")?.value.trim()||"Hello!";
   if(!ep){out('<pre class="err">Enter an agent endpoint URL.</pre>');return}
   out('<pre class="inf">Sending message...</pre>');
-  try{let r;if(ep.startsWith("/"))r=await fetch(ep,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({jsonrpc:"2.0",id:1,method:"message/send",params:{message:{parts:[{type:"text",text:msg}]}}})});
+  try{const body=JSON.stringify({jsonrpc:"2.0",id:1,method:"message/send",params:{message:{parts:[{type:"text",text:msg}]}}});
+  let r;if(ep.startsWith("/")||ep.includes("bobbuildonbnb.vercel.app"))r=await fetch(ep.startsWith("/")?ep:new URL(ep).pathname,{method:"POST",headers:{"Content-Type":"application/json"},body});
   else r=await fetch("/api/a2a-proxy",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({endpoint:ep,message:msg})});
   const d=await r.json();if(d.error)pre("Error: "+(d.error.message||d.error),"err");
   else{const txt=d.result?.artifacts?.[0]?.parts?.[0]?.text;pre(txt?"Agent Response:\n\n"+txt:"Response:\n\n"+JSON.stringify(d.result||d,null,2))}

@@ -43,12 +43,11 @@ function buildMetadata(agentId: number) {
       {
         name: "A2A",
         version: "0.3.0",
-        endpoint: "https://bobbuildonbnb.vercel.app/api/a2a",
-        agentCard: "https://bobbuildonbnb.vercel.app/.well-known/agent-card.json",
+        endpoint: "https://bobbuildonbnb.vercel.app/.well-known/agent-card.json",
       },
       {
         name: "MCP",
-        version: "1.0.0",
+        version: "2026-03-17",
         endpoint: "https://bobbuildonbnb.vercel.app",
         description: "116+ BNB Chain tools from 4 MCP servers",
       },
