@@ -128,6 +128,59 @@
       .prow input{min-width:120px}
       .settings-btn span{display:none}
     }
+
+    .exec-flow{padding:16px;display:flex;flex-direction:column;gap:8px}
+    .exec-step{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:8px;background:var(--s2);opacity:.3;transform:translateX(-8px);transition:all .4s ease}
+    .exec-step.active{opacity:1;transform:translateX(0);background:var(--yd);border-left:2px solid var(--y)}
+    .exec-step.done{opacity:1;transform:translateX(0);border-left:2px solid var(--g)}
+    .exec-step .step-icon{width:20px;text-align:center;font-size:13px}
+    .exec-step .step-text{font-size:11px;color:var(--t2)}
+    .exec-step.active .step-text{color:var(--y)}
+    .exec-step.done .step-text{color:var(--g)}
+    @keyframes pulse{0%,100%{opacity:.5}50%{opacity:1}}
+    .exec-step.active .step-icon{animation:pulse .8s infinite}
+
+    .result-card{background:var(--s2);border:1px solid var(--b);border-radius:10px;padding:14px 16px;margin-bottom:8px}
+    .result-card .rc-title{font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--y);font-weight:700;margin-bottom:8px}
+    .result-row{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.03);font-size:12px}
+    .result-row:last-child{border:none}
+    .result-row .rl{color:var(--t2);font-size:11px}
+    .result-row .rv{color:var(--t);font-family:'SF Mono',Monaco,monospace;font-size:11px;text-align:right;max-width:60%;word-break:break-all}
+    .addr-link,.tx-link,.block-link{color:var(--y);text-decoration:none;cursor:pointer;border-bottom:1px dotted rgba(240,185,11,.3)}
+    .addr-link:hover,.tx-link:hover,.block-link:hover{border-bottom-color:var(--y);opacity:.8}
+    .result-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700}
+    .result-badge.safe{background:rgba(14,203,129,.15);color:var(--g)}
+    .result-badge.danger{background:rgba(246,70,93,.15);color:var(--r)}
+    .result-badge.warn{background:rgba(240,185,11,.15);color:var(--y)}
+
+    .next-steps{display:flex;gap:8px;padding:12px 0;margin-top:12px;border-top:1px solid var(--b);flex-wrap:wrap;align-items:center}
+    .next-steps .ns-label{font-size:9px;text-transform:uppercase;letter-spacing:.8px;color:var(--t3);font-weight:700}
+    .next-btn{padding:5px 12px;border-radius:20px;border:1px solid rgba(240,185,11,.3);background:var(--yd);color:var(--y);font-size:10px;font-weight:600;cursor:pointer;transition:.15s;display:flex;align-items:center;gap:4px}
+    .next-btn:hover{background:rgba(240,185,11,.2);border-color:var(--y)}
+
+    .progress-wrap{display:flex;align-items:center;gap:6px;margin-left:8px}
+    .progress-bar{width:60px;height:4px;background:var(--s2);border-radius:2px;overflow:hidden}
+    .progress-fill{height:100%;background:var(--y);border-radius:2px;transition:width .5s ease}
+    .progress-text{font-size:9px;color:var(--t3);white-space:nowrap}
+
+    .milestone-toast{position:fixed;top:-50px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,rgba(240,185,11,.95),rgba(240,185,11,.85));color:#000;padding:10px 24px;border-radius:10px;font-size:12px;font-weight:700;z-index:200;transition:top .5s cubic-bezier(.68,-.55,.27,1.55);box-shadow:0 4px 20px rgba(240,185,11,.3)}
+    .milestone-toast.show{top:12px}
+
+    .cat-intro{text-align:center;padding:40px 20px;max-width:500px;margin:0 auto}
+    .cat-intro h3{font-size:18px;font-weight:700;margin-bottom:8px}
+    .cat-intro p{font-size:12px;color:var(--t2);line-height:1.7;margin-bottom:16px}
+    .cat-facts{list-style:none;text-align:left;margin:0 auto 20px;max-width:350px}
+    .cat-facts li{font-size:11px;color:var(--t2);padding:4px 0;display:flex;align-items:center;gap:6px}
+    .cat-facts li::before{content:"\25B8";color:var(--y);font-weight:700}
+    .cat-start{padding:10px 24px;background:var(--y);color:#000;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;transition:.15s}
+    .cat-start:hover{opacity:.9}
+
+    .gloss{border-bottom:1px dotted var(--t3);cursor:help;position:relative}
+    .gloss:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--s);border:1px solid var(--y);color:var(--t);padding:8px 12px;border-radius:8px;font-size:10px;line-height:1.5;white-space:normal;width:220px;z-index:50;pointer-events:none;box-shadow:0 4px 12px rgba(0,0,0,.5)}
+
+    .explored-check{color:var(--g);font-size:8px;margin-left:auto;flex-shrink:0}
+
+    @media(max-width:768px){.next-steps{flex-direction:column;align-items:flex-start}.progress-wrap{display:none}}
   </style>
 </head>
 <body>
@@ -135,6 +188,7 @@
 <div class="hd">
   <a href="/" class="logo" onclick="curTab='bnb';curTool=null;renderTabs();renderSidebar();document.getElementById('pname').textContent='Select a tool';document.getElementById('pdesc').textContent='Pick a tool from the sidebar to get started.';document.getElementById('psrc').innerHTML='';document.getElementById('pform').style.display='none';document.getElementById('out').innerHTML='<pre class=inf>Pick any tool from the left sidebar and click Run to try it.\n\nAll 116+ tools ready to test!\n\nGreen dot = Live — runs real API calls or demo simulation\nClick any tool and hit Run to try it.</pre>';return false"><img src="https://raw.githubusercontent.com/mmxrealQQ/bob-assets/main/bob.jpg" alt="BOB">BOB Build On BNB</a>
   <span class="badge">116+ Tools</span>
+  <div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div><span class="progress-text" id="progress-text">0/116</span></div>
   <div class="search"><input type="text" id="q" placeholder="Search tools..." oninput="filter()"></div>
   <button class="settings-btn" onclick="openSettings()">&#9881;<span>Settings</span></button>
 </div>
@@ -346,6 +400,115 @@ const TABS=[
 {id:"a2a",label:"A2A Agents"},
 ];
 
+const GLOSSARY={
+"Gas":"The fee for blockchain operations. Measured in gas units \u00d7 gas price (Gwei). BSC is cheap: usually $0.01-0.10 per TX.",
+"Gwei":"A tiny unit of BNB. 1 BNB = 1 billion Gwei. BSC gas is typically 1-5 Gwei \u2014 much cheaper than Ethereum.",
+"Nonce":"Counter of transactions sent from an address. Each new TX uses nonce+1. Stuck TX? Usually a nonce issue.",
+"ERC-20":"Standard for fungible tokens (CAKE, USDT, etc). Defines transfer(), balanceOf(), approve() and more.",
+"ERC-721":"The NFT standard. Each token is unique with its own ID and owner. Used for digital art, collectibles, game items.",
+"ERC-1155":"Multi-token standard \u2014 one contract holds both fungible AND non-fungible tokens. Popular in gaming.",
+"ERC-8004":"On-chain AI agent identity standard on BNB Chain. Each agent is an NFT with metadata, services, and wallet.",
+"Wei":"Smallest unit of BNB. 1 BNB = 10\u00b9\u2078 Wei. Like cents to dollars, but way smaller.",
+"Block":"A batch of transactions confirmed together. BSC makes one every ~3 seconds with hundreds of TXs.",
+"Hash":"A unique 64-character hex fingerprint. Every transaction and block has one. Like a receipt number.",
+"EOA":"Externally Owned Account \u2014 a regular wallet controlled by a private key. NOT a smart contract.",
+"Smart Contract":"Code deployed on the blockchain that runs automatically. Tokens, DEXs, and DeFi are all smart contracts.",
+"Honeypot":"A scam token that lets you buy but blocks selling. Always run a security check before buying unknown tokens!",
+"Liquidity":"Tokens locked in a DEX trading pool. More liquidity = easier to trade without price impact.",
+"FDV":"Fully Diluted Valuation = current price \u00d7 maximum possible token supply. Shows potential market cap.",
+"Funding Rate":"Periodic payment between long/short futures traders. Keeps futures price close to spot price.",
+"Open Interest":"Total value of all outstanding futures contracts. High OI = lots of active positions.",
+"TVL":"Total Value Locked \u2014 how much money is deposited in a DeFi protocol. Higher TVL = more trust.",
+"Proxy":"An upgradeable contract pattern. Can be risky \u2014 the owner might change the contract logic after you invest.",
+"Mintable":"Token where the owner can create unlimited new tokens. Can dilute your holdings to zero.",
+"A2A":"Agent-to-Agent protocol by Google. Lets AI agents communicate with each other using JSON-RPC messages.",
+"MCP":"Model Context Protocol \u2014 standard for AI tools. BOB uses 4 MCP servers for its 116+ tools.",
+"Greenfield":"BNB Chain's decentralized storage network. Like AWS S3 but on blockchain. Pay with BNB.",
+"DeFi":"Decentralized Finance \u2014 financial services (trading, lending, staking) without banks or intermediaries.",
+"DEX":"Decentralized Exchange \u2014 trade tokens directly from your wallet. No signup, no KYC, no custodian.",
+"Slippage":"Price change between when you submit a trade and when it executes. Set max slippage to avoid surprises.",
+"Mainnet":"The real blockchain with real money. BSC Mainnet = Chain ID 56.",
+"Testnet":"A practice blockchain with fake money. BSC Testnet = Chain ID 97. Perfect for learning!",
+"Private Key":"Secret key controlling your wallet. NEVER share it. Anyone with it can steal all your funds.",
+"BscScan":"The block explorer for BSC \u2014 like Google for the blockchain. Search any address, TX, token, or block."
+};
+
+const NEXT_STEPS={
+"latest-block":["block-by-num","gas-price","chain-info"],
+"block-by-num":["latest-block","get-tx","block-by-hash"],
+"block-by-hash":["block-by-num","get-tx"],
+"get-tx":["tx-receipt","native-balance","is-contract"],
+"tx-receipt":["get-tx","estimate-gas","native-balance"],
+"estimate-gas":["gas-price","transfer-native","nonce"],
+"erc20-info":["erc20-balance","sec-token","token-search"],
+"erc20-balance":["erc20-info","transfer-erc20","native-balance"],
+"native-balance":["erc20-balance","nonce","transfer-native"],
+"create-erc20":["erc20-info","approve-spending","sec-token"],
+"transfer-native":["native-balance","estimate-gas","nonce"],
+"transfer-erc20":["erc20-balance","approve-spending","erc20-info"],
+"approve-spending":["transfer-erc20","erc20-balance"],
+"nft-info":["nft-balance","sec-nft","erc1155-meta"],
+"nft-balance":["nft-info","transfer-nft"],
+"erc1155-meta":["erc1155-bal","nft-info"],
+"erc1155-bal":["erc1155-meta","transfer-1155"],
+"transfer-nft":["nft-info","nft-balance"],
+"transfer-1155":["erc1155-bal","erc1155-meta"],
+"is-contract":["get-code","read-contract","native-balance"],
+"get-code":["is-contract","read-contract"],
+"read-contract":["is-contract","erc20-info","get-code"],
+"write-contract":["read-contract","estimate-gas"],
+"gas-price":["estimate-gas","latest-block","chain-info"],
+"chain-info":["gas-price","latest-block"],
+"nonce":["native-balance","transfer-native","estimate-gas"],
+"8004-agent":["8004-wallet","agent-detail","agent-search"],
+"8004-wallet":["8004-agent","native-balance"],
+"register-agent":["8004-agent","set-agent-uri"],
+"set-agent-uri":["8004-agent","register-agent"],
+"bn-ping":["bn-time","bn-info"],
+"bn-time":["bn-ping","bn-price"],
+"bn-info":["bn-price","bn-24h"],
+"bn-price":["bn-24h","bn-klines","bn-book-ticker"],
+"bn-24h":["bn-price","bn-depth","bn-trades"],
+"bn-book-ticker":["bn-price","bn-depth"],
+"bn-avg":["bn-price","bn-24h"],
+"bn-day":["bn-24h","bn-price"],
+"bn-depth":["bn-trades","bn-book-ticker","bn-24h"],
+"bn-trades":["bn-agg","bn-depth","bn-klines"],
+"bn-agg":["bn-trades","bn-klines"],
+"bn-klines":["bn-uiklines","bn-24h","bn-trades"],
+"bn-uiklines":["bn-klines","bn-24h"],
+"bn-funding":["bn-funding-sym","heur-arb"],
+"bn-funding-sym":["bn-funding","bn-24h","heur-arb"],
+"bnb-price":["bn-price","token-search","bn-24h"],
+"token-search":["token-profile","sec-token","dex-search"],
+"token-profile":["token-search","sec-token","dex-pair"],
+"trending":["new-pairs","top-pools","token-search"],
+"dex-search":["dex-pair","token-search","top-pools"],
+"dex-pair":["dex-search","ohlcv","token-profile"],
+"new-pairs":["trending","top-pools","sec-token"],
+"top-pools":["new-pairs","trending","ohlcv"],
+"ohlcv":["dex-pair","bn-klines","top-pools"],
+"heur-arb":["bn-funding","bn-funding-sym"],
+"sec-token":["sec-addr","erc20-info","token-profile"],
+"sec-approval":["sec-token","approve-spending"],
+"sec-nft":["nft-info","sec-token"],
+"sec-addr":["sec-token","native-balance","is-contract"],
+"sec-phish":["sec-token","sec-addr"],
+"agent-detail":["agent-search","8004-agent","agent-list"],
+"agent-search":["agent-detail","agent-list"],
+"agent-list":["agent-detail","agent-search","8004-agent"],
+};
+
+const CAT_INTROS={
+bnb:{title:"BNB Chain On-Chain Data",desc:"Query the BSC blockchain directly \u2014 blocks, transactions, tokens, NFTs, smart contracts, and network state. All data comes live from BSC nodes via JSON-RPC.",start:"latest-block",facts:["BSC produces a new block every 3 seconds","Read any data \u2014 no wallet or API key needed","47 tools: blocks, tokens, NFTs, contracts, Greenfield"]},
+binance:{title:"Binance Market Data",desc:"Real-time prices, orderbooks, trades, and candlestick data from the world's largest crypto exchange. Spot and futures markets.",start:"bn-price",facts:["Live data from Binance public API","Spot + Futures markets covered","22 tools: tickers, charts, orderbooks, funding rates"]},
+dex:{title:"DEX & Market Intelligence",desc:"Decentralized exchange data \u2014 token prices, liquidity pools, trending pairs, and AI-powered market analysis from DexScreener and GeckoTerminal.",start:"bnb-price",facts:["Track any token across BSC DEXs","Discover new pairs and trending tokens","AI sentiment analysis and arbitrage detection"]},
+security:{title:"Security & Audit Tools",desc:"Protect yourself from scams. Scan tokens for honeypots, check addresses for phishing, audit NFT collections, and verify URLs \u2014 powered by GoPlus Labs.",start:"sec-token",facts:["Always scan before buying unknown tokens","Detect honeypots, hidden taxes, mint functions","Check any URL for phishing attempts"]},
+defi:{title:"DeFi & AI Tools",desc:"Advanced DeFi operations and AI-powered tools \u2014 PancakeSwap trading, Heurist AI agents, token creation, and more. Most tools run in demo mode.",start:"pancake-swap",facts:["PancakeSwap swap, liquidity, positions","AI image/video/3D generation via Heurist","Web scraping, sentiment analysis, portfolio tracking"]},
+agents:{title:"8004scan \u2014 AI Agent Registry",desc:"Explore the on-chain AI agent ecosystem on BNB Chain. Every agent is an ERC-8004 NFT with identity, services, and protocols.",start:"agent-list",facts:["Browse and search all registered agents","Each agent has a score, health status, and protocols","BOB is Agent #36035 \u2014 try looking it up!"]},
+a2a:{title:"A2A Agent Communication",desc:"Talk directly to AI agents using Google's Agent-to-Agent protocol. Send JSON-RPC messages and get real responses.",start:null,facts:["Based on Google's open A2A protocol","BOB is fully A2A compatible","The BSC agent ecosystem is still early \u2014 most agents don't respond yet"]}
+};
+
 let curTab="bnb",curTool=null;
 
 function renderTabs(){
@@ -361,7 +524,7 @@ function renderSidebar(){
   const tools=T.filter(t=>t.tab===curTab&&(!q||t.name.toLowerCase().includes(q)||t.desc.toLowerCase().includes(q)));
   let h="",lc="";
   tools.forEach(t=>{if(t.cat!==lc){h+=`<div class="cat">${t.cat}</div>`;lc=t.cat}
-    h+=`<button class="item${curTool===t.id?" on":""}" onclick="sel('${t.id}')"><span class="dot ${t.mode}"></span>${t.name}</button>`;
+    h+=`<button class="item${curTool===t.id?" on":""}" onclick="sel('${t.id}')"><span class="dot ${t.mode}"></span>${t.name}${explored.includes(t.id)?'<span class="explored-check">\u2713</span>':''}</button>`;
   });
   document.getElementById("side").innerHTML=h||'<div style="padding:16px;font-size:11px;color:var(--t3)">No matches.</div>';
 }
@@ -396,7 +559,7 @@ function switchTab(id){curTab=id;curTool=null;renderTabs();renderSidebar();
   document.getElementById("pdesc").textContent="Pick a tool from the "+TABS.find(t=>t.id===id).label+" category.";
   document.getElementById("psrc").innerHTML="";
   document.getElementById("pform").style.display="none";
-  document.getElementById("out").innerHTML='<pre class="inf">Pick a tool from the sidebar.</pre>';
+  showCategoryIntro(id);
 }
 function sel(id){curTool=id;renderSidebar();renderPanel()}
 function filter(){renderSidebar()}
@@ -430,6 +593,110 @@ setTimeout(renderWalletHeader,0);
 
 function gv(k){const el=document.getElementById("p-"+k);return el?el.value.trim():""}
 function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
+
+// ── GLOSSARY ──
+function glossarize(html){
+  if(!html)return html;
+  const keys=Object.keys(GLOSSARY).sort((a,b)=>b.length-a.length);
+  let result=html;
+  keys.forEach(term=>{
+    const re=new RegExp('(?<![<\\w/])\\b('+term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')\\b(?![^<]*>)','g');
+    const tip=GLOSSARY[term].replace(/"/g,'&quot;');
+    result=result.replace(re,(m)=>'<span class="gloss" data-tip="'+tip+'">'+m+'</span>');
+  });
+  return result;
+}
+
+// ── PROGRESS ──
+let explored=JSON.parse(localStorage.getItem("bob-explored")||"[]");
+function markExplored(id){
+  if(!explored.includes(id)){explored.push(id);localStorage.setItem("bob-explored",JSON.stringify(explored));updateProgress();checkMilestone()}
+}
+function updateProgress(){
+  const el=document.getElementById("progress-fill");
+  const tx=document.getElementById("progress-text");
+  if(el)el.style.width=(explored.length/T.length*100)+"%";
+  if(tx)tx.textContent=explored.length+"/"+T.length;
+}
+function checkMilestone(){
+  const ms=[1,5,10,25,50,75,100,116];
+  const m=ms.find(n=>n===explored.length);
+  if(!m)return;
+  const msgs={1:"First tool explored!",5:"5 tools down \u2014 you're getting the hang of it!",10:"10 tools! You're a BNB Chain explorer now!",25:"25 tools! Quarter way through!",50:"Halfway there \u2014 50 tools explored!",75:"75 tools! You're a power user!",100:"100 tools! Almost all of them!",116:"ALL TOOLS EXPLORED! You're a BNB Chain master!"};
+  showMilestone(msgs[m]||m+" tools explored!");
+}
+function showMilestone(msg){
+  let el=document.getElementById("milestone");
+  if(!el){el=document.createElement("div");el.className="milestone-toast";el.id="milestone";document.body.appendChild(el)}
+  el.textContent="\uD83C\uDFC6 "+msg;
+  el.classList.add("show");
+  setTimeout(()=>el.classList.remove("show"),3500);
+}
+
+// ── EXECUTION FLOW ──
+function getFlowSteps(t){
+  const cat=t.cat||"";const src=t.src||"";
+  if(t.mode==="demo")return[{icon:"\uD83D\uDCCB",text:"Preparing "+t.name+"..."},{icon:"\u2699\uFE0F",text:"Running simulation..."},{icon:"\uD83D\uDCCA",text:"Generating demo output..."}];
+  if(cat.includes("Block"))return[{icon:"\uD83D\uDD17",text:"Connecting to BSC node..."},{icon:"\uD83D\uDCE6",text:"Reading block data..."},{icon:"\u2705",text:"Parsing response..."}];
+  if(cat.includes("Transaction"))return[{icon:"\uD83D\uDD17",text:"Connecting to BSC node..."},{icon:"\uD83D\uDD0D",text:"Looking up transaction..."},{icon:"\u2705",text:"Parsing receipt..."}];
+  if(cat.includes("Token")||cat.includes("NFT"))return[{icon:"\uD83D\uDD17",text:"Connecting to BSC..."},{icon:"\uD83D\uDCDC",text:"Calling smart contract..."},{icon:"\u2705",text:"Decoding response..."}];
+  if(src==="binance-mcp")return[{icon:"\uD83D\uDCE1",text:"Querying Binance API..."},{icon:"\uD83D\uDCCA",text:"Processing market data..."},{icon:"\u2705",text:"Formatting results..."}];
+  if(cat.includes("Security")||cat==="Audit")return[{icon:"\uD83D\uDEE1\uFE0F",text:"Connecting to GoPlus Labs..."},{icon:"\uD83D\uDD0D",text:"Scanning for risks..."},{icon:"\u2705",text:"Analyzing results..."}];
+  if(cat.includes("Intelligence")||src==="heurist-mesh")return[{icon:"\uD83E\uDD16",text:"Connecting to AI service..."},{icon:"\uD83E\uDDE0",text:"AI is analyzing..."},{icon:"\u2705",text:"Processing results..."}];
+  if(cat.includes("8004")||cat.includes("Agents"))return[{icon:"\uD83E\uDD16",text:"Querying agent registry..."},{icon:"\uD83D\uDCCB",text:"Fetching agent data..."},{icon:"\u2705",text:"Done!"}];
+  return[{icon:"\uD83D\uDD17",text:"Connecting..."},{icon:"\u2699\uFE0F",text:"Processing..."},{icon:"\u2705",text:"Done!"}];
+}
+
+function showExecFlow(t){
+  return new Promise(resolve=>{
+    const steps=getFlowSteps(t);
+    let h='<div class="exec-flow">';
+    steps.forEach((s,i)=>h+='<div class="exec-step" id="es-'+i+'"><span class="step-icon">'+s.icon+'</span><span class="step-text">'+s.text+'</span></div>');
+    h+='</div>';
+    document.getElementById("out").innerHTML=h;
+    let i=0;
+    function next(){
+      if(i>0){const prev=document.getElementById("es-"+(i-1));if(prev){prev.classList.remove("active");prev.classList.add("done");prev.querySelector(".step-icon").textContent="\u2713"}}
+      if(i<steps.length){const cur=document.getElementById("es-"+i);if(cur)cur.classList.add("active");i++;setTimeout(next,400)}
+      else{setTimeout(resolve,300)}
+    }
+    setTimeout(next,100);
+  });
+}
+
+// ── RICH OUTPUT HELPERS ──
+function linkAddr(a){if(!a)return"?";const short=a.slice(0,8)+"..."+a.slice(-4);const net=isTestnet?"testnet.":"";return'<a class="addr-link" href="https://'+net+'bscscan.com/address/'+a+'" target="_blank" title="'+a+' \u2014 Click for BscScan">'+short+'</a>'}
+function linkTx(h){if(!h)return"?";return'<a class="tx-link" href="https://'+(isTestnet?"testnet.":"")+'bscscan.com/tx/'+h+'" target="_blank" title="View on BscScan">'+h.slice(0,10)+'...'+h.slice(-6)+'</a>'}
+function linkBlock(n){return'<a class="block-link" href="https://'+(isTestnet?"testnet.":"")+'bscscan.com/block/'+n+'" target="_blank">'+Number(n).toLocaleString()+'</a>'}
+function resultCard(title,rows){
+  let h='<div class="result-card"><div class="rc-title">'+title+'</div>';
+  rows.forEach(r=>{if(r.v!==undefined&&r.v!==null)h+='<div class="result-row"><span class="rl">'+r.l+'</span><span class="rv">'+r.v+'</span></div>'});
+  return h+"</div>";
+}
+function badge(text,type){return'<span class="result-badge '+type+'">'+text+'</span>'}
+
+// ── NEXT STEPS ──
+function renderNextSteps(toolId){
+  const ids=NEXT_STEPS[toolId];
+  if(!ids||!ids.length)return"";
+  let h='<div class="next-steps"><span class="ns-label">Try next \u2192</span>';
+  ids.forEach(id=>{const t=T.find(x=>x.id===id);if(t)h+='<button class="next-btn" onclick="sel(\''+id+'\')">'+t.name+'</button>'});
+  return h+"</div>";
+}
+
+// ── CATEGORY INTROS ──
+function showCategoryIntro(tabId){
+  const c=CAT_INTROS[tabId];
+  if(!c){document.getElementById("out").innerHTML='<pre class="inf">Pick a tool from the sidebar.</pre>';return}
+  const catTools=T.filter(t=>t.tab===tabId);
+  const catExplored=catTools.filter(t=>explored.includes(t.id)).length;
+  let h='<div class="cat-intro"><h3>'+c.title+'</h3><p>'+c.desc+'</p><ul class="cat-facts">';
+  c.facts.forEach(f=>h+='<li>'+f+'</li>');
+  h+='</ul><div style="font-size:10px;color:var(--t2);margin-bottom:16px">Progress: '+catExplored+'/'+catTools.length+' tools explored</div>';
+  if(c.start){const startTool=T.find(t=>t.id===c.start);h+='<button class="cat-start" onclick="sel(\''+c.start+'\')">Start with '+(startTool?startTool.name:c.start)+' \u2192</button>'}
+  h+="</div>";
+  document.getElementById("out").innerHTML=h;
+}
 
 // API
 // Settings & Testnet
@@ -491,8 +758,8 @@ async function proxy(url){const r=await fetch("/api/proxy",{method:"POST",header
 async function binance(path){return proxy("https://data-api.binance.vision"+path)}
 async function fbin(path){return proxy("https://fapi.binance.com"+path).then(d=>{if(d.code===0)return proxy("https://fapi.binance.vision"+path);return d})}
 
-function out(h,showCopy=true){document.getElementById("out").innerHTML=(showCopy?'<button class="copy-btn" onclick="copyOutput()">Copy</button>':"")+h}
-function pre(t,c="ok"){out(`<pre class="${c}">${esc(typeof t==="object"?JSON.stringify(t,null,2):String(t))}</pre>`)}
+function out(h,showCopy=true){document.getElementById("out").innerHTML=(showCopy?'<button class="copy-btn" onclick="copyOutput()">Copy</button>':"")+glossarize(h)}
+function pre(t,c="ok"){out(`<pre class="${c}">${esc(typeof t==="object"?JSON.stringify(t,null,2):String(t))}</pre>`+renderNextSteps(curTool))}
 function hexN(h){return parseInt(h,16)}
 function wei(w){return(parseInt(w,16)/1e18).toFixed(6)}
 function gwei(h){return(parseInt(h,16)/1e9).toFixed(2)}
@@ -504,7 +771,7 @@ function simOut(t){
   const s=t.sim;
   const repo=t.src==="bnbchain-mcp"?"bnb-chain/bnbchain-mcp":t.src==="binance-mcp"?"TermiX-official/binance-mcp":t.src==="bsc-mcp"?"TermiX-official/bsc-mcp":"heurist-network/heurist-mesh-mcp-server";
   // Try demo function first
-  if(t.demo){const demoResult=t.demo(t);if(demoResult){out(demoResult+liveCostBar(t.id));return}}
+  if(t.demo){const demoResult=t.demo(t);if(demoResult){out(demoResult+liveCostBar(t.id)+renderNextSteps(t.id));return}}
   // Fallback: generic sim with steps
   const inputs=t.params.map(p=>({l:p.l,v:gv(p.k)||p.ex||p.ph||"(demo)"}));
   let o=`<pre class="sim">DEMO SIMULATION — ${esc(t.name)}\n${"─".repeat(50)}\n\n`;
@@ -514,40 +781,40 @@ function simOut(t){
   o+=`  TX Hash: ${fakeTx()}\n  Block: ${87100000+Math.floor(Math.random()*10000)}\n  Time: ${new Date().toISOString()}\n\n`;
   o+=`${"─".repeat(50)}\n  Cost: ${esc(s.cost)}\n  You need: ${esc(s.needs)}\n\n`;
   o+=`  To use for real:\n  1. Clone: github.com/${repo}\n  2. Add your API keys / private key\n  3. Connect to your AI assistant\n  4. Run with live data!</pre>`;
-  out(o+liveCostBar(t.id));
+  out(o+liveCostBar(t.id)+renderNextSteps(t.id));
 }
 
 // EXEC
 async function exec(){
   const t=T.find(x=>x.id===curTool);if(!t)return;
-  if(t.mode==="demo"){simOut(t);return}
-  out('<pre class="inf">Loading...</pre>',false);
+  if(t.mode==="demo"){await showExecFlow(t);simOut(t);markExplored(t.id);return}
+  await showExecFlow(t);
   try{switch(t.id){
-    case "latest-block":{const d=await rpc("eth_getBlockByNumber",["latest",false]);const b=d.result;pre(`Block: ${hexN(b.number)}\nHash: ${b.hash}\nTime: ${new Date(hexN(b.timestamp)*1000).toISOString()}\nTXs: ${b.transactions.length}\nGas: ${hexN(b.gasUsed)}\nMiner: ${b.miner}`);break}
+    case "latest-block":{const d=await rpc("eth_getBlockByNumber",["latest",false]);const b=d.result;out(resultCard("Latest Block",[{l:"Block",v:linkBlock(hexN(b.number))},{l:"Hash",v:linkTx(b.hash)},{l:"Time",v:new Date(hexN(b.timestamp)*1000).toISOString()},{l:"Transactions",v:b.transactions.length},{l:"Gas Used",v:hexN(b.gasUsed).toLocaleString()},{l:"Miner",v:linkAddr(b.miner)}])+renderNextSteps("latest-block"));break}
     case "block-by-num":{const n=gv("num");if(!n){pre("Enter block number","err");break}const d=await rpc("eth_getBlockByNumber",["0x"+parseInt(n).toString(16),false]);if(!d.result){pre("Not found","err");break}const b=d.result;pre(`Block: ${hexN(b.number)}\nHash: ${b.hash}\nTime: ${new Date(hexN(b.timestamp)*1000).toISOString()}\nTXs: ${b.transactions.length}`);break}
     case "block-by-hash":{const h=gv("hash");if(!h){pre("Enter hash","err");break}const d=await rpc("eth_getBlockByHash",[h,false]);if(!d.result){pre("Not found","err");break}const b=d.result;pre(`Block: ${hexN(b.number)}\nHash: ${b.hash}\nTXs: ${b.transactions.length}`);break}
-    case "get-tx":{const h=gv("hash");if(!h){pre("Enter TX hash","err");break}const d=await rpc("eth_getTransactionByHash",[h]);if(!d.result){pre("Not found","err");break}const x=d.result;pre(`Hash: ${x.hash}\nFrom: ${x.from}\nTo: ${x.to}\nValue: ${wei(x.value)} BNB\nGas: ${gwei(x.gasPrice)} Gwei\nBlock: ${hexN(x.blockNumber)}`);break}
-    case "tx-receipt":{const h=gv("hash");if(!h){pre("Enter TX hash","err");break}const d=await rpc("eth_getTransactionReceipt",[h]);if(!d.result){pre("Not found","err");break}const r=d.result;pre(`Status: ${r.status==="0x1"?"Success":"Failed"}\nBlock: ${hexN(r.blockNumber)}\nGas: ${hexN(r.gasUsed)}\nFrom: ${r.from}\nTo: ${r.to}\nLogs: ${r.logs.length}`);break}
+    case "get-tx":{const h=gv("hash");if(!h){pre("Enter TX hash","err");break}const d=await rpc("eth_getTransactionByHash",[h]);if(!d.result){pre("Not found","err");break}const x=d.result;out(resultCard("Transaction Details",[{l:"Hash",v:linkTx(x.hash)},{l:"From",v:linkAddr(x.from)},{l:"To",v:linkAddr(x.to)},{l:"Value",v:wei(x.value)+" BNB"},{l:"Gas Price",v:gwei(x.gasPrice)+" Gwei"},{l:"Block",v:linkBlock(hexN(x.blockNumber))}])+renderNextSteps("get-tx"));break}
+    case "tx-receipt":{const h=gv("hash");if(!h){pre("Enter TX hash","err");break}const d=await rpc("eth_getTransactionReceipt",[h]);if(!d.result){pre("Not found","err");break}const r=d.result;out(resultCard("Transaction Receipt",[{l:"Status",v:r.status==="0x1"?badge("Success","safe"):badge("Failed","danger")},{l:"Block",v:linkBlock(hexN(r.blockNumber))},{l:"Gas Used",v:hexN(r.gasUsed).toLocaleString()},{l:"From",v:linkAddr(r.from)},{l:"To",v:linkAddr(r.to)},{l:"Logs",v:r.logs.length+" events"}])+renderNextSteps("tx-receipt"));break}
     case "estimate-gas":{const to=gv("to");if(!to){pre("Enter address","err");break}const d=await rpc("eth_estimateGas",[{to,value:"0x0"}]);pre(`Gas: ${hexN(d.result)} units\n~${(hexN(d.result)*3/1e9).toFixed(6)} BNB`);break}
-    case "erc20-info":{const a=gv("addr");if(!a){pre("Enter token address","err");break}const[n,s,dc,ts]=await Promise.all([rpc("eth_call",[{to:a,data:"0x06fdde03"},"latest"]),rpc("eth_call",[{to:a,data:"0x95d89b41"},"latest"]),rpc("eth_call",[{to:a,data:"0x313ce567"},"latest"]),rpc("eth_call",[{to:a,data:"0x18160ddd"},"latest"])]);const d=parseInt(dc.result,16);pre(`Name: ${decStr(n.result)}\nSymbol: ${decStr(s.result)}\nDecimals: ${d}\nSupply: ${(parseInt(ts.result,16)/Math.pow(10,d)).toLocaleString()}`);break}
+    case "erc20-info":{const a=gv("addr");if(!a){pre("Enter token address","err");break}const[n,s,dc,ts]=await Promise.all([rpc("eth_call",[{to:a,data:"0x06fdde03"},"latest"]),rpc("eth_call",[{to:a,data:"0x95d89b41"},"latest"]),rpc("eth_call",[{to:a,data:"0x313ce567"},"latest"]),rpc("eth_call",[{to:a,data:"0x18160ddd"},"latest"])]);const d=parseInt(dc.result,16);out(resultCard("Token Info",[{l:"Name",v:decStr(n.result)},{l:"Symbol",v:decStr(s.result)},{l:"Decimals",v:d},{l:"Total Supply",v:(parseInt(ts.result,16)/Math.pow(10,d)).toLocaleString()}])+renderNextSteps("erc20-info"));break}
     case "erc20-balance":{const tk=gv("token"),w=gv("wallet");if(!tk||!w){pre("Enter both","err");break}const pad=w.slice(2).toLowerCase().padStart(64,"0");const[b,dc]=await Promise.all([rpc("eth_call",[{to:tk,data:"0x70a08231000000000000000000000000"+pad},"latest"]),rpc("eth_call",[{to:tk,data:"0x313ce567"},"latest"])]);const d=parseInt(dc.result,16);pre(`Balance: ${(parseInt(b.result,16)/Math.pow(10,d)).toLocaleString()}`);break}
-    case "native-balance":{const a=gv("addr");if(!a){pre("Enter address","err");break}const d=await rpc("eth_getBalance",[a,"latest"]);pre(`Balance: ${wei(d.result)} BNB`);break}
+    case "native-balance":{const a=gv("addr");if(!a){pre("Enter address","err");break}const d=await rpc("eth_getBalance",[a,"latest"]);out(resultCard("BNB Balance",[{l:"Address",v:linkAddr(gv("addr"))},{l:"Balance",v:'<span style="color:var(--y);font-weight:700">'+wei(d.result)+" BNB</span>"}])+renderNextSteps("native-balance"));break}
     case "nft-info":{const a=gv("addr"),id=gv("id");if(!a||!id){pre("Enter both","err");break}const ih=parseInt(id).toString(16).padStart(64,"0");const[n,s,u]=await Promise.all([rpc("eth_call",[{to:a,data:"0x06fdde03"},"latest"]),rpc("eth_call",[{to:a,data:"0x95d89b41"},"latest"]),rpc("eth_call",[{to:a,data:"0xc87b56dd"+ih},"latest"])]);pre(`Name: ${decStr(n.result)}\nSymbol: ${decStr(s.result)}\nURI: ${decStr(u.result)}`);break}
     case "nft-balance":{const a=gv("addr"),w=gv("wallet");if(!a||!w){pre("Enter both","err");break}const d=await rpc("eth_call",[{to:a,data:"0x70a08231000000000000000000000000"+w.slice(2).toLowerCase().padStart(64,"0")},"latest"]);pre(`Balance: ${parseInt(d.result,16)} NFTs`);break}
     case "erc1155-meta":{const a=gv("addr"),id=gv("id");if(!a||!id){pre("Enter both","err");break}const d=await rpc("eth_call",[{to:a,data:"0x0e89341c"+parseInt(id).toString(16).padStart(64,"0")},"latest"]);pre(`URI: ${decStr(d.result)}`);break}
     case "erc1155-bal":{const a=gv("addr"),id=gv("id"),w=gv("wallet");if(!a||!id||!w){pre("Enter all","err");break}const d=await rpc("eth_call",[{to:a,data:"0x00fdd58e000000000000000000000000"+w.slice(2).toLowerCase().padStart(64,"0")+parseInt(id).toString(16).padStart(64,"0")},"latest"]);pre(`Balance: ${parseInt(d.result,16)}`);break}
-    case "is-contract":{const a=gv("addr");if(!a){pre("Enter address","err");break}const d=await rpc("eth_getCode",[a,"latest"]);pre(d.result&&d.result!=="0x"?`Yes — Smart Contract (${(d.result.length-2)/2} bytes)`:"No — EOA (wallet)");break}
+    case "is-contract":{const a=gv("addr");if(!a){pre("Enter address","err");break}const d=await rpc("eth_getCode",[a,"latest"]);const isC=d.result&&d.result!=="0x";out(resultCard("Contract Check",[{l:"Address",v:linkAddr(gv("addr"))},{l:"Type",v:isC?badge("Smart Contract ("+((d.result.length-2)/2)+" bytes)","warn"):badge("EOA (Wallet)","safe")}])+renderNextSteps("is-contract"));break}
     case "get-code":{const a=gv("addr");if(!a){pre("Enter address","err");break}const d=await rpc("eth_getCode",[a,"latest"]);if(!d.result||d.result==="0x"){pre("No code","err");break}pre(`Bytecode (${(d.result.length-2)/2} bytes):\n${d.result.slice(0,200)}...`);break}
     case "read-contract":{const a=gv("addr"),fn=gv("fn");if(!a||!fn){pre("Enter both","err");break}const k={"name()":"0x06fdde03","symbol()":"0x95d89b41","decimals()":"0x313ce567","totalSupply()":"0x18160ddd","owner()":"0x8da5cb5b"};const sel=k[fn];if(!sel){pre("Use: name(), symbol(), decimals(), totalSupply(), owner()","inf");break}const d=await rpc("eth_call",[{to:a,data:sel},"latest"]);if(fn==="decimals()"||fn==="totalSupply()")pre(`Result: ${parseInt(d.result,16)}`);else if(fn==="owner()")pre(`Result: 0x${d.result.slice(26)}`);else pre(`Result: ${decStr(d.result)}`);break}
-    case "gas-price":{const d=await rpc("eth_gasPrice");pre(`Gas: ${gwei(d.result)} Gwei`);break}
-    case "chain-info":{const d=await rpc("eth_chainId");pre(`Chain ID: ${parseInt(d.result,16)}\nNetwork: BNB Smart Chain\nCurrency: BNB`);break}
+    case "gas-price":{const d=await rpc("eth_gasPrice");out(resultCard("Current Gas Price",[{l:"Gas Price",v:'<span style="color:var(--y);font-weight:700">'+gwei(d.result)+' Gwei</span>'},{l:"Approx Transfer Cost",v:(21000*parseInt(d.result,16)/1e18).toFixed(6)+" BNB"}])+renderNextSteps("gas-price"));break}
+    case "chain-info":{const d=await rpc("eth_chainId");out(resultCard("Chain Info",[{l:"Chain ID",v:parseInt(d.result,16)},{l:"Network",v:"BNB Smart Chain"},{l:"Currency",v:"BNB"},{l:"Explorer",v:'<a class="addr-link" href="https://bscscan.com" target="_blank">bscscan.com</a>'}])+renderNextSteps("chain-info"));break}
     case "nonce":{const a=gv("addr");if(!a){pre("Enter address","err");break}const d=await rpc("eth_getTransactionCount",[a,"latest"]);pre(`Nonce: ${parseInt(d.result,16)} transactions sent`);break}
     case "8004-agent":case "8004-wallet":{const id=gv("id");if(!id){pre("Enter agent ID","err");break}const r=await fetch("/api/agent/"+id);const d=await r.json();if(d.detail||d.error){pre("Not found","err");break}if(t.id==="8004-wallet")pre(`Agent #${d.token_id}: ${d.name||"?"}\nOwner: ${d.owner_address}`);else pre(`${d.name||"Agent #"+d.token_id}\nID: ${d.token_id}\nOwner: ${d.owner_address}\nScore: ${d.total_score?.toFixed(1)||"?"}/100\nHealth: ${d.health_status||"?"}\nProtocols: ${(d.supported_protocols||[]).join(", ")}\nA2A: ${d.a2a_endpoint||"none"}\nCreated: ${d.created_at}`);break}
     // BINANCE
     case "bn-ping":{await binance("/api/v3/ping");pre("Binance API OK");break}
     case "bn-time":{const d=await binance("/api/v3/time");pre(`Time: ${new Date(d.serverTime).toISOString()}`);break}
     case "bn-info":{const s=gv("sym");const d=await binance(s?`/api/v3/exchangeInfo?symbol=${s.toUpperCase()}`:"/api/v3/exchangeInfo");if(s&&d.symbols?.[0]){const i=d.symbols[0];pre(`${i.symbol} — ${i.status}\nBase: ${i.baseAsset}\nQuote: ${i.quoteAsset}`)}else pre(`Symbols: ${d.symbols?.length||"?"}`);break}
-    case "bn-price":{const s=gv("sym");if(!s){pre("Enter symbol","err");break}const d=await binance(`/api/v3/ticker/price?symbol=${s.toUpperCase()}`);pre(`${d.symbol}: $${parseFloat(d.price).toLocaleString()}`);break}
+    case "bn-price":{const s=gv("sym");if(!s){pre("Enter symbol","err");break}const d=await binance(`/api/v3/ticker/price?symbol=${s.toUpperCase()}`);out(resultCard("Price Ticker",[{l:"Symbol",v:d.symbol},{l:"Price",v:'<span style="color:var(--g);font-weight:700">$'+parseFloat(d.price).toLocaleString()+'</span>'}])+renderNextSteps("bn-price"));break}
     case "bn-24h":{const s=gv("sym");if(!s){pre("Enter symbol","err");break}const d=await binance(`/api/v3/ticker/24hr?symbol=${s.toUpperCase()}`);pre(`${d.symbol} 24h\nPrice: $${parseFloat(d.lastPrice).toLocaleString()}\nChange: ${d.priceChangePercent}%\nHigh: $${parseFloat(d.highPrice).toLocaleString()}\nLow: $${parseFloat(d.lowPrice).toLocaleString()}\nVolume: ${parseFloat(d.volume).toLocaleString()}\nTrades: ${d.count?.toLocaleString()}`);break}
     case "bn-book-ticker":{const s=gv("sym");if(!s){pre("Enter symbol","err");break}const d=await binance(`/api/v3/ticker/bookTicker?symbol=${s.toUpperCase()}`);pre(`${d.symbol}\nBid: $${d.bidPrice} (${d.bidQty})\nAsk: $${d.askPrice} (${d.askQty})\nSpread: $${(parseFloat(d.askPrice)-parseFloat(d.bidPrice)).toFixed(4)}`);break}
     case "bn-avg":{const s=gv("sym");if(!s){pre("Enter symbol","err");break}const d=await binance(`/api/v3/avgPrice?symbol=${s.toUpperCase()}`);pre(`${s.toUpperCase()} Avg (${d.mins}m): $${parseFloat(d.price).toLocaleString()}`);break}
@@ -571,7 +838,7 @@ async function exec(){
     case "ohlcv":{const a=gv("addr");if(!a){pre("Enter pool","err");break}const d=await proxy(`https://api.geckoterminal.com/api/v2/networks/bsc/pools/${a}/ohlcv/hour?limit=10`);const l=d.data?.attributes?.ohlcv_list||[];let o="OHLCV\n\nTime             O          H          L          C\n";l.forEach(c=>o+=`${new Date(c[0]*1000).toISOString().slice(0,16)} $${(+c[1]).toFixed(4).padStart(9)} $${(+c[2]).toFixed(4).padStart(9)} $${(+c[3]).toFixed(4).padStart(9)} $${(+c[4]).toFixed(4).padStart(9)}\n`);pre(o);break}
     case "heur-arb":{const d=await fbin("/fapi/v1/premiumIndex");let o="Spot-Futures Arb\n\n";const s=(d||[]).filter(f=>Math.abs(+f.lastFundingRate)>0.0005).sort((a,b)=>Math.abs(+b.lastFundingRate)-Math.abs(+a.lastFundingRate));s.slice(0,15).forEach(f=>o+=`${f.symbol.padEnd(12)} ${(+f.lastFundingRate*100).toFixed(4)}% Annual:${(+f.lastFundingRate*100*3*365).toFixed(1)}%\n`);o+="\n+ = short opp, - = long opp";pre(o);break}
     // SECURITY
-    case "sec-token":{const a=gv("addr");if(!a){pre("Enter token","err");break}const d=await proxy(`https://api.gopluslabs.io/api/v1/token_security/56?contract_addresses=${a}`);const r=d.result?.[a.toLowerCase()];if(!r){pre("Not found","err");break}pre(`${r.token_name||"?"} (${r.token_symbol||"?"})\n\nHoneypot: ${r.is_honeypot==="1"?"YES":"No"}\nBuy Tax: ${r.buy_tax||"0"}%\nSell Tax: ${r.sell_tax||"0"}%\nOwner: ${r.owner_address||"renounced"}\nProxy: ${r.is_proxy==="1"?"YES":"No"}\nMintable: ${r.is_mintable==="1"?"YES":"No"}\nOpen Source: ${r.is_open_source==="1"?"Yes":"No"}\nHolders: ${r.holder_count||"?"}`);break}
+    case "sec-token":{const a=gv("addr");if(!a){pre("Enter token","err");break}const d=await proxy(`https://api.gopluslabs.io/api/v1/token_security/56?contract_addresses=${a}`);const r=d.result?.[a.toLowerCase()];if(!r){pre("Not found","err");break}const isHoneypot=r.is_honeypot==="1";const hasTax=parseFloat(r.buy_tax||0)>5||parseFloat(r.sell_tax||0)>5;out(resultCard("Token Security Scan",[{l:"Token",v:(r.token_name||"?")+" ("+(r.token_symbol||"?")+")"},{l:"Honeypot",v:isHoneypot?badge("YES \u2014 DANGER","danger"):badge("No","safe")},{l:"Buy Tax",v:(r.buy_tax||"0")+"%"},{l:"Sell Tax",v:(r.sell_tax||"0")+"%"},{l:"Owner",v:r.owner_address?linkAddr(r.owner_address):"Renounced"},{l:"Proxy",v:r.is_proxy==="1"?badge("YES","warn"):badge("No","safe")},{l:"Mintable",v:r.is_mintable==="1"?badge("YES","warn"):badge("No","safe")},{l:"Open Source",v:r.is_open_source==="1"?badge("Yes","safe"):badge("No","warn")},{l:"Holders",v:r.holder_count||"?"}])+renderNextSteps("sec-token"));break}
     case "sec-approval":{const tk=gv("token"),ow=gv("owner");if(!tk||!ow){pre("Enter both","err");break}const d=await proxy(`https://api.gopluslabs.io/api/v1/approval_security/56?contract_addresses=${tk}`);pre(JSON.stringify(d.result||d,null,2));break}
     case "sec-nft":{const a=gv("addr");if(!a){pre("Enter NFT","err");break}const d=await proxy(`https://api.gopluslabs.io/api/v1/nft_security/56?contract_addresses=${a}`);const r=d.result?.[a.toLowerCase()];if(!r){pre("Not found","err");break}pre(`${r.nft_name||"?"}\nOpen Source: ${r.nft_open_source==="1"?"Yes":"No"}\nProxy: ${r.nft_proxy==="1"?"YES":"No"}\nSelf Destruct: ${r.self_destruct==="1"?"YES":"No"}`);break}
     case "sec-addr":{const a=gv("addr");if(!a){pre("Enter address","err");break}const d=await proxy(`https://api.gopluslabs.io/api/v1/address_security/${a}?chain_id=56`);const r=d.result;if(!r){pre("Not found","err");break}pre(`${a}\n\nMalicious: ${r.malicious_address==="1"?"YES":"No"}\nHoneypot: ${r.honeypot_related_address==="1"?"YES":"No"}\nPhishing: ${r.phishing_activities==="1"?"YES":"No"}\nDarkweb: ${r.darkweb_transactions==="1"?"YES":"No"}`);break}
@@ -580,8 +847,8 @@ async function exec(){
     case "agent-detail":{const id=gv("id");if(!id){pre("Enter ID","err");break}const r=await fetch("/api/agent/"+id);const d=await r.json();if(d.detail||d.error){pre("Not found","err");break}pre(`${d.name||"#"+d.token_id}\nID: ${d.token_id}\nOwner: ${d.owner_address}\nScore: ${d.total_score?.toFixed(1)||"?"}/100\nHealth: ${d.health_status||"?"}\nProtocols: ${(d.supported_protocols||[]).join(", ")}\nA2A: ${d.a2a_endpoint||"none"}\nCreated: ${d.created_at}`);break}
     case "agent-search":{const q=gv("q");if(!q){pre("Enter query","err");break}const d=await proxy(`https://api.8004scan.io/api/v1/agents?chain_id=56&is_testnet=false&search=${encodeURIComponent(q)}&limit=10`);let o=`"${q}" (${d.total||0})\n\n`;(d.items||[]).forEach(a=>o+=`#${a.token_id} ${(a.name||"?").padEnd(25)} Score:${a.total_score?.toFixed(1)||"?"}\n`);pre(o);break}
     case "agent-list":{const d=await proxy("https://api.8004scan.io/api/v1/agents?chain_id=56&is_testnet=false&limit=15&sort_by=total_score&sort_order=desc");let o=`Top BSC Agents (${d.total||0})\n\n`;(d.items||[]).forEach(a=>o+=`#${a.token_id} ${(a.name||"?").padEnd(25)} ${(a.total_score?.toFixed(1)||"?").padStart(5)} ${(a.supported_protocols||[]).join(",")}\n`);pre(o);break}
-    default:simOut(t)
-  }}catch(e){pre("Error: "+e.message,"err")}
+    default:simOut(t);markExplored(t.id)
+  }markExplored(t.id)}catch(e){pre("Error: "+e.message,"err")}
 }
 
 // A2A
@@ -610,7 +877,7 @@ async function sendA2A(){
   }catch(e){pre("Connection failed: "+e.message,"err")}
 }
 
-renderTabs();renderSidebar();
+renderTabs();renderSidebar();updateProgress();
 
 // Welcome popup (first visit only)
 if(!localStorage.getItem("bob-welcomed")){
