@@ -242,7 +242,7 @@ function renderPanel(){
   document.getElementById("psrc").innerHTML=`Source: <a href="https://github.com/${repo}" target="_blank">${t.src}</a>`;
   const pf=document.getElementById("pform");
   let h=t.params.map(p=>`<div class="prow"><label>${p.l}</label><input type="text" id="p-${p.k}" placeholder="${p.ph}" onkeydown="if(event.key==='Enter')exec()"></div>`).join("");
-  h+=`<button class="run" onclick="exec()">${t.mode==="live"?"Run":"Simulate"}</button>`;
+  h+=`<button class="run" onclick="exec()">${t.mode==="live"?"Run":"Simulate"}</button><button class="run" onclick="renderPanel()" style="background:var(--s2);color:var(--t2);border:1px solid var(--b);padding:7px 10px" title="Reset — show tool description">&#x21bb;</button>`;
   pf.innerHTML=h;pf.style.display="flex";
   document.getElementById("out").innerHTML=t.mode==="live"?`<pre class="inf">This tool calls a real API and returns live data.\n${t.params.length?"Fill in the fields above and click Run.":"No input needed — just click Run!"}</pre>`:`<pre class="inf">This tool requires a local MCP server or API key.\nClick Simulate to see what it does, what it costs, and what you need.</pre>`;
 }
