@@ -10,8 +10,8 @@ const AGENT_IDS = [36035, 36336, 37092, 37093, 37103, 40908];
 const AGENT_CARD = {
   name: "BOB Build On BNB",
   description: "If you can't build you won't be rich. The BNB Chain AI Dashboard — test MCP tools, explore agents, learn everything about AI on BNB Chain.",
-  url: "https://buildonbnbbob.vercel.app",
-  provider: { organization: "BOB", url: "https://buildonbnbbob.vercel.app" },
+  url: "https://bobbuildonbnb.vercel.app",
+  provider: { organization: "BOB", url: "https://bobbuildonbnb.vercel.app" },
   version: "1.0.0",
   capabilities: { streaming: false, pushNotifications: false },
   authentication: null,
@@ -81,9 +81,9 @@ function agentRegistration() {
     active: true,
     token: BOB_TOKEN,
     services: [
-      { name: "A2A", version: "0.3.0", endpoint: "https://buildonbnbbob.vercel.app" },
+      { name: "A2A", version: "0.3.0", endpoint: "https://bobbuildonbnb.vercel.app" },
       { name: "agentWallet", endpoint: `eip155:56:${WALLET}` },
-      { name: "Web", endpoint: "https://buildonbnbbob.vercel.app" },
+      { name: "Web", endpoint: "https://bobbuildonbnb.vercel.app" },
     ],
     registrations: AGENT_IDS.map((id) => ({
       agentId: id,
@@ -111,7 +111,7 @@ function handleA2A(body: any) {
     return jsonRpc(id, {
       status: "completed",
       artifacts: [{
-        parts: [{ type: "text", text: "Hey! I'm BOB Build On BNB. Check out the dashboard at https://buildonbnbbob.vercel.app to explore 80+ BNB Chain AI tools." }],
+        parts: [{ type: "text", text: "Hey! I'm BOB Build On BNB. Check out the dashboard at https://bobbuildonbnb.vercel.app to explore 80+ BNB Chain AI tools." }],
       }],
     });
   }
@@ -125,7 +125,7 @@ function jsonRpc(id: any, result: any) {
 }
 
 export default async function handler(req: Request) {
-  const url = new URL(req.url, "https://buildonbnbbob.vercel.app");
+  const url = new URL(req.url, "https://bobbuildonbnb.vercel.app");
   const path = url.pathname;
 
   // CORS
