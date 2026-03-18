@@ -12,29 +12,36 @@
   <meta property="og:url" content="https://bobbuildonbnb.vercel.app">
   <style>
     *{margin:0;padding:0;box-sizing:border-box}
-    body{background:#0a0a0a;color:#eee;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;text-align:center}
-    .wrap{padding:40px 20px;max-width:480px}
-    img{width:140px;height:140px;border-radius:50%;border:4px solid rgba(240,185,11,.4);margin-bottom:24px;animation:glow 2s ease-in-out infinite alternate}
+    body{background:#0a0a0a;color:#eee;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+    .wrap{padding:40px 20px;max-width:500px;width:100%}
+    .logo{width:120px;height:120px;border-radius:50%;border:4px solid rgba(240,185,11,.4);margin-bottom:20px;animation:glow 2s ease-in-out infinite alternate}
     @keyframes glow{from{box-shadow:0 0 20px rgba(240,185,11,.2)}to{box-shadow:0 0 40px rgba(240,185,11,.5)}}
     h1{font-size:28px;font-weight:700;margin-bottom:8px}
     h1 span{color:#F0B90B}
-    .slogan{color:#aaa;font-size:15px;font-style:italic;margin:12px 0 28px}
-    .buy-btn{display:inline-block;background:#F0B90B;color:#0a0a0a;font-size:18px;font-weight:700;padding:16px 48px;border-radius:12px;text-decoration:none;transition:all .2s;letter-spacing:.5px}
+    .slogan{color:#aaa;font-size:15px;font-style:italic;margin:8px 0 24px}
+    .swap-container{margin:0 auto 24px;border-radius:16px;overflow:hidden;border:1px solid rgba(240,185,11,.2);max-width:420px}
+    .swap-container iframe{display:block;width:100%;height:560px;border:none}
+    .buy-btn{display:inline-block;background:#F0B90B;color:#0a0a0a;font-size:16px;font-weight:700;padding:14px 40px;border-radius:12px;text-decoration:none;transition:all .2s;letter-spacing:.5px;margin-bottom:8px}
     .buy-btn:hover{background:#ffd140;transform:scale(1.05);box-shadow:0 0 30px rgba(240,185,11,.4)}
-    .contract{margin-top:24px;font-size:11px;color:#666;word-break:break-all}
+    .or{color:#555;font-size:12px;margin-bottom:8px}
+    .contract{margin-top:16px;font-size:11px;color:#666;word-break:break-all}
     .contract a{color:#F0B90B;text-decoration:none}
     .contract a:hover{text-decoration:underline}
-    .links{margin-top:16px;display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+    .links{margin-top:12px;display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
     .links a{color:#888;font-size:12px;text-decoration:none;transition:color .2s}
     .links a:hover{color:#F0B90B}
   </style>
 </head>
 <body>
   <div class="wrap">
-    <img src="https://raw.githubusercontent.com/mmxrealQQ/bob-assets/main/bob.jpg" alt="BOB">
+    <img class="logo" src="https://raw.githubusercontent.com/mmxrealQQ/bob-assets/main/bob.jpg" alt="BOB">
     <h1><span>$BOB</span> Build On BNB</h1>
     <div class="slogan">If you can't build, you won't be rich.</div>
-    <a class="buy-btn" href="https://pancakeswap.finance/swap?outputCurrency=0x51363F073b1E4920fdA7AA9E9d84BA97EdE1560e&chain=bsc" target="_blank" rel="noopener">Buy $BOB Now</a>
+    <div class="swap-container">
+      <iframe src="https://flooz.xyz/embed/swap/0x51363F073b1E4920fdA7AA9E9d84BA97EdE1560e" allow="clipboard-write" loading="lazy"></iframe>
+    </div>
+    <div class="or">or buy directly on</div>
+    <a class="buy-btn" href="https://pancakeswap.finance/swap?outputCurrency=0x51363F073b1E4920fdA7AA9E9d84BA97EdE1560e&chain=bsc" target="_blank" rel="noopener">PancakeSwap</a>
     <div class="contract">Contract: <a href="https://bscscan.com/token/0x51363F073b1E4920fdA7AA9E9d84BA97EdE1560e" target="_blank" rel="noopener">0x51363F073b1E4920fdA7AA9E9d84BA97EdE1560e</a></div>
     <div class="links">
       <a href="https://bscscan.com/token/0x51363F073b1E4920fdA7AA9E9d84BA97EdE1560e" target="_blank" rel="noopener">BscScan</a>
