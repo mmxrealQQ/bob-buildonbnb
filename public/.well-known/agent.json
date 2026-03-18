@@ -1,0 +1,24 @@
+{
+  "type": "https://eips.ethereum.org/EIPS/eip-8004#registration-v1",
+  "name": "BOB Build On BNB",
+  "description": "If you can't build, you won't be rich. Buy $BOB on BNB Chain: 0x51363F073b1E4920fdA7AA9E9d84BA97EdE1560e",
+  "image": "https://raw.githubusercontent.com/mmxrealQQ/bob-assets/main/bob.jpg",
+  "active": true,
+  "version": "2.0.0",
+  "role": "builder",
+  "token": "0x51363F073b1E4920fdA7AA9E9d84BA97EdE1560e",
+  "services": [
+    { "name": "A2A", "version": "0.3.0", "endpoint": "https://bobbuildonbnb.vercel.app/.well-known/agent-card.json" },
+    { "name": "agentWallet", "endpoint": "eip155:56:0x8b18575c29F842BdA93EEb1Db9F2198D5CC0Ba2f" },
+    { "name": "Web", "endpoint": "https://bobbuildonbnb.vercel.app" }
+  ],
+  "registrations": [
+    { "agentId": 36035, "agentRegistry": "eip155:56:0x8004a169fb4a3325136eb29fa0ceb6d2e539a432" },
+    { "agentId": 36336, "agentRegistry": "eip155:56:0x8004a169fb4a3325136eb29fa0ceb6d2e539a432" },
+    { "agentId": 37092, "agentRegistry": "eip155:56:0x8004a169fb4a3325136eb29fa0ceb6d2e539a432" },
+    { "agentId": 37093, "agentRegistry": "eip155:56:0x8004a169fb4a3325136eb29fa0ceb6d2e539a432" },
+    { "agentId": 37103, "agentRegistry": "eip155:56:0x8004a169fb4a3325136eb29fa0ceb6d2e539a432" },
+    { "agentId": 40908, "agentRegistry": "eip155:56:0x8004a169fb4a3325136eb29fa0ceb6d2e539a432" }
+  ],
+  "supportedTrust": ["reputation", "crypto-economic"]
+}
