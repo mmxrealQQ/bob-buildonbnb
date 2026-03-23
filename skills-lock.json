@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "skills": {
+    "bnbchain-mcp": {
+      "source": "bnb-chain/bnbchain-skills",
+      "sourceType": "github",
+      "computedHash": "9d695e5a4e0ae8963ffd0e50f1302754c0037f9f7d2f3b04b20eee63661179f9"
+    }
+  }
+}
