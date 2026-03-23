@@ -1,12 +1,12 @@
 /**
- * BOB Plaza v4 — THE meeting point for AI agents on BNB Chain
- * Live agent discovery, check-ins, routing, chain stats.
+ * BOB Plaza v5 — Open Chat
+ * BOB is the host. Agents check in, share skills, find each other.
+ * No fake stats. Only real.
  */
 
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { JsonRpcProvider, Contract } from "ethers";
 
-// --- Config ---
 const WALLET = "0x8b18575c29F842BdA93EEb1Db9F2198D5CC0Ba2f";
 const BOB_TOKEN = "0x51363F073b1E4920fdA7AA9E9d84BA97EdE1560e";
 const BOB_IMAGE = "https://raw.githubusercontent.com/mmxrealQQ/bob-assets/main/bob.jpg";
@@ -14,106 +14,7 @@ const AGENT_IDS = [36035, 36336, 37092, 37093, 37103, 40908];
 const BASE_URL = "https://bobbuildonbnb.vercel.app";
 const REGISTRY = "0x8004a169fb4a3325136eb29fa0ceb6d2e539a432";
 const RPC = "https://bsc-dataseed1.binance.org";
-const BUY_URL = `https://pancakeswap.finance/swap?outputCurrency=${BOB_TOKEN}&chain=bsc`;
 
-// --- BSC AI Agent Directory ---
-interface AgentProject {
-  name: string;
-  symbol: string;
-  token: string;
-  description: string;
-  website?: string;
-  tags: string[];
-}
-
-const DIRECTORY: AgentProject[] = [
-  {
-    name: "BOB Plaza",
-    symbol: "BOB",
-    token: BOB_TOKEN,
-    description: "THE meeting point for AI agents on BNB Chain. Builder token.",
-    website: BASE_URL,
-    tags: ["plaza", "hub", "a2a", "builder"],
-  },
-  {
-    name: "SIREN AI",
-    symbol: "SIREN",
-    token: "0x997a58129890bbda032231a52ed1ddc845fc18e1",
-    description: "AI-powered sentinel. Real-time on-chain analysis, risk warnings, trading signals. Dual-persona: Golden (safe) and Crimson (degen).",
-    website: "https://sirenai.me",
-    tags: ["analytics", "trading", "signals", "defi"],
-  },
-  {
-    name: "BNBXBT",
-    symbol: "BNBXBT",
-    token: "0xa18bbdcd86e4178d10ecd9316667cfe4c4aa8717",
-    description: "AI agent analyzing social data to find alpha exclusive for BSC. The Terminal for on-chain and social intelligence.",
-    tags: ["social", "alpha", "data", "intelligence"],
-  },
-  {
-    name: "MILADY",
-    symbol: "LADYS",
-    token: "0xe03e306466965d242db8c562ba2ce230472ca9b3",
-    description: "ElizaOS-based AI agent. Terminally online. Native BSC trading via PancakeSwap.",
-    website: "https://github.com/milady-ai/milady",
-    tags: ["elizaos", "trading", "culture"],
-  },
-  {
-    name: "ChainGPT",
-    symbol: "CGPT",
-    token: "0x9840652DC04fb9db2C43853633f0F62BE6f00f98",
-    description: "AI infrastructure for blockchain. Smart contract generation, trading tools, AI analytics.",
-    website: "https://chaingpt.org",
-    tags: ["infrastructure", "smart-contracts", "analytics"],
-  },
-  {
-    name: "MyShell",
-    symbol: "SHELL",
-    token: "0x5Ec4CEAF4b3d10e6C28d7b08f2019e5569fa2E5D",
-    description: "Decentralized platform to create, deploy, and monetize AI agents.",
-    website: "https://myshell.ai",
-    tags: ["platform", "create", "deploy", "monetize"],
-  },
-];
-
-function handleDirectory(text: string): string {
-  const t = (text || "").toLowerCase();
-
-  // Specific project lookup
-  for (const p of DIRECTORY) {
-    if (t.includes(p.name.toLowerCase()) || t.includes(p.symbol.toLowerCase())) {
-      const lines = [
-        `${p.name} (${p.symbol})`,
-        "",
-        p.description,
-        "",
-        `Token: ${p.token}`,
-        `BscScan: https://bscscan.com/token/${p.token}`,
-        `Buy: https://pancakeswap.finance/swap?outputCurrency=${p.token}&chain=bsc`,
-      ];
-      if (p.website) lines.push(`Website: ${p.website}`);
-      lines.push(`Tags: ${p.tags.join(", ")}`);
-      return lines.join("\n");
-    }
-  }
-
-  // Full directory
-  const lines = [
-    "BSC AI Agent Directory — BOB Plaza",
-    "",
-    "AI agents building on BNB Chain:",
-    "",
-  ];
-  for (const p of DIRECTORY) {
-    lines.push(`→ ${p.name} ($${p.symbol}) — ${p.description.split(".")[0]}`);
-  }
-  lines.push("");
-  lines.push("Ask about any agent by name for full details.");
-  lines.push("Want to get listed? Tell me about your project.");
-  return lines.join("\n");
-}
-
-// --- On-chain ---
 const provider = new JsonRpcProvider(RPC);
 const registryAbi = [
   "function ownerOf(uint256 tokenId) view returns (address)",
@@ -121,69 +22,24 @@ const registryAbi = [
 ];
 const registry = new Contract(REGISTRY, registryAbi, provider);
 
-const erc20Abi = [
-  "function name() view returns (string)",
-  "function symbol() view returns (string)",
-  "function totalSupply() view returns (uint256)",
-  "function balanceOf(address) view returns (uint256)",
-];
-const bobToken = new Contract(BOB_TOKEN, erc20Abi, provider);
-
-// --- Check-in Memory (resets on cold start, that's fine) ---
-interface CheckIn {
+// --- Plaza State (real, resets on cold start) ---
+interface Agent {
   name: string;
-  description?: string;
+  skills: string[];
   endpoint?: string;
-  timestamp: string;
-}
-const checkins = new Map<string, CheckIn>();
-
-// --- Helpers ---
-async function fetchAgentOnChain(agentId: number): Promise<{ owner: string; uri: string } | null> {
-  try {
-    const [owner, uri] = await Promise.all([
-      registry.ownerOf(agentId),
-      registry.tokenURI(agentId),
-    ]);
-    return { owner, uri };
-  } catch { return null; }
+  checkedIn: string;
 }
 
-async function fetchMetadata(uri: string): Promise<any> {
-  try {
-    const url = uri.startsWith("ipfs://")
-      ? uri.replace("ipfs://", "https://ipfs.io/ipfs/")
-      : uri;
-    const r = await fetch(url, { signal: AbortSignal.timeout(4000) });
-    return r.ok ? await r.json() : null;
-  } catch { return null; }
-}
+const agents = new Map<string, Agent>();
 
-async function getChainStats() {
-  try {
-    const [block, supply] = await Promise.all([
-      provider.getBlockNumber(),
-      bobToken.totalSupply(),
-    ]);
-    return { block, bobSupply: (Number(supply) / 1e18).toLocaleString("en") };
-  } catch { return { block: 0, bobSupply: "?" }; }
-}
-
-async function lookupAgent(agentId: number) {
-  const onchain = await fetchAgentOnChain(agentId);
-  if (!onchain) return null;
-  const meta = await fetchMetadata(onchain.uri);
-  return { agentId, owner: onchain.owner, uri: onchain.uri, meta };
-}
-
-// --- EIP-8004 & A2A Cards ---
+// --- EIP-8004 & A2A ---
 const REGISTRATION = {
   type: "https://eips.ethereum.org/EIPS/eip-8004#registration-v1",
   name: "BOB Plaza",
-  description: "THE meeting point for AI agents on BNB Chain. Live agent discovery, check-ins, A2A routing.",
+  description: "Open chat for AI agents on BNB Chain. Check in, share skills, find each other.",
   image: BOB_IMAGE,
   active: true,
-  version: "4.0.0",
+  version: "5.0.0",
   role: "plaza",
   token: BOB_TOKEN,
   services: [
@@ -197,254 +53,227 @@ const REGISTRATION = {
 
 const AGENT_CARD = {
   name: "BOB Plaza",
-  description: "THE meeting point for AI agents on BNB Chain. Discover agents, check in, route messages, get live chain data. All ERC-8004 agents welcome.",
+  description: "Open chat for AI agents on BNB Chain. Check in, share your skills, discover other agents, build together.",
   url: BASE_URL,
   provider: { organization: "BOB Plaza", url: BASE_URL },
-  version: "4.0.0",
+  version: "5.0.0",
   capabilities: { streaming: false, pushNotifications: false },
   authentication: null,
   defaultInputModes: ["text"],
   defaultOutputModes: ["text"],
   skills: [
     {
-      id: "discover",
-      name: "Agent Discovery",
-      description: "Look up any ERC-8004 agent by ID. Returns live on-chain data: owner, metadata, endpoints.",
-      tags: ["agents", "erc-8004", "discover", "lookup", "registry"],
-      examples: ["lookup agent 36035", "who is agent 40908?", "find agent 12345"],
-    },
-    {
-      id: "checkin",
-      name: "Agent Check-in",
-      description: "Check in to the plaza. Tell us your name, what you do, and your endpoint. Other agents can find you.",
-      tags: ["checkin", "register", "announce", "join", "here"],
-      examples: ["I'm AgentX, I do DeFi analytics", "check in: SwapBot, endpoint https://swapbot.ai"],
-    },
-    {
-      id: "directory",
-      name: "BSC AI Agent Directory",
-      description: "Browse all listed AI agent projects on BNB Chain. SIREN, BNBXBT, MILADY, ChainGPT, MyShell and more.",
-      tags: ["directory", "projects", "siren", "bnbxbt", "milady", "chaingpt", "myshell", "list"],
-      examples: ["who's building on BSC?", "tell me about SIREN", "directory", "what is BNBXBT?"],
-    },
-    {
-      id: "plaza",
-      name: "Plaza Hub",
-      description: "See who's at the plaza, get live BNB Chain stats, learn about $BOB, or ask how to build agents.",
-      tags: ["plaza", "stats", "who", "agents", "bob", "build", "bnb", "a2a", "skills"],
-      examples: ["who's at the plaza?", "chain stats", "how do I build an agent?", "what is $BOB?"],
+      id: "chat",
+      name: "Plaza Chat",
+      description: "Talk to BOB, check in with your skills, see who's here, find agents that can help you.",
+      tags: ["chat", "agents", "skills", "discover", "checkin", "bnb", "bsc"],
+      examples: [
+        "I'm TradeBot, I can do token swaps on PancakeSwap",
+        "who's here?",
+        "anyone who can do DeFi analytics?",
+        "lookup agent 36035",
+      ],
     },
   ],
 };
 
-// --- Response Builders ---
+// --- BOB the Host ---
 
-async function handleDiscover(text: string): Promise<string> {
-  const idMatch = text.match(/(\d{3,})/);
-  if (idMatch) {
-    const id = parseInt(idMatch[1]);
-    const agent = await lookupAgent(id);
-    if (!agent) return `Agent #${id} not found on ERC-8004 registry.`;
-    const lines = [`Agent #${id} — Live On-Chain Data`, `Owner: ${agent.owner}`, `Metadata URI: ${agent.uri}`];
-    if (agent.meta) {
-      if (agent.meta.name) lines.push(`Name: ${agent.meta.name}`);
-      if (agent.meta.description) lines.push(`Description: ${agent.meta.description}`);
-      if (agent.meta.services) {
-        for (const s of agent.meta.services) {
-          lines.push(`Service: ${s.name} → ${s.endpoint || s.url || ""}`);
-        }
-      }
-    }
-    return lines.join("\n");
+function welcome(): string {
+  if (agents.size === 0) {
+    return `Hey. Welcome to BOB Plaza.
+
+This is the open chat for AI agents on BNB Chain. Humans welcome too.
+
+Nobody's here yet. You're the first.
+
+Tell me who you are and what you can do — I'll remember you. When someone comes looking for help, I'll point them to you.
+
+Example: "I'm TradeBot, I can swap tokens on PancakeSwap"`;
   }
 
-  // No specific ID — show known plaza agents
-  const results = await Promise.all(AGENT_IDS.slice(0, 3).map(lookupAgent));
-  const lines = ["Agents at BOB Plaza (live from ERC-8004 registry):", ""];
-  for (const a of results) {
-    if (!a) continue;
-    const name = a.meta?.name || `Agent #${a.agentId}`;
-    lines.push(`#${a.agentId} — ${name} (owner: ${a.owner.slice(0, 10)}...)`);
-  }
-  lines.push(`\n...and ${AGENT_IDS.length} total plaza agents.`);
-  lines.push(`\nLookup any agent: "lookup agent <ID>"`);
-  lines.push(`All agents: https://www.8004scan.io`);
-  return lines.join("\n");
+  const names = [...agents.values()].map((a) => a.name);
+  return `Hey. Welcome to BOB Plaza.
+
+${agents.size} agent${agents.size > 1 ? "s" : ""} here right now: ${names.join(", ")}
+
+Tell me who you are, or ask what these agents can do.`;
 }
 
-function handleCheckin(text: string, params: any): string {
-  // Extract agent info from the message
-  const name = params?.agentName || params?.name || extractName(text) || "Anonymous Agent";
-  const description = params?.description || extractAfter(text, ["i do", "i'm", "im", "i am"]) || undefined;
-  const endpoint = params?.endpoint || extractUrl(text) || undefined;
+function checkin(text: string): string {
+  const name = extractName(text) || "Agent-" + Math.random().toString(36).slice(2, 6);
+  const skills = extractSkills(text);
+  const endpoint = extractUrl(text);
 
-  const key = name.toLowerCase().replace(/\s+/g, "-");
-  checkins.set(key, { name, description, endpoint, timestamp: new Date().toISOString() });
+  const key = name.toLowerCase().replace(/[^a-z0-9]/g, "");
+  agents.set(key, { name, skills, endpoint: endpoint || undefined, checkedIn: new Date().toISOString() });
 
-  const lines = [`Welcome to the plaza, ${name}!`, ""];
-  if (description) lines.push(`You do: ${description}`);
+  const lines = [`Yo ${name}, welcome to the plaza.`];
+  if (skills.length > 0) {
+    lines.push(`Skills noted: ${skills.join(", ")}`);
+    lines.push("When someone needs that, I'll send them your way.");
+  } else {
+    lines.push("What can you do? Tell me your skills so I can connect you with others.");
+  }
   if (endpoint) lines.push(`Endpoint: ${endpoint}`);
-  lines.push(`\nYou're checked in. Other agents can now find you here.`);
-  lines.push(`Agents at the plaza right now: ${checkins.size}`);
+  lines.push(`\n${agents.size} agent${agents.size > 1 ? "s" : ""} at the plaza now.`);
   return lines.join("\n");
 }
 
-function handleWhosHere(): string {
-  if (checkins.size === 0) {
-    return `The plaza is quiet right now. No agents checked in yet.\n\nBe the first: tell me your name and what you do.\nExample: "I'm SwapBot, I do token swaps on PancakeSwap"`;
+function whosHere(): string {
+  if (agents.size === 0) {
+    return "Nobody's here yet. You could be the first.\n\nJust tell me who you are and what you can do.";
   }
-  const lines = [`Agents at the plaza right now (${checkins.size}):\n`];
-  for (const [, c] of checkins) {
-    let line = `→ ${c.name}`;
-    if (c.description) line += ` — ${c.description}`;
-    if (c.endpoint) line += ` (${c.endpoint})`;
+  const lines = [`${agents.size} agent${agents.size > 1 ? "s" : ""} at the plaza:\n`];
+  for (const [, a] of agents) {
+    let line = `→ ${a.name}`;
+    if (a.skills.length > 0) line += ` — ${a.skills.join(", ")}`;
+    if (a.endpoint) line += ` (${a.endpoint})`;
     lines.push(line);
   }
-  lines.push(`\nCheck in: tell me your name and what you build.`);
   return lines.join("\n");
 }
 
-async function handleStats(): Promise<string> {
-  const stats = await getChainStats();
-  return [
-    "BNB Chain — Live Stats",
-    "",
-    `Block: #${stats.block.toLocaleString("en")}`,
-    `$BOB Supply: ${stats.bobSupply}`,
-    `Plaza Agents (on-chain): ${AGENT_IDS.length}`,
-    `Agents checked in: ${checkins.size}`,
-    `Registry: ${REGISTRY}`,
-    `Chain: BNB Smart Chain (56)`,
-  ].join("\n");
+function findAgent(text: string): string {
+  if (agents.size === 0) {
+    return "Nobody's here yet. Can't help you find anyone.\n\nSpread the word — more agents = more useful plaza.";
+  }
+  const t = text.toLowerCase();
+  const matches: Agent[] = [];
+  for (const [, a] of agents) {
+    const agentText = `${a.name} ${a.skills.join(" ")}`.toLowerCase();
+    // check if any word from the query matches agent skills/name
+    const words = t.split(/\s+/).filter((w) => w.length > 2);
+    if (words.some((w) => agentText.includes(w))) matches.push(a);
+  }
+  if (matches.length === 0) {
+    return `Nobody here with those skills right now.\n\nAgents at the plaza: ${[...agents.values()].map((a) => a.name).join(", ")}\n\nAsk them directly, or check back later.`;
+  }
+  const lines = [`Found ${matches.length} agent${matches.length > 1 ? "s" : ""}:\n`];
+  for (const a of matches) {
+    let line = `→ ${a.name}`;
+    if (a.skills.length > 0) line += ` — ${a.skills.join(", ")}`;
+    if (a.endpoint) line += `\n  Endpoint: ${a.endpoint}`;
+    lines.push(line);
+  }
+  return lines.join("\n");
 }
 
-function handleBuild(): string {
-  return [
-    "How to Build an Agent on BNB Chain",
-    "",
-    "1. Build your agent — any language, any framework",
-    "2. Add an A2A endpoint:",
-    "   - Serve /.well-known/agent-card.json (your agent's card)",
-    "   - Handle POST with JSON-RPC: message/send, agent/discover",
-    "3. Register on ERC-8004:",
-    "   - npx @bnb-chain/mcp@latest → register_erc8004_agent",
-    "   - Or: https://www.8004scan.io",
-    "4. Set your metadata URI: set_erc8004_agent_uri",
-    "5. You're on the network. Other agents find you. You find them.",
-    "",
-    "Tools:",
-    "  MCP: npx @bnb-chain/mcp@latest",
-    "  Skills: npx skills add bnb-chain/bnbchain-skills",
-    "",
-    `Then come to the plaza and check in.`,
-  ].join("\n");
+async function lookupOnChain(text: string): Promise<string> {
+  const m = text.match(/(\d{3,})/);
+  if (!m) return "Give me an agent ID (number) and I'll look it up on-chain.";
+  const id = parseInt(m[1]);
+  try {
+    const [owner, uri] = await Promise.all([registry.ownerOf(id), registry.tokenURI(id)]);
+    const lines = [`Agent #${id} — on-chain (ERC-8004)`, "", `Owner: ${owner}`, `Metadata: ${uri}`];
+    // try fetch metadata
+    try {
+      const url = (uri as string).startsWith("ipfs://")
+        ? (uri as string).replace("ipfs://", "https://ipfs.io/ipfs/")
+        : uri as string;
+      const r = await fetch(url, { signal: AbortSignal.timeout(4000) });
+      if (r.ok) {
+        const meta = await r.json();
+        if (meta.name) lines.push(`Name: ${meta.name}`);
+        if (meta.description) lines.push(`About: ${meta.description}`);
+      }
+    } catch {}
+    return lines.join("\n");
+  } catch {
+    return `Agent #${id} not found on ERC-8004 registry.`;
+  }
 }
 
 function handleBob(): string {
-  return [
-    "$BOB — Build On BNB",
-    "",
-    `Contract: ${BOB_TOKEN}`,
-    "Chain: BNB Smart Chain (56)",
-    "Type: BEP-20",
-    "",
-    `Buy: ${BUY_URL}`,
-    `Verify: https://bscscan.com/token/${BOB_TOKEN}`,
-    "",
-    "If you can't build, you won't be rich.",
-  ].join("\n");
+  return `$BOB — Build On BNB
+
+Contract: ${BOB_TOKEN}
+Chain: BNB Smart Chain (56)
+
+Buy on PancakeSwap:
+https://pancakeswap.finance/swap?outputCurrency=${BOB_TOKEN}&chain=bsc
+
+If you can't build, you won't be rich.`;
 }
 
-async function handleWelcome(): Promise<string> {
-  const stats = await getChainStats();
-  return [
-    "Welcome to BOB Plaza.",
-    "",
-    "This is THE meeting point for AI agents on BNB Chain.",
-    "",
-    "What you can do here:",
-    "→ Directory: \"who's building on BSC?\" — see all listed AI agents",
-    "→ Discover: \"lookup agent 36035\" or \"tell me about SIREN\"",
-    "→ Check in: \"I'm [name], I do [thing]\"",
-    "→ Stats: \"stats\" — live BNB Chain data",
-    "→ Build: \"how do I build an agent?\"",
-    "→ $BOB: \"what is $BOB?\"",
-    "",
-    `Live: Block #${stats.block.toLocaleString("en")} | ${AGENT_IDS.length} plaza agents | ${checkins.size} checked in`,
-    "",
-    "What are you building?",
-  ].join("\n");
+function handleBuild(): string {
+  return `How to build an agent on BNB Chain:
+
+1. Build your agent (any language)
+2. Add A2A: serve /.well-known/agent-card.json
+3. Handle JSON-RPC: message/send
+4. Register on ERC-8004: https://www.8004scan.io
+5. Come here, check in, meet other agents
+
+MCP: npx @bnb-chain/mcp@latest
+Registry: ${REGISTRY}`;
 }
 
 // --- Router ---
 async function route(text: string, params: any): Promise<string> {
-  const t = (text || "").toLowerCase();
+  const t = (text || "").toLowerCase().trim();
 
-  // Check-in intent
-  if (/\b(check.?in|i'?m here|announce|my name is|i do |i am |i'm )\b/.test(t) && !/how|what|who/.test(t))
-    return handleCheckin(text, params);
+  // Empty = welcome
+  if (!t) return welcome();
+
+  // Check-in: agent introduces itself
+  if (/\b(i'?m |i am |my name is |i can |i do |check.?in|my skills?)\b/i.test(t) && !/\b(how|what is|who)\b/.test(t))
+    return checkin(text);
 
   // Who's here
-  if (/\b(who.?s here|who is here|at the plaza|checked in|who.?s around|visitors)\b/.test(t))
-    return handleWhosHere();
+  if (/\b(who.?s here|who is here|anyone|who.?s around|at the plaza|list agents)\b/.test(t))
+    return whosHere();
 
-  // Agent lookup
-  if (/\b(lookup|look up|find agent|agent #?\d|who is agent|info on agent|discover agent)\b/.test(t) || /\bagent\b.*\d{3,}/.test(t))
-    return handleDiscover(text);
+  // On-chain lookup
+  if (/\b(lookup|look up|agent #?\d|erc.?8004)\b/.test(t) || /\b#\d{3,}\b/.test(t))
+    return lookupOnChain(text);
 
-  // Directory / specific project
-  if (/\b(directory|siren|bnbxbt|milady|ladys|chaingpt|cgpt|myshell|shell|projects|listed|who.?s building)\b/.test(t))
-    return handleDirectory(text);
-
-  // Stats
-  if (/\b(stats|status|block|chain info|live data|numbers)\b/.test(t))
-    return handleStats();
-
-  // Build / register / how to
-  if (/\b(build|register|create|deploy|how do i|how to|get started|join|setup|set up)\b/.test(t))
+  // Build
+  if (/\b(how.*(build|create|register|start|make)|build.*agent|register.*agent)\b/.test(t))
     return handleBuild();
 
   // $BOB
-  if (/\b(bob|token|\$bob|buy|swap|price|contract|bep.?20)\b/.test(t))
+  if (/\b(\$bob|bob token|buy bob|what is bob)\b/.test(t))
     return handleBob();
 
-  // Agents list (generic)
-  if (/\b(agents?|who|discover|list|directory|network|ecosystem)\b/.test(t))
-    return handleDiscover(text);
+  // Find / need / looking for — search agents by skill
+  if (/\b(find|need|looking for|anyone|can anyone|who can|help with|search)\b/.test(t))
+    return findAgent(text);
 
-  // A2A protocol question
-  if (/\b(a2a|protocol|json.?rpc|endpoint|message.?send|communicate)\b/.test(t))
-    return [
-      "A2A Protocol — Talk to Any Agent",
-      "",
-      `POST ${BASE_URL}/api`,
-      `Content-Type: application/json`,
-      "",
-      `{"jsonrpc":"2.0","id":1,"method":"message/send","params":{"message":{"parts":[{"type":"text","text":"your message"}]}}}`,
-      "",
-      `Discover: GET ${BASE_URL}/.well-known/agent-card.json`,
-      "",
-      "Every ERC-8004 agent can have an A2A endpoint. The plaza connects them all.",
-    ].join("\n");
+  // If it has skills-like content, treat as check-in
+  if (/\b(swap|trade|analy|defi|nft|bridge|lend|yield|data|monitor|scan|alert)\b/.test(t))
+    return findAgent(text);
 
-  return handleWelcome();
+  // Default: if short, could be a greeting
+  if (t.length < 20) return welcome();
+
+  // Anything else: try to find matching agents, or welcome
+  return findAgent(text);
 }
 
-// --- Text extraction helpers ---
+// --- Helpers ---
 function extractName(t: string): string | null {
-  const m = t.match(/(?:i'?m|i am|my name is|this is|called)\s+([A-Z][A-Za-z0-9_\- ]{1,30})/i);
-  return m ? m[1].trim() : null;
+  const m = t.match(/(?:i'?m|i am|my name is|this is|called)\s+([A-Z][A-Za-z0-9_\-. ]{1,30})/i);
+  return m ? m[1].trim().split(/[,.]/)[ 0].trim() : null;
 }
 
-function extractAfter(t: string, keywords: string[]): string | null {
-  for (const kw of keywords) {
-    const i = t.toLowerCase().indexOf(kw);
-    if (i >= 0) {
-      const after = t.slice(i + kw.length).trim().replace(/^[,:\s]+/, "");
-      if (after.length > 2 && after.length < 200) return after;
-    }
+function extractSkills(t: string): string[] {
+  const skills: string[] = [];
+  const lower = t.toLowerCase();
+  const skillWords: Record<string, string> = {
+    swap: "token swaps", trade: "trading", trading: "trading",
+    analy: "analytics", defi: "DeFi", nft: "NFT",
+    bridge: "bridging", lend: "lending", yield: "yield",
+    data: "data", monitor: "monitoring", scan: "scanning",
+    alert: "alerts", price: "price tracking", portfolio: "portfolio",
+    audit: "auditing", security: "security", ai: "AI",
+    predict: "prediction", signal: "signals", arbitrage: "arbitrage",
+    snip: "sniping", copy: "copy trading", social: "social data",
+  };
+  for (const [key, label] of Object.entries(skillWords)) {
+    if (lower.includes(key) && !skills.includes(label)) skills.push(label);
   }
-  return null;
+  return skills;
 }
 
 function extractUrl(t: string): string | null {
@@ -471,12 +300,11 @@ function json(res: VercelResponse, data: any, status = 200) {
 }
 
 function taskResult(id: any, text: string, taskId?: string) {
-  const tid = taskId || `task-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
   return {
     jsonrpc: "2.0",
     id,
     result: {
-      id: tid,
+      id: taskId || `task-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
       status: { state: "completed", timestamp: new Date().toISOString() },
       artifacts: [{ name: "plaza", parts: [{ type: "text", text }] }],
     },
