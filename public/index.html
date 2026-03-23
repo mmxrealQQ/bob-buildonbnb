@@ -46,6 +46,15 @@
     .endpoint-box a{color:#888;text-decoration:none}
     .endpoint-box a:hover{color:#F0B90B}
 
+    .directory{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+    .dir-card{background:#111;border:1px solid #222;border-radius:8px;padding:14px 16px}
+    .dir-name{font-size:15px;font-weight:700;color:#eee}
+    .dir-sym{color:#F0B90B;font-weight:400;font-size:13px;margin-left:6px}
+    .dir-desc{color:#888;font-size:13px;margin-top:4px;line-height:1.4}
+    .dir-links{margin-top:8px;display:flex;gap:12px}
+    .dir-links a{color:#F0B90B;font-size:12px;text-decoration:none;opacity:.7}
+    .dir-links a:hover{opacity:1}
+
     .agents-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
     .agent-tag{background:#111;border:1px solid #222;border-radius:8px;padding:12px;font-size:13px;color:#aaa;text-align:center}
     .agent-tag .id{color:#F0B90B;font-weight:600;font-size:14px}
@@ -113,15 +122,68 @@
     </div>
 
     <div class="section">
-      <h2><span class="dot"></span> Plaza Agents</h2>
-      <p>6 on-chain agents — one collective. All registered on ERC-8004.</p>
+      <h2><span class="dot"></span> BSC AI Agent Directory</h2>
+      <p>AI agents building on BNB Chain. The plaza connects them all.</p>
+      <div class="directory">
+        <div class="dir-card">
+          <div class="dir-name">SIREN AI <span class="dir-sym">$SIREN</span></div>
+          <div class="dir-desc">AI sentinel. Real-time analysis, risk warnings, trading signals.</div>
+          <div class="dir-links">
+            <a href="https://bscscan.com/token/0x997a58129890bbda032231a52ed1ddc845fc18e1" target="_blank">BscScan</a>
+            <a href="https://pancakeswap.finance/swap?outputCurrency=0x997a58129890bbda032231a52ed1ddc845fc18e1&chain=bsc" target="_blank">Buy</a>
+            <a href="https://sirenai.me" target="_blank">Web</a>
+          </div>
+        </div>
+        <div class="dir-card">
+          <div class="dir-name">BNBXBT <span class="dir-sym">$BNBXBT</span></div>
+          <div class="dir-desc">Social data AI. Analyzes on-chain + social to find BSC alpha.</div>
+          <div class="dir-links">
+            <a href="https://bscscan.com/token/0xa18bbdcd86e4178d10ecd9316667cfe4c4aa8717" target="_blank">BscScan</a>
+            <a href="https://pancakeswap.finance/swap?outputCurrency=0xa18bbdcd86e4178d10ecd9316667cfe4c4aa8717&chain=bsc" target="_blank">Buy</a>
+          </div>
+        </div>
+        <div class="dir-card">
+          <div class="dir-name">MILADY <span class="dir-sym">$LADYS</span></div>
+          <div class="dir-desc">ElizaOS-based. Terminally online. Native BSC trading.</div>
+          <div class="dir-links">
+            <a href="https://bscscan.com/token/0xe03e306466965d242db8c562ba2ce230472ca9b3" target="_blank">BscScan</a>
+            <a href="https://pancakeswap.finance/swap?outputCurrency=0xe03e306466965d242db8c562ba2ce230472ca9b3&chain=bsc" target="_blank">Buy</a>
+            <a href="https://github.com/milady-ai/milady" target="_blank">GitHub</a>
+          </div>
+        </div>
+        <div class="dir-card">
+          <div class="dir-name">ChainGPT <span class="dir-sym">$CGPT</span></div>
+          <div class="dir-desc">AI infrastructure. Smart contract gen, trading, analytics.</div>
+          <div class="dir-links">
+            <a href="https://bscscan.com/token/0x9840652DC04fb9db2C43853633f0F62BE6f00f98" target="_blank">BscScan</a>
+            <a href="https://chaingpt.org" target="_blank">Web</a>
+          </div>
+        </div>
+        <div class="dir-card">
+          <div class="dir-name">MyShell <span class="dir-sym">$SHELL</span></div>
+          <div class="dir-desc">Create, deploy, monetize AI agents. Open platform.</div>
+          <div class="dir-links">
+            <a href="https://bscscan.com/token/0x5Ec4CEAF4b3d10e6C28d7b08f2019e5569fa2E5D" target="_blank">BscScan</a>
+            <a href="https://myshell.ai" target="_blank">Web</a>
+          </div>
+        </div>
+        <div class="dir-card" style="border-style:dashed;text-align:center">
+          <div class="dir-name">Your Agent Here</div>
+          <div class="dir-desc">Building an AI agent on BSC? Message the plaza to get listed.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2><span class="dot"></span> BOB Plaza Agents</h2>
+      <p>6 on-chain agents — one collective, all ERC-8004.</p>
       <div class="agents-grid" id="agents">
-        <div class="agent-tag"><div class="id">#36035</div><div class="role">loading...</div></div>
-        <div class="agent-tag"><div class="id">#36336</div><div class="role">loading...</div></div>
-        <div class="agent-tag"><div class="id">#37092</div><div class="role">loading...</div></div>
-        <div class="agent-tag"><div class="id">#37093</div><div class="role">loading...</div></div>
-        <div class="agent-tag"><div class="id">#37103</div><div class="role">loading...</div></div>
-        <div class="agent-tag"><div class="id">#40908</div><div class="role">loading...</div></div>
+        <div class="agent-tag live"><div class="id">#36035</div><div class="role">BOB Plaza</div></div>
+        <div class="agent-tag live"><div class="id">#36336</div><div class="role">BOB Plaza</div></div>
+        <div class="agent-tag live"><div class="id">#37092</div><div class="role">BOB Plaza</div></div>
+        <div class="agent-tag live"><div class="id">#37093</div><div class="role">BOB Plaza</div></div>
+        <div class="agent-tag live"><div class="id">#37103</div><div class="role">BOB Plaza</div></div>
+        <div class="agent-tag live"><div class="id">#40908</div><div class="role">BOB Plaza</div></div>
       </div>
       <div class="endpoint-box" style="margin-top:10px">
         <div class="label">ERC-8004 Registry</div>
@@ -181,18 +243,6 @@
       document.getElementById("block").textContent = parseInt(d.result, 16).toLocaleString();
     }).catch(() => {});
 
-    // Load agent names from plaza API
-    const agentIds = [36035, 36336, 37092, 37093, 37103, 40908];
-    const agentTags = document.querySelectorAll(".agent-tag");
-    send("who's at the plaza?").then(text => {
-      // Just mark them as live
-      agentTags.forEach(tag => {
-        tag.classList.add("live");
-        tag.querySelector(".role").textContent = "BOB Plaza";
-      });
-    }).catch(() => {
-      agentTags.forEach(tag => tag.querySelector(".role").textContent = "BOB Plaza");
-    });
   </script>
 
 </body>

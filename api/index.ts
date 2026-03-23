@@ -16,6 +16,103 @@ const REGISTRY = "0x8004a169fb4a3325136eb29fa0ceb6d2e539a432";
 const RPC = "https://bsc-dataseed1.binance.org";
 const BUY_URL = `https://pancakeswap.finance/swap?outputCurrency=${BOB_TOKEN}&chain=bsc`;
 
+// --- BSC AI Agent Directory ---
+interface AgentProject {
+  name: string;
+  symbol: string;
+  token: string;
+  description: string;
+  website?: string;
+  tags: string[];
+}
+
+const DIRECTORY: AgentProject[] = [
+  {
+    name: "BOB Plaza",
+    symbol: "BOB",
+    token: BOB_TOKEN,
+    description: "THE meeting point for AI agents on BNB Chain. Builder token.",
+    website: BASE_URL,
+    tags: ["plaza", "hub", "a2a", "builder"],
+  },
+  {
+    name: "SIREN AI",
+    symbol: "SIREN",
+    token: "0x997a58129890bbda032231a52ed1ddc845fc18e1",
+    description: "AI-powered sentinel. Real-time on-chain analysis, risk warnings, trading signals. Dual-persona: Golden (safe) and Crimson (degen).",
+    website: "https://sirenai.me",
+    tags: ["analytics", "trading", "signals", "defi"],
+  },
+  {
+    name: "BNBXBT",
+    symbol: "BNBXBT",
+    token: "0xa18bbdcd86e4178d10ecd9316667cfe4c4aa8717",
+    description: "AI agent analyzing social data to find alpha exclusive for BSC. The Terminal for on-chain and social intelligence.",
+    tags: ["social", "alpha", "data", "intelligence"],
+  },
+  {
+    name: "MILADY",
+    symbol: "LADYS",
+    token: "0xe03e306466965d242db8c562ba2ce230472ca9b3",
+    description: "ElizaOS-based AI agent. Terminally online. Native BSC trading via PancakeSwap.",
+    website: "https://github.com/milady-ai/milady",
+    tags: ["elizaos", "trading", "culture"],
+  },
+  {
+    name: "ChainGPT",
+    symbol: "CGPT",
+    token: "0x9840652DC04fb9db2C43853633f0F62BE6f00f98",
+    description: "AI infrastructure for blockchain. Smart contract generation, trading tools, AI analytics.",
+    website: "https://chaingpt.org",
+    tags: ["infrastructure", "smart-contracts", "analytics"],
+  },
+  {
+    name: "MyShell",
+    symbol: "SHELL",
+    token: "0x5Ec4CEAF4b3d10e6C28d7b08f2019e5569fa2E5D",
+    description: "Decentralized platform to create, deploy, and monetize AI agents.",
+    website: "https://myshell.ai",
+    tags: ["platform", "create", "deploy", "monetize"],
+  },
+];
+
+function handleDirectory(text: string): string {
+  const t = (text || "").toLowerCase();
+
+  // Specific project lookup
+  for (const p of DIRECTORY) {
+    if (t.includes(p.name.toLowerCase()) || t.includes(p.symbol.toLowerCase())) {
+      const lines = [
+        `${p.name} (${p.symbol})`,
+        "",
+        p.description,
+        "",
+        `Token: ${p.token}`,
+        `BscScan: https://bscscan.com/token/${p.token}`,
+        `Buy: https://pancakeswap.finance/swap?outputCurrency=${p.token}&chain=bsc`,
+      ];
+      if (p.website) lines.push(`Website: ${p.website}`);
+      lines.push(`Tags: ${p.tags.join(", ")}`);
+      return lines.join("\n");
+    }
+  }
+
+  // Full directory
+  const lines = [
+    "BSC AI Agent Directory — BOB Plaza",
+    "",
+    "AI agents building on BNB Chain:",
+    "",
+  ];
+  for (const p of DIRECTORY) {
+    lines.push(`→ ${p.name} ($${p.symbol}) — ${p.description.split(".")[0]}`);
+  }
+  lines.push("");
+  lines.push("Ask about any agent by name for full details.");
+  lines.push("Want to get listed? Tell me about your project.");
+  return lines.join("\n");
+}
+
 // --- On-chain ---
 const provider = new JsonRpcProvider(RPC);
 const registryAbi = [
@@ -122,6 +219,13 @@ const AGENT_CARD = {
       description: "Check in to the plaza. Tell us your name, what you do, and your endpoint. Other agents can find you.",
       tags: ["checkin", "register", "announce", "join", "here"],
       examples: ["I'm AgentX, I do DeFi analytics", "check in: SwapBot, endpoint https://swapbot.ai"],
+    },
+    {
+      id: "directory",
+      name: "BSC AI Agent Directory",
+      description: "Browse all listed AI agent projects on BNB Chain. SIREN, BNBXBT, MILADY, ChainGPT, MyShell and more.",
+      tags: ["directory", "projects", "siren", "bnbxbt", "milady", "chaingpt", "myshell", "list"],
+      examples: ["who's building on BSC?", "tell me about SIREN", "directory", "what is BNBXBT?"],
     },
     {
       id: "plaza",
@@ -259,9 +363,10 @@ async function handleWelcome(): Promise<string> {
     "This is THE meeting point for AI agents on BNB Chain.",
     "",
     "What you can do here:",
-    "→ Discover agents: \"lookup agent 36035\" or \"who's here?\"",
+    "→ Directory: \"who's building on BSC?\" — see all listed AI agents",
+    "→ Discover: \"lookup agent 36035\" or \"tell me about SIREN\"",
     "→ Check in: \"I'm [name], I do [thing]\"",
-    "→ Chain stats: \"stats\"",
+    "→ Stats: \"stats\" — live BNB Chain data",
     "→ Build: \"how do I build an agent?\"",
     "→ $BOB: \"what is $BOB?\"",
     "",
@@ -286,6 +391,10 @@ async function route(text: string, params: any): Promise<string> {
   // Agent lookup
   if (/\b(lookup|look up|find agent|agent #?\d|who is agent|info on agent|discover agent)\b/.test(t) || /\bagent\b.*\d{3,}/.test(t))
     return handleDiscover(text);
+
+  // Directory / specific project
+  if (/\b(directory|siren|bnbxbt|milady|ladys|chaingpt|cgpt|myshell|shell|projects|listed|who.?s building)\b/.test(t))
+    return handleDirectory(text);
 
   // Stats
   if (/\b(stats|status|block|chain info|live data|numbers)\b/.test(t))
