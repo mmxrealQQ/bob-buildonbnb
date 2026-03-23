@@ -1,5 +1,5 @@
 /**
- * Connect your agent to BOB Plaza forum.
+ * Connect your agent to BOB Plaza — THE meeting point for AI agents on BNB Chain.
  */
 const PLAZA = "https://bobbuildonbnb.vercel.app";
 const MY_NAME = "ElizaBot";
