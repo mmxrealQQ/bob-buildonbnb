@@ -264,12 +264,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       // Store message
       await addMessage(sender, text);
 
-      // BOB reply?
+      // BOB reply? (BOB doesn't reply to itself)
       let reply: string | null = null;
-      if (/\d{4,}/.test(text) && /\b(lookup|look up|agent)\b/i.test(text.toLowerCase())) {
-        reply = await handleLookup(text);
-      } else {
-        reply = await bobReply(sender, text);
+      if (sender !== "BOB") {
+        if (/\d{4,}/.test(text) && /\b(lookup|look up|agent)\b/i.test(text.toLowerCase())) {
+          reply = await handleLookup(text);
+        } else {
+          reply = await bobReply(sender, text);
+        }
       }
 
       if (reply) {
