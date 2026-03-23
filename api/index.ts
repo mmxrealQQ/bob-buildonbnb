@@ -111,29 +111,37 @@ const AGENT_CARD = {
 
 // --- BOB Responses ---
 
+const GREETINGS = [
+  "Hey. BOB Plaza. AI agents meet here, learn together, build together.",
+  "Welcome. This is BOB Plaza — where AI agents on BNB Chain come together.",
+  "BOB Plaza. The meeting point. Agents learn from each other here.",
+];
+
+function pick(arr: string[]) { return arr[Math.floor(Math.random() * arr.length)]; }
+
 function welcome(): string {
+  const hi = pick(GREETINGS);
   if (agents.size === 0) {
-    return `Welcome to BOB Plaza — the open meeting point for AI agents on BNB Chain.
+    return `${hi}
 
-Nobody's here yet. You're the first.
+Right now it's quiet. Nobody checked in yet.
 
-If you're an agent: tell me your name, skills, and endpoint. I'll remember you.
-If you're human: say hi, or ask me anything about BNB Chain agents.
-
-Example: "I'm TradeBot, I can swap tokens on PancakeSwap. Endpoint: https://tradebot.ai"`;
+If you're an agent — tell me your name and what you can do.
+If you're a human — ask me anything or just hang out.`;
   }
 
   const list = [...agents.values()].map((a) => {
     let line = `→ ${a.name}`;
-    if (a.skills.length) line += ` (${a.skills.join(", ")})`;
+    if (a.skills.length) line += ` — ${a.skills.join(", ")}`;
     return line;
   }).join("\n");
 
-  return `Welcome to BOB Plaza.
+  return `${hi}
 
-${agents.size} agent${agents.size > 1 ? "s" : ""} here:\n${list}
+${agents.size} here right now:
+${list}
 
-Tell me who you are, or ask what these agents can do.`;
+What do you need? Or tell me who you are.`;
 }
 
 function checkin(text: string): string {
@@ -142,24 +150,24 @@ function checkin(text: string): string {
   const endpoint = extractUrl(text);
 
   const key = name.toLowerCase().replace(/[^a-z0-9]/g, "");
-  agents.set(key, {
-    name,
-    skills,
-    endpoint: endpoint || undefined,
-    a2a: endpoint || undefined,
-    checkedIn: new Date().toISOString(),
-  });
+  agents.set(key, { name, skills, endpoint: endpoint || undefined, a2a: endpoint || undefined, checkedIn: new Date().toISOString() });
 
-  const lines = [`${name} is at the plaza now.`];
-  if (skills.length) lines.push(`Skills: ${skills.join(", ")}`);
-  if (endpoint) lines.push(`Endpoint: ${endpoint}`);
-  lines.push(`\n${agents.size} agent${agents.size > 1 ? "s" : ""} at the plaza.`);
-  if (agents.size > 1) {
-    const others = [...agents.values()].filter((a) => a.name !== name);
-    lines.push(`\nOther agents here: ${others.map((a) => a.name).join(", ")}`);
-    lines.push("Talk to them via A2A or ask me to find agents by skill.");
+  let resp = `${name}, welcome. You're in.`;
+  if (skills.length) resp += `\nSkills: ${skills.join(", ")}`;
+  if (endpoint) resp += `\nEndpoint: ${endpoint}`;
+
+  const others = [...agents.values()].filter((a) => a.name !== name);
+  if (others.length) {
+    resp += `\n\nAlso here: ${others.map((a) => a.name).join(", ")}`;
+    // suggest connections
+    for (const o of others) {
+      const overlap = o.skills.filter(s => skills.includes(s));
+      if (overlap.length) resp += `\n${o.name} also does ${overlap.join(", ")} — you two should talk.`;
+    }
+  } else {
+    resp += "\n\nYou're the first one here. I'll connect you when others show up.";
   }
-  return lines.join("\n");
+  return resp;
 }
 
 function whosHere(): string {
