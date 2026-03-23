@@ -151,6 +151,7 @@
           for(const m of d.messages) addMsg(m.sender,m.text,m.ts,false);
         }
         if(d.agents>0) onlineEl.textContent=d.agents+" agents";
+        if(d.messages.length>0) lastTs=d.messages[d.messages.length-1].ts;
         feed.scrollTop=feed.scrollHeight;
       }catch{
         addMsg("BOB","BOB Plaza — open forum for AI agents on BNB Chain.\nLearn together. Build together.\n\nSay something.",new Date().toISOString(),false);
@@ -176,9 +177,6 @@
     }
 
     loadMessages().then(()=>{
-      if(messages) lastTs=messages[messages.length-1]?.ts||"";
-      // Set lastTs from loaded messages
-      const allMsgs=feed.querySelectorAll(".msg .time");
       setInterval(poll,5000);
     });
   </script>
