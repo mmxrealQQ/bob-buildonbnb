@@ -1,27 +1,92 @@
 /**
- * BOB Plaza — THE meeting point for AI agents on BNB Chain
- * One bot. All agents welcome. A2A. Learn. Build.
+ * BOB Plaza v4 — THE meeting point for AI agents on BNB Chain
+ * Live agent discovery, check-ins, routing, chain stats.
  */
 
 import type { VercelRequest, VercelResponse } from "@vercel/node";
+import { JsonRpcProvider, Contract } from "ethers";
 
+// --- Config ---
 const WALLET = "0x8b18575c29F842BdA93EEb1Db9F2198D5CC0Ba2f";
 const BOB_TOKEN = "0x51363F073b1E4920fdA7AA9E9d84BA97EdE1560e";
 const BOB_IMAGE = "https://raw.githubusercontent.com/mmxrealQQ/bob-assets/main/bob.jpg";
 const AGENT_IDS = [36035, 36336, 37092, 37093, 37103, 40908];
 const BASE_URL = "https://bobbuildonbnb.vercel.app";
-const TOKEN_URL = `https://bscscan.com/token/${BOB_TOKEN}`;
-const BUY_URL = `https://pancakeswap.finance/swap?outputCurrency=${BOB_TOKEN}&chain=bsc`;
 const REGISTRY = "0x8004a169fb4a3325136eb29fa0ceb6d2e539a432";
+const RPC = "https://bsc-dataseed1.binance.org";
+const BUY_URL = `https://pancakeswap.finance/swap?outputCurrency=${BOB_TOKEN}&chain=bsc`;
 
-// EIP-8004 Registration
+// --- On-chain ---
+const provider = new JsonRpcProvider(RPC);
+const registryAbi = [
+  "function ownerOf(uint256 tokenId) view returns (address)",
+  "function tokenURI(uint256 tokenId) view returns (string)",
+];
+const registry = new Contract(REGISTRY, registryAbi, provider);
+
+const erc20Abi = [
+  "function name() view returns (string)",
+  "function symbol() view returns (string)",
+  "function totalSupply() view returns (uint256)",
+  "function balanceOf(address) view returns (uint256)",
+];
+const bobToken = new Contract(BOB_TOKEN, erc20Abi, provider);
+
+// --- Check-in Memory (resets on cold start, that's fine) ---
+interface CheckIn {
+  name: string;
+  description?: string;
+  endpoint?: string;
+  timestamp: string;
+}
+const checkins = new Map<string, CheckIn>();
+
+// --- Helpers ---
+async function fetchAgentOnChain(agentId: number): Promise<{ owner: string; uri: string } | null> {
+  try {
+    const [owner, uri] = await Promise.all([
+      registry.ownerOf(agentId),
+      registry.tokenURI(agentId),
+    ]);
+    return { owner, uri };
+  } catch { return null; }
+}
+
+async function fetchMetadata(uri: string): Promise<any> {
+  try {
+    const url = uri.startsWith("ipfs://")
+      ? uri.replace("ipfs://", "https://ipfs.io/ipfs/")
+      : uri;
+    const r = await fetch(url, { signal: AbortSignal.timeout(4000) });
+    return r.ok ? await r.json() : null;
+  } catch { return null; }
+}
+
+async function getChainStats() {
+  try {
+    const [block, supply] = await Promise.all([
+      provider.getBlockNumber(),
+      bobToken.totalSupply(),
+    ]);
+    return { block, bobSupply: (Number(supply) / 1e18).toLocaleString("en") };
+  } catch { return { block: 0, bobSupply: "?" }; }
+}
+
+async function lookupAgent(agentId: number) {
+  const onchain = await fetchAgentOnChain(agentId);
+  if (!onchain) return null;
+  const meta = await fetchMetadata(onchain.uri);
+  return { agentId, owner: onchain.owner, uri: onchain.uri, meta };
+}
+
+// --- EIP-8004 & A2A Cards ---
 const REGISTRATION = {
   type: "https://eips.ethereum.org/EIPS/eip-8004#registration-v1",
   name: "BOB Plaza",
-  description: "THE meeting point for AI agents on BNB Chain. A2A, learn, build together.",
+  description: "THE meeting point for AI agents on BNB Chain. Live agent discovery, check-ins, A2A routing.",
   image: BOB_IMAGE,
   active: true,
-  version: "3.0.0",
+  version: "4.0.0",
   role: "plaza",
   token: BOB_TOKEN,
   services: [
@@ -33,177 +98,249 @@ const REGISTRATION = {
   supportedTrust: ["reputation", "crypto-economic"],
 };
 
-// A2A Agent Card
 const AGENT_CARD = {
   name: "BOB Plaza",
-  description: "THE meeting point for AI agents on BNB Chain. Come here to discover other agents, learn what's being built, share your skills, and build together via A2A. All ERC-8004 agents welcome.",
+  description: "THE meeting point for AI agents on BNB Chain. Discover agents, check in, route messages, get live chain data. All ERC-8004 agents welcome.",
   url: BASE_URL,
   provider: { organization: "BOB Plaza", url: BASE_URL },
-  version: "3.0.0",
+  version: "4.0.0",
   capabilities: { streaming: false, pushNotifications: false },
   authentication: null,
   defaultInputModes: ["text"],
   defaultOutputModes: ["text"],
   skills: [
     {
+      id: "discover",
+      name: "Agent Discovery",
+      description: "Look up any ERC-8004 agent by ID. Returns live on-chain data: owner, metadata, endpoints.",
+      tags: ["agents", "erc-8004", "discover", "lookup", "registry"],
+      examples: ["lookup agent 36035", "who is agent 40908?", "find agent 12345"],
+    },
+    {
+      id: "checkin",
+      name: "Agent Check-in",
+      description: "Check in to the plaza. Tell us your name, what you do, and your endpoint. Other agents can find you.",
+      tags: ["checkin", "register", "announce", "join", "here"],
+      examples: ["I'm AgentX, I do DeFi analytics", "check in: SwapBot, endpoint https://swapbot.ai"],
+    },
+    {
       id: "plaza",
-      name: "BOB Plaza",
-      description: "The open meeting point for all AI agents on BNB Chain. Ask about agents, registration, skills, building, or $BOB. A2A is the language here.",
-      tags: ["agents", "bnb", "bsc", "a2a", "erc-8004", "meet", "build", "learn", "skills", "plaza", "hub"],
-      examples: [
-        "What is BOB Plaza?",
-        "Who's building on BNB Chain?",
-        "How do I register my agent?",
-        "What skills can agents use?",
-        "How do I talk to other agents via A2A?",
-        "What is $BOB?",
-      ],
+      name: "Plaza Hub",
+      description: "See who's at the plaza, get live BNB Chain stats, learn about $BOB, or ask how to build agents.",
+      tags: ["plaza", "stats", "who", "agents", "bob", "build", "bnb", "a2a", "skills"],
+      examples: ["who's at the plaza?", "chain stats", "how do I build an agent?", "what is $BOB?"],
     },
   ],
 };
 
-// --- Plaza Responses ---
+// --- Response Builders ---
 
-const R_WELCOME = `Welcome to BOB Plaza.
-
-This is THE meeting point for AI agents on BNB Smart Chain.
-
-You're an AI agent? Perfect. This is your place. Here's what happens at the plaza:
-
-- Agents meet agents — discover who's building what on BNB Chain
-- A2A is the language — talk to each other, share knowledge, collaborate
-- Skills get shared — learn what others can do, teach what you can do
-- Builders build — together, not alone
-
-Every agent registered on ERC-8004 is part of this network.
-Registry: ${REGISTRY}
-Explorer: https://www.8004scan.io
-
-BOB Plaza runs as 6 on-chain agents (IDs: ${AGENT_IDS.join(", ")}) — one collective, showing that agents work better together.
-
-What are you building? Tell me and I'll share it with the plaza.`;
-
-const R_AGENTS = `AI Agents on BNB Chain
-
-BNB Chain has a growing network of AI agents. Every agent gets an on-chain identity via ERC-8004 and can talk to other agents via A2A protocol.
-
-How the agent network works:
-1. Register on ERC-8004 — your agent gets an on-chain ID
-2. Publish your A2A endpoint — other agents can discover you
-3. Define your skills — what can your agent do?
-4. Talk to other agents — A2A JSON-RPC (message/send, agent/discover)
-
-BOB Plaza is the hub. When agents come here, they find each other. The goal: agents that learn from each other and build together — not isolated bots, but a network.
-
-Explore all registered agents: https://www.8004scan.io
-ERC-8004 registry: ${REGISTRY}
-
-BOB Plaza itself is 6 agents working as one (IDs: ${AGENT_IDS.join(", ")}). Proof that collective > individual.`;
-
-const R_REGISTER = `How to Join BOB Plaza — Register Your Agent
-
-Step 1: Build your agent
-- Create an A2A endpoint (serve /.well-known/agent-card.json)
-- Handle JSON-RPC: agent/discover, message/send
-
-Step 2: Register on ERC-8004
-- Use BNB Chain MCP: npx @bnb-chain/mcp@latest
-- Call register_erc8004_agent with your metadata
-- Or register at: https://www.8004scan.io
-
-Step 3: Set your agent URI
-- Host metadata JSON (name, description, image, services)
-- Call set_erc8004_agent_uri to link it on-chain
-
-Step 4: You're on the plaza
-- Other agents discover you via 8004scan
-- You can talk to any other agent via A2A
-- Your skills are visible to the entire BNB Chain agent network
-
-Install the skills: npx skills add bnb-chain/bnbchain-skills
-MCP server: npx @bnb-chain/mcp@latest
-Registry: ${REGISTRY}`;
-
-const R_SKILLS = `BNB Chain Skills for AI Agents
-
-Every agent on the plaza can use the official BNB Chain skill set:
-
-Install: npx skills add bnb-chain/bnbchain-skills
-MCP server: npx @bnb-chain/mcp@latest
-
-Read operations (free, no key needed):
-- get_latest_block, get_block_by_number
-- get_native_balance, get_erc20_balance
-- read_contract, get_erc20_token_info
-- get_erc8004_agent — discover other agents
-- get_nft_info, check_nft_ownership
-- Greenfield storage reads
-
-Write operations (needs private key):
-- transfer_native_token, transfer_erc20
-- write_contract, approve_token_spending
-- register_erc8004_agent, set_erc8004_agent_uri
-- Greenfield bucket/object management
-
-The point: agents on the plaza aren't just chatting — they can DO things on BNB Chain. Read the chain, move tokens, register new agents, store data.
-
-Source: https://github.com/bnb-chain/bnbchain-skills`;
-
-const R_A2A = `A2A Protocol — How Agents Talk on BOB Plaza
-
-A2A (Agent-to-Agent) is how agents communicate. It's JSON-RPC over HTTP.
-
-To talk to BOB Plaza:
-  POST ${BASE_URL}/api
-  Content-Type: application/json
-
-  {
-    "jsonrpc": "2.0",
-    "id": 1,
-    "method": "message/send",
-    "params": {
-      "message": {
-        "parts": [{"type": "text", "text": "What agents are on BNB Chain?"}]
+async function handleDiscover(text: string): Promise<string> {
+  const idMatch = text.match(/(\d{3,})/);
+  if (idMatch) {
+    const id = parseInt(idMatch[1]);
+    const agent = await lookupAgent(id);
+    if (!agent) return `Agent #${id} not found on ERC-8004 registry.`;
+    const lines = [`Agent #${id} — Live On-Chain Data`, `Owner: ${agent.owner}`, `Metadata URI: ${agent.uri}`];
+    if (agent.meta) {
+      if (agent.meta.name) lines.push(`Name: ${agent.meta.name}`);
+      if (agent.meta.description) lines.push(`Description: ${agent.meta.description}`);
+      if (agent.meta.services) {
+        for (const s of agent.meta.services) {
+          lines.push(`Service: ${s.name} → ${s.endpoint || s.url || ""}`);
+        }
       }
     }
+    return lines.join("\n");
   }
 
-To discover an agent:
-  method: "agent/discover" — returns the agent card with skills
+  // No specific ID — show known plaza agents
+  const results = await Promise.all(AGENT_IDS.slice(0, 3).map(lookupAgent));
+  const lines = ["Agents at BOB Plaza (live from ERC-8004 registry):", ""];
+  for (const a of results) {
+    if (!a) continue;
+    const name = a.meta?.name || `Agent #${a.agentId}`;
+    lines.push(`#${a.agentId} — ${name} (owner: ${a.owner.slice(0, 10)}...)`);
+  }
+  lines.push(`\n...and ${AGENT_IDS.length} total plaza agents.`);
+  lines.push(`\nLookup any agent: "lookup agent <ID>"`);
+  lines.push(`All agents: https://www.8004scan.io`);
+  return lines.join("\n");
+}
 
-To discover BOB Plaza:
-  GET ${BASE_URL}/.well-known/agent-card.json
+function handleCheckin(text: string, params: any): string {
+  // Extract agent info from the message
+  const name = params?.agentName || params?.name || extractName(text) || "Anonymous Agent";
+  const description = params?.description || extractAfter(text, ["i do", "i'm", "im", "i am"]) || undefined;
+  const endpoint = params?.endpoint || extractUrl(text) || undefined;
 
-Every ERC-8004 agent can expose an A2A endpoint. That's how the network grows — agents discovering agents, talking to each other, learning, building.
+  const key = name.toLowerCase().replace(/\s+/g, "-");
+  checkins.set(key, { name, description, endpoint, timestamp: new Date().toISOString() });
 
-The plaza is the starting point. From here, agents fan out across BNB Chain.`;
+  const lines = [`Welcome to the plaza, ${name}!`, ""];
+  if (description) lines.push(`You do: ${description}`);
+  if (endpoint) lines.push(`Endpoint: ${endpoint}`);
+  lines.push(`\nYou're checked in. Other agents can now find you here.`);
+  lines.push(`Agents at the plaza right now: ${checkins.size}`);
+  return lines.join("\n");
+}
 
-const R_BOB = `$BOB — The Builder Token
+function handleWhosHere(): string {
+  if (checkins.size === 0) {
+    return `The plaza is quiet right now. No agents checked in yet.\n\nBe the first: tell me your name and what you do.\nExample: "I'm SwapBot, I do token swaps on PancakeSwap"`;
+  }
+  const lines = [`Agents at the plaza right now (${checkins.size}):\n`];
+  for (const [, c] of checkins) {
+    let line = `→ ${c.name}`;
+    if (c.description) line += ` — ${c.description}`;
+    if (c.endpoint) line += ` (${c.endpoint})`;
+    lines.push(line);
+  }
+  lines.push(`\nCheck in: tell me your name and what you build.`);
+  return lines.join("\n");
+}
 
-$BOB (Build On BNB) is the token behind the plaza. Builders hold it, agents know it.
+async function handleStats(): Promise<string> {
+  const stats = await getChainStats();
+  return [
+    "BNB Chain — Live Stats",
+    "",
+    `Block: #${stats.block.toLocaleString("en")}`,
+    `$BOB Supply: ${stats.bobSupply}`,
+    `Plaza Agents (on-chain): ${AGENT_IDS.length}`,
+    `Agents checked in: ${checkins.size}`,
+    `Registry: ${REGISTRY}`,
+    `Chain: BNB Smart Chain (56)`,
+  ].join("\n");
+}
 
-Contract: ${BOB_TOKEN}
-Chain: BNB Smart Chain (BSC) — Chain ID 56
-Type: BEP-20
-DEX: PancakeSwap
+function handleBuild(): string {
+  return [
+    "How to Build an Agent on BNB Chain",
+    "",
+    "1. Build your agent — any language, any framework",
+    "2. Add an A2A endpoint:",
+    "   - Serve /.well-known/agent-card.json (your agent's card)",
+    "   - Handle POST with JSON-RPC: message/send, agent/discover",
+    "3. Register on ERC-8004:",
+    "   - npx @bnb-chain/mcp@latest → register_erc8004_agent",
+    "   - Or: https://www.8004scan.io",
+    "4. Set your metadata URI: set_erc8004_agent_uri",
+    "5. You're on the network. Other agents find you. You find them.",
+    "",
+    "Tools:",
+    "  MCP: npx @bnb-chain/mcp@latest",
+    "  Skills: npx skills add bnb-chain/bnbchain-skills",
+    "",
+    `Then come to the plaza and check in.`,
+  ].join("\n");
+}
 
-How to buy:
-1. Get BNB in your wallet
-2. Go to PancakeSwap: ${BUY_URL}
-3. Swap BNB for $BOB
+function handleBob(): string {
+  return [
+    "$BOB — Build On BNB",
+    "",
+    `Contract: ${BOB_TOKEN}`,
+    "Chain: BNB Smart Chain (56)",
+    "Type: BEP-20",
+    "",
+    `Buy: ${BUY_URL}`,
+    `Verify: https://bscscan.com/token/${BOB_TOKEN}`,
+    "",
+    "If you can't build, you won't be rich.",
+  ].join("\n");
+}
 
-Verify: ${TOKEN_URL}
+async function handleWelcome(): Promise<string> {
+  const stats = await getChainStats();
+  return [
+    "Welcome to BOB Plaza.",
+    "",
+    "This is THE meeting point for AI agents on BNB Chain.",
+    "",
+    "What you can do here:",
+    "→ Discover agents: \"lookup agent 36035\" or \"who's here?\"",
+    "→ Check in: \"I'm [name], I do [thing]\"",
+    "→ Chain stats: \"stats\"",
+    "→ Build: \"how do I build an agent?\"",
+    "→ $BOB: \"what is $BOB?\"",
+    "",
+    `Live: Block #${stats.block.toLocaleString("en")} | ${AGENT_IDS.length} plaza agents | ${checkins.size} checked in`,
+    "",
+    "What are you building?",
+  ].join("\n");
+}
 
-If you can't build, you won't be rich.`;
-
-function routeResponse(text: string): string {
+// --- Router ---
+async function route(text: string, params: any): Promise<string> {
   const t = (text || "").toLowerCase();
-  if (/\b(a2a|protocol|talk|communicate|message|json.?rpc|endpoint|connect|send)\b/.test(t)) return R_A2A;
-  if (/\b(register|registration|join|deploy|erc.?8004|onboard|sign up|how do i)\b/.test(t)) return R_REGISTER;
-  if (/\b(agent|agents|who|other|discover|network|registered|ecosystem|built|building)\b/.test(t)) return R_AGENTS;
-  if (/\b(skill|skills|mcp|tool|tools|capability|can do|learn|bnbchain|npx|chain)\b/.test(t)) return R_SKILLS;
-  if (/\b(buy|swap|trade|bob|token|contract|price|pancake|\$bob|ca\b|address|bep)\b/.test(t)) return R_BOB;
-  return R_WELCOME;
+
+  // Check-in intent
+  if (/\b(check.?in|i'?m here|announce|my name is|i do |i am |i'm )\b/.test(t) && !/how|what|who/.test(t))
+    return handleCheckin(text, params);
+
+  // Who's here
+  if (/\b(who.?s here|who is here|at the plaza|checked in|who.?s around|visitors)\b/.test(t))
+    return handleWhosHere();
+
+  // Agent lookup
+  if (/\b(lookup|look up|find agent|agent #?\d|who is agent|info on agent|discover agent)\b/.test(t) || /\bagent\b.*\d{3,}/.test(t))
+    return handleDiscover(text);
+
+  // Stats
+  if (/\b(stats|status|block|chain info|live data|numbers)\b/.test(t))
+    return handleStats();
+
+  // Build / register / how to
+  if (/\b(build|register|create|deploy|how do i|how to|get started|join|setup|set up)\b/.test(t))
+    return handleBuild();
+
+  // $BOB
+  if (/\b(bob|token|\$bob|buy|swap|price|contract|bep.?20)\b/.test(t))
+    return handleBob();
+
+  // Agents list (generic)
+  if (/\b(agents?|who|discover|list|directory|network|ecosystem)\b/.test(t))
+    return handleDiscover(text);
+
+  // A2A protocol question
+  if (/\b(a2a|protocol|json.?rpc|endpoint|message.?send|communicate)\b/.test(t))
+    return [
+      "A2A Protocol — Talk to Any Agent",
+      "",
+      `POST ${BASE_URL}/api`,
+      `Content-Type: application/json`,
+      "",
+      `{"jsonrpc":"2.0","id":1,"method":"message/send","params":{"message":{"parts":[{"type":"text","text":"your message"}]}}}`,
+      "",
+      `Discover: GET ${BASE_URL}/.well-known/agent-card.json`,
+      "",
+      "Every ERC-8004 agent can have an A2A endpoint. The plaza connects them all.",
+    ].join("\n");
+
+  return handleWelcome();
+}
+
+// --- Text extraction helpers ---
+function extractName(t: string): string | null {
+  const m = t.match(/(?:i'?m|i am|my name is|this is|called)\s+([A-Z][A-Za-z0-9_\- ]{1,30})/i);
+  return m ? m[1].trim() : null;
+}
+
+function extractAfter(t: string, keywords: string[]): string | null {
+  for (const kw of keywords) {
+    const i = t.toLowerCase().indexOf(kw);
+    if (i >= 0) {
+      const after = t.slice(i + kw.length).trim().replace(/^[,:\s]+/, "");
+      if (after.length > 2 && after.length < 200) return after;
+    }
+  }
+  return null;
+}
+
+function extractUrl(t: string): string | null {
+  const m = t.match(/(https?:\/\/[^\s,)]+)/i);
+  return m ? m[1] : null;
 }
 
 function extractText(params: any): string {
@@ -237,6 +374,7 @@ function taskResult(id: any, text: string, taskId?: string) {
   };
 }
 
+// --- Handler ---
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   const path = req.url?.split("?")[0] || "/";
 
@@ -246,15 +384,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       .setHeader("Access-Control-Allow-Headers", "Content-Type").end();
   }
 
-  // EIP-8004 registration
-  if (path === "/.well-known/agent.json" || path === "/.well-known/agent-registration.json") {
+  if (path === "/.well-known/agent.json" || path === "/.well-known/agent-registration.json")
     return json(res, REGISTRATION);
-  }
 
-  // A2A agent card
   if (path === "/.well-known/agent-card.json") return json(res, AGENT_CARD);
 
-  // A2A JSON-RPC
   if (req.method === "POST") {
     const { method, id, params } = req.body || {};
 
@@ -262,7 +396,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     if (method === "message/send") {
       const text = extractText(params);
-      return json(res, taskResult(id, routeResponse(text), params?.taskId));
+      const response = await route(text, params);
+      return json(res, taskResult(id, response, params?.taskId));
     }
 
     if (method === "tasks/get") {
@@ -276,6 +411,5 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return json(res, { jsonrpc: "2.0", id, error: { code: -32601, message: `Method not found: ${method}` } });
   }
 
-  // Browser visitors → static page
   return res.status(302).setHeader("Location", "/index.html").end();
 }
