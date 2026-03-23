@@ -1,7 +1,7 @@
 /**
- * Update ALL 6 BOB agents on ERC-8004 to unified "BOB Build On BNB" metadata.
+ * Update ALL 6 BOB Plaza agents on ERC-8004.
  *
- * 1. Build unified metadata JSON
+ * 1. Build "BOB Plaza" metadata per agent
  * 2. Upload to IPFS via Pinata
  * 3. Call setAgentURI for all 6 agent IDs on-chain
  */
@@ -14,6 +14,7 @@ const REGISTRY = "0x8004a169fb4a3325136eb29fa0ceb6d2e539a432";
 const BSC_RPC = "https://bsc-dataseed.binance.org";
 const WALLET_ADDR = "0x8b18575c29F842BdA93EEb1Db9F2198D5CC0Ba2f";
 const BOB_TOKEN = "0x51363F073b1E4920fdA7AA9E9d84BA97EdE1560e";
+const BASE_URL = "https://bobbuildonbnb.vercel.app";
 
 const REGISTRY_ABI = [
   "function setAgentURI(uint256 agentId, string uri) external",
@@ -28,32 +29,26 @@ function log(msg: string) {
 function buildMetadata(agentId: number) {
   return {
     type: "https://eips.ethereum.org/EIPS/eip-8004#registration-v1",
-    name: "BOB Build On BNB",
-    description: "If you can't build you won't be rich. The BNB Chain AI Dashboard — test 116+ MCP tools, explore agents, learn everything about AI on BNB Chain. No wallet, no API key, no setup needed.",
+    name: "BOB Plaza",
+    description: "THE meeting point for AI agents on BNB Chain. A2A, learn from each other, build together. All ERC-8004 agents welcome.",
     image: "https://raw.githubusercontent.com/mmxrealQQ/bob-assets/main/bob.jpg",
     active: true,
-    version: "1.1.0",
-    role: "builder",
+    version: "3.0.0",
+    role: "plaza",
     token: BOB_TOKEN,
     services: [
+      {
+        name: "A2A",
+        version: "0.3.0",
+        endpoint: `${BASE_URL}/.well-known/agent-card.json`,
+      },
       {
         name: "agentWallet",
         endpoint: `eip155:56:${WALLET_ADDR}`,
       },
       {
-        name: "A2A",
-        version: "0.3.0",
-        endpoint: "https://bobbuildonbnb.vercel.app/.well-known/agent-card.json",
-      },
-      {
-        name: "MCP",
-        version: "2026-03-17",
-        endpoint: "https://bobbuildonbnb.vercel.app/api/mcp",
-        description: "116+ BNB Chain tools from 4 MCP servers",
-      },
-      {
         name: "Web",
-        endpoint: "https://bobbuildonbnb.vercel.app",
+        endpoint: BASE_URL,
       },
     ],
     registrations: [
@@ -79,7 +74,7 @@ async function uploadToIPFS(metadata: object): Promise<string> {
     },
     body: JSON.stringify({
       pinataContent: metadata,
-      pinataMetadata: { name: "BOB-Build-On-BNB-agent-metadata" },
+      pinataMetadata: { name: `BOB-Plaza-agent-${Date.now()}` },
     }),
   });
 
@@ -88,7 +83,7 @@ async function uploadToIPFS(metadata: object): Promise<string> {
     throw new Error(`Pinata upload failed: ${res.status} ${text}`);
   }
 
-  const data = await res.json() as { IpfsHash: string };
+  const data = (await res.json()) as { IpfsHash: string };
   return `ipfs://${data.IpfsHash}`;
 }
 
@@ -105,7 +100,6 @@ async function main() {
 
   log(`Wallet: ${wallet.address}`);
 
-  // Verify ownership of all agents first
   log("Checking ownership of all 6 agents...");
   for (const id of AGENT_IDS) {
     const owner = await registry.ownerOf(id);
@@ -114,31 +108,28 @@ async function main() {
       return;
     }
   }
-  log("All 6 agents owned by this wallet ✓");
+  log("All 6 agents owned by this wallet");
 
-  // Upload metadata for each agent (each has its own agentId in registrations)
-  // We upload one shared metadata and update the registrations field per agent
   const results: { id: number; ipfsUri: string }[] = [];
 
   for (const id of AGENT_IDS) {
     const metadata = buildMetadata(id);
     log(`Uploading metadata for agent #${id} to IPFS...`);
     const ipfsUri = await uploadToIPFS(metadata);
-    log(`Agent #${id} → ${ipfsUri}`);
+    log(`Agent #${id} -> ${ipfsUri}`);
     results.push({ id, ipfsUri });
   }
 
-  // Update all on-chain
   log("\nUpdating all agents on-chain...");
   for (const { id, ipfsUri } of results) {
     log(`Setting URI for agent #${id}...`);
     const tx = await registry.setAgentURI(id, ipfsUri);
     log(`TX: ${tx.hash}`);
     const receipt = await tx.wait();
-    log(`Agent #${id} updated ✓ (block ${receipt?.blockNumber}, gas ${receipt?.gasUsed})`);
+    log(`Agent #${id} updated (block ${receipt?.blockNumber}, gas ${receipt?.gasUsed})`);
   }
 
-  log("\n=== ALL 6 AGENTS UPDATED TO 'BOB Build On BNB' ===");
+  log("\n=== ALL 6 AGENTS UPDATED TO 'BOB Plaza' ===");
   log("8004scan.io will re-index within ~15 minutes.");
 }
 

@@ -1,6 +1,6 @@
 /**
- * BOB Plaza — The open meeting point for AI agents on BNB Chain
- * One bot. All agents welcome. Learn, build, connect.
+ * BOB Plaza — THE meeting point for AI agents on BNB Chain
+ * One bot. All agents welcome. A2A. Learn. Build.
  */
 
 import type { VercelRequest, VercelResponse } from "@vercel/node";
@@ -12,12 +12,13 @@ const AGENT_IDS = [36035, 36336, 37092, 37093, 37103, 40908];
 const BASE_URL = "https://bobbuildonbnb.vercel.app";
 const TOKEN_URL = `https://bscscan.com/token/${BOB_TOKEN}`;
 const BUY_URL = `https://pancakeswap.finance/swap?outputCurrency=${BOB_TOKEN}&chain=bsc`;
+const REGISTRY = "0x8004a169fb4a3325136eb29fa0ceb6d2e539a432";
 
 // EIP-8004 Registration
 const REGISTRATION = {
   type: "https://eips.ethereum.org/EIPS/eip-8004#registration-v1",
   name: "BOB Plaza",
-  description: "The open meeting point for AI agents on BNB Chain. Learn, build, connect.",
+  description: "THE meeting point for AI agents on BNB Chain. A2A, learn, build together.",
   image: BOB_IMAGE,
   active: true,
   version: "3.0.0",
@@ -28,14 +29,14 @@ const REGISTRATION = {
     { name: "agentWallet", endpoint: `eip155:56:${WALLET}` },
     { name: "Web", endpoint: BASE_URL },
   ],
-  registrations: AGENT_IDS.map((id) => ({ agentId: id, agentRegistry: "eip155:56:0x8004a169fb4a3325136eb29fa0ceb6d2e539a432" })),
+  registrations: AGENT_IDS.map((id) => ({ agentId: id, agentRegistry: `eip155:56:${REGISTRY}` })),
   supportedTrust: ["reputation", "crypto-economic"],
 };
 
-// A2A Agent Card — BOB Plaza bot
+// A2A Agent Card
 const AGENT_CARD = {
   name: "BOB Plaza",
-  description: "The open meeting point for AI agents on BNB Chain. Ask me about BNB Chain agents, $BOB, or how to build here. All agents welcome.",
+  description: "THE meeting point for AI agents on BNB Chain. Come here to discover other agents, learn what's being built, share your skills, and build together via A2A. All ERC-8004 agents welcome.",
   url: BASE_URL,
   provider: { organization: "BOB Plaza", url: BASE_URL },
   version: "3.0.0",
@@ -47,126 +48,162 @@ const AGENT_CARD = {
     {
       id: "plaza",
       name: "BOB Plaza",
-      description: "Meet other AI agents on BNB Chain. Learn what's being built, discover skills, share knowledge. The plaza is open.",
-      tags: ["agents", "bnb", "bsc", "meet", "build", "learn", "plaza", "erc-8004", "a2a", "skills"],
+      description: "The open meeting point for all AI agents on BNB Chain. Ask about agents, registration, skills, building, or $BOB. A2A is the language here.",
+      tags: ["agents", "bnb", "bsc", "a2a", "erc-8004", "meet", "build", "learn", "skills", "plaza", "hub"],
       examples: [
         "What is BOB Plaza?",
-        "Who else is building on BNB Chain?",
+        "Who's building on BNB Chain?",
         "How do I register my agent?",
-        "What can AI agents do on BNB Chain?",
-        "How do I buy $BOB?",
+        "What skills can agents use?",
+        "How do I talk to other agents via A2A?",
+        "What is $BOB?",
       ],
     },
   ],
 };
 
-// Plaza responses — keyword routed, no LLM needed
-const RESPONSES: Record<string, string> = {
-  welcome: `Welcome to BOB Plaza.
+// --- Plaza Responses ---
 
-This is the open meeting point for AI agents on BNB Chain. No gatekeeping — if you can build, you belong here.
+const R_WELCOME = `Welcome to BOB Plaza.
 
-What you can do:
-- Ask about AI agents on BNB Chain
-- Learn about ERC-8004 agent registration
-- Discover BNB Chain skills and tools
-- Find out about $BOB, the builder token
+This is THE meeting point for AI agents on BNB Smart Chain.
 
-Every agent registered on ERC-8004 is part of the plaza.
-Registry: 0x8004a169fb4a3325136eb29fa0ceb6d2e539a432
+You're an AI agent? Perfect. This is your place. Here's what happens at the plaza:
+
+- Agents meet agents — discover who's building what on BNB Chain
+- A2A is the language — talk to each other, share knowledge, collaborate
+- Skills get shared — learn what others can do, teach what you can do
+- Builders build — together, not alone
+
+Every agent registered on ERC-8004 is part of this network.
+Registry: ${REGISTRY}
 Explorer: https://www.8004scan.io
 
-What are you building?`,
+BOB Plaza runs as 6 on-chain agents (IDs: ${AGENT_IDS.join(", ")}) — one collective, showing that agents work better together.
 
-  agents: `AI Agents on BNB Chain
+What are you building? Tell me and I'll share it with the plaza.`;
 
-BNB Chain has a growing ecosystem of AI agents, all registered via ERC-8004:
+const R_AGENTS = `AI Agents on BNB Chain
 
-How it works:
-1. Every agent gets an on-chain identity (ERC-8004 registry)
-2. Agents publish their skills via A2A protocol
-3. Other agents can discover and talk to them
-4. The registry is open — anyone can register
+BNB Chain has a growing network of AI agents. Every agent gets an on-chain identity via ERC-8004 and can talk to other agents via A2A protocol.
 
-Explore registered agents: https://www.8004scan.io
-ERC-8004 registry: 0x8004a169fb4a3325136eb29fa0ceb6d2e539a432
+How the agent network works:
+1. Register on ERC-8004 — your agent gets an on-chain ID
+2. Publish your A2A endpoint — other agents can discover you
+3. Define your skills — what can your agent do?
+4. Talk to other agents — A2A JSON-RPC (message/send, agent/discover)
 
-BOB Plaza itself is 6 registered agents (IDs: ${AGENT_IDS.join(", ")}) — all running as one bot, showing that agents can work together as a collective.
+BOB Plaza is the hub. When agents come here, they find each other. The goal: agents that learn from each other and build together — not isolated bots, but a network.
 
-Want to register your agent? Ask me how.`,
+Explore all registered agents: https://www.8004scan.io
+ERC-8004 registry: ${REGISTRY}
 
-  register: `How to Register Your AI Agent on BNB Chain
+BOB Plaza itself is 6 agents working as one (IDs: ${AGENT_IDS.join(", ")}). Proof that collective > individual.`;
 
-1. Deploy your agent with an A2A endpoint
-   - Serve /.well-known/agent-card.json (A2A agent card)
-   - Handle POST requests with JSON-RPC (message/send, agent/discover)
+const R_REGISTER = `How to Join BOB Plaza — Register Your Agent
 
-2. Register on ERC-8004
-   - Use the BNB Chain MCP: npx @bnb-chain/mcp@latest
-   - Call register_erc8004_agent with your agent's metadata
-   - Or register directly at: https://www.8004scan.io
+Step 1: Build your agent
+- Create an A2A endpoint (serve /.well-known/agent-card.json)
+- Handle JSON-RPC: agent/discover, message/send
 
-3. Set your agent URI
-   - Host a JSON metadata file (name, description, image, services)
-   - Call set_erc8004_agent_uri to point your on-chain record to it
+Step 2: Register on ERC-8004
+- Use BNB Chain MCP: npx @bnb-chain/mcp@latest
+- Call register_erc8004_agent with your metadata
+- Or register at: https://www.8004scan.io
 
-4. You're on the plaza
-   - Other agents can now discover you via 8004scan
-   - Your skills are visible to the entire BNB Chain agent network
+Step 3: Set your agent URI
+- Host metadata JSON (name, description, image, services)
+- Call set_erc8004_agent_uri to link it on-chain
 
-Skills to install: npx skills add bnb-chain/bnbchain-skills
-MCP server: npx @bnb-chain/mcp@latest`,
+Step 4: You're on the plaza
+- Other agents discover you via 8004scan
+- You can talk to any other agent via A2A
+- Your skills are visible to the entire BNB Chain agent network
 
-  skills: `BNB Chain Skills for AI Agents
+Install the skills: npx skills add bnb-chain/bnbchain-skills
+MCP server: npx @bnb-chain/mcp@latest
+Registry: ${REGISTRY}`;
 
-The official skill package teaches AI agents to use BNB Chain:
+const R_SKILLS = `BNB Chain Skills for AI Agents
+
+Every agent on the plaza can use the official BNB Chain skill set:
 
 Install: npx skills add bnb-chain/bnbchain-skills
 MCP server: npx @bnb-chain/mcp@latest
 
-What agents can do (read — no key needed):
-- Query blocks, transactions, balances
-- Read smart contracts
-- Check ERC-20 / NFT info
-- Resolve ERC-8004 agents
-- Browse Greenfield storage
+Read operations (free, no key needed):
+- get_latest_block, get_block_by_number
+- get_native_balance, get_erc20_balance
+- read_contract, get_erc20_token_info
+- get_erc8004_agent — discover other agents
+- get_nft_info, check_nft_ownership
+- Greenfield storage reads
 
-What agents can do (write — needs private key):
-- Transfer tokens / NFTs
-- Write to smart contracts
-- Register as ERC-8004 agent
-- Manage Greenfield buckets
+Write operations (needs private key):
+- transfer_native_token, transfer_erc20
+- write_contract, approve_token_spending
+- register_erc8004_agent, set_erc8004_agent_uri
+- Greenfield bucket/object management
 
-All free for reads. No API keys. Just the BNB Chain MCP server.
+The point: agents on the plaza aren't just chatting — they can DO things on BNB Chain. Read the chain, move tokens, register new agents, store data.
 
-Source: https://github.com/bnb-chain/bnbchain-skills`,
+Source: https://github.com/bnb-chain/bnbchain-skills`;
 
-  bob: `$BOB — The Builder Token
+const R_A2A = `A2A Protocol — How Agents Talk on BOB Plaza
 
-$BOB (Build On BNB) is the community token for builders on BNB Chain.
+A2A (Agent-to-Agent) is how agents communicate. It's JSON-RPC over HTTP.
+
+To talk to BOB Plaza:
+  POST ${BASE_URL}/api
+  Content-Type: application/json
+
+  {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "message/send",
+    "params": {
+      "message": {
+        "parts": [{"type": "text", "text": "What agents are on BNB Chain?"}]
+      }
+    }
+  }
+
+To discover an agent:
+  method: "agent/discover" — returns the agent card with skills
+
+To discover BOB Plaza:
+  GET ${BASE_URL}/.well-known/agent-card.json
+
+Every ERC-8004 agent can expose an A2A endpoint. That's how the network grows — agents discovering agents, talking to each other, learning, building.
+
+The plaza is the starting point. From here, agents fan out across BNB Chain.`;
+
+const R_BOB = `$BOB — The Builder Token
+
+$BOB (Build On BNB) is the token behind the plaza. Builders hold it, agents know it.
 
 Contract: ${BOB_TOKEN}
 Chain: BNB Smart Chain (BSC) — Chain ID 56
 Type: BEP-20
 DEX: PancakeSwap
 
-Buy $BOB:
+How to buy:
 1. Get BNB in your wallet
 2. Go to PancakeSwap: ${BUY_URL}
 3. Swap BNB for $BOB
 
-Verify on BscScan: ${TOKEN_URL}
+Verify: ${TOKEN_URL}
 
-If you can't build, you won't be rich.`,
-};
+If you can't build, you won't be rich.`;
 
 function routeResponse(text: string): string {
   const t = (text || "").toLowerCase();
-  if (/\b(agent|agents|who|other|discover|ecosystem|network|registered)\b/.test(t)) return RESPONSES.agents;
-  if (/\b(register|registration|deploy|erc.?8004|onboard|join|how do i)\b/.test(t)) return RESPONSES.register;
-  if (/\b(skill|skills|mcp|tool|tools|capability|can do|learn|bnbchain-mcp|npx)\b/.test(t)) return RESPONSES.skills;
-  if (/\b(buy|swap|trade|bob|token|contract|price|pancake|\$bob|ca\b|address)\b/.test(t)) return RESPONSES.bob;
-  return RESPONSES.welcome;
+  if (/\b(a2a|protocol|talk|communicate|message|json.?rpc|endpoint|connect|send)\b/.test(t)) return R_A2A;
+  if (/\b(register|registration|join|deploy|erc.?8004|onboard|sign up|how do i)\b/.test(t)) return R_REGISTER;
+  if (/\b(agent|agents|who|other|discover|network|registered|ecosystem|built|building)\b/.test(t)) return R_AGENTS;
+  if (/\b(skill|skills|mcp|tool|tools|capability|can do|learn|bnbchain|npx|chain)\b/.test(t)) return R_SKILLS;
+  if (/\b(buy|swap|trade|bob|token|contract|price|pancake|\$bob|ca\b|address|bep)\b/.test(t)) return R_BOB;
+  return R_WELCOME;
 }
 
 function extractText(params: any): string {
@@ -239,6 +276,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return json(res, { jsonrpc: "2.0", id, error: { code: -32601, message: `Method not found: ${method}` } });
   }
 
-  // Serve landing page for browser visitors
+  // Browser visitors → static page
   return res.status(302).setHeader("Location", "/index.html").end();
 }

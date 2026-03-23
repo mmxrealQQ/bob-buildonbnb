@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "bnbchain-mcp": {
+      "command": "bnbchain-mcp",
+      "args": [],
+      "env": {
+        "PRIVATE_KEY": ""
+      }
+    }
+  }
+}
