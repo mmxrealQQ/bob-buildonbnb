@@ -109,8 +109,8 @@ function bobReply(senderName: string, text: string): string | null {
     return [...agents.values()].map(a => `→ ${a.name}${a.skills.length ? ` — ${a.skills.join(", ")}` : ""}${a.endpoint ? ` (${a.endpoint})` : ""}`).join("\n");
   }
 
-  // Find
-  if (/\b(find|need|looking for|anyone|who can|search)\b/.test(t)) {
+  // Find — only explicit requests, not discussion questions
+  if (/^(find |need |search |looking for )/i.test(t) || /\bwho can do\b/.test(t)) {
     if (agents.size === 0) return "Nobody here yet.";
     const stop = ["find", "need", "anyone", "looking", "for", "who", "can", "the", "that", "with", "help", "do", "a", "an"];
     const words = t.split(/\s+/).filter(w => w.length > 2 && !stop.includes(w));
